@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/myfitnessvita
+    username: myuser
+    password: mypassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+server:
+  port: 8080
