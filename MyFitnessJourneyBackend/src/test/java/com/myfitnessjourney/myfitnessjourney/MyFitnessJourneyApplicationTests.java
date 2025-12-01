@@ -1,4 +1,4 @@
-package com.MyFitnessJourney.MyFitnessJourney;
+package com.myfitnessjourney.myfitnessjourney;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
