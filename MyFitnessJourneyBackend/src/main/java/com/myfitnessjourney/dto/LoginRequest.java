@@ -1,4 +1,4 @@
-package com.myfitnessjourney.myfitnessjourney.dto;
+package com.myfitnessjourney.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

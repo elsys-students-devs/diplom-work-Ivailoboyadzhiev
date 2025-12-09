@@ -1,7 +1,7 @@
-package com.myfitnessjourney.myfitnessjourney.util;
+package com.myfitnessjourney.util;
 
-import com.myfitnessjourney.myfitnessjourney.exception.InvalidEmailException;
-import com.myfitnessjourney.myfitnessjourney.exception.WeakPasswordException;
+import com.myfitnessjourney.exception.InvalidEmailException;
+import com.myfitnessjourney.exception.WeakPasswordException;
 
 public class ValidationUtil {
 

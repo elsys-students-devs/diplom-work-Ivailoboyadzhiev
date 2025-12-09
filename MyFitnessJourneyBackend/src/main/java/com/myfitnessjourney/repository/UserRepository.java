@@ -1,6 +1,6 @@
-package com.myfitnessjourney.myfitnessjourney.repository;
+package com.myfitnessjourney.repository;
 
-import com.myfitnessjourney.myfitnessjourney.entity.User;
+import com.myfitnessjourney.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

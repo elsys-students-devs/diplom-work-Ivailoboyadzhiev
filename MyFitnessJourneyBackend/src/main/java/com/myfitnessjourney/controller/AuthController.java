@@ -1,10 +1,10 @@
-package com.myfitnessjourney.myfitnessjourney.controller;
+package com.myfitnessjourney.controller;
 
-import com.myfitnessjourney.myfitnessjourney.dto.LoginRequest;
-import com.myfitnessjourney.myfitnessjourney.dto.LoginResponse;
-import com.myfitnessjourney.myfitnessjourney.entity.User;
-import com.myfitnessjourney.myfitnessjourney.repository.UserRepository;
-import com.myfitnessjourney.myfitnessjourney.service.UserService;
+import com.myfitnessjourney.dto.LoginRequest;
+import com.myfitnessjourney.dto.LoginResponse;
+import com.myfitnessjourney.entity.User;
+import com.myfitnessjourney.repository.UserRepository;
+import com.myfitnessjourney.service.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

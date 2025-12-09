@@ -1,4 +1,4 @@
-package com.myfitnessjourney.myfitnessjourney.config;
+package com.myfitnessjourney.config;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

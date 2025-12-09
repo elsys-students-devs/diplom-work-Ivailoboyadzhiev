@@ -1,7 +1,7 @@
-package com.myfitnessjourney.myfitnessjourney.service;
+package com.myfitnessjourney.service;
 
-import com.myfitnessjourney.myfitnessjourney.entity.User;
-import com.myfitnessjourney.myfitnessjourney.repository.UserRepository;
+import com.myfitnessjourney.entity.User;
+import com.myfitnessjourney.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

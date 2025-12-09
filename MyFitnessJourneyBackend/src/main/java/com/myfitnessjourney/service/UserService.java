@@ -1,11 +1,11 @@
-package com.myfitnessjourney.myfitnessjourney.service;
+package com.myfitnessjourney.service;
 
-import com.myfitnessjourney.myfitnessjourney.dto.LoginResponse;
-import com.myfitnessjourney.myfitnessjourney.entity.User;
-import com.myfitnessjourney.myfitnessjourney.exception.EmailAlreadyExistsException;
-import com.myfitnessjourney.myfitnessjourney.exception.InvalidLoginException;
-import com.myfitnessjourney.myfitnessjourney.repository.UserRepository;
-import com.myfitnessjourney.myfitnessjourney.util.ValidationUtil;
+import com.myfitnessjourney.dto.LoginResponse;
+import com.myfitnessjourney.entity.User;
+import com.myfitnessjourney.exception.EmailAlreadyExistsException;
+import com.myfitnessjourney.exception.InvalidLoginException;
+import com.myfitnessjourney.repository.UserRepository;
+import com.myfitnessjourney.util.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

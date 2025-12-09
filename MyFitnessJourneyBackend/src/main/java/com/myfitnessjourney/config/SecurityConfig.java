@@ -1,6 +1,6 @@
-package com.myfitnessjourney.myfitnessjourney.config;
+package com.myfitnessjourney.config;
 
-import com.myfitnessjourney.myfitnessjourney.service.UserDetailsServiceImpl;
+import com.myfitnessjourney.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

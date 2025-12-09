@@ -1,4 +1,4 @@
-package com.myfitnessjourney.myfitnessjourney.entity;
+package com.myfitnessjourney.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

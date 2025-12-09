@@ -1,4 +1,4 @@
-package com.myfitnessjourney.myfitnessjourney.exception;
+package com.myfitnessjourney.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String message) {

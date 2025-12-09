@@ -1,4 +1,4 @@
-package com.myfitnessjourney.myfitnessjourney.exception;
+package com.myfitnessjourney.exception;
 
 public class WeakPasswordException extends IllegalArgumentException {
     public WeakPasswordException(String message) {
