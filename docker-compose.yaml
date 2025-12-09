@@ -8,13 +8,23 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "${DB_PORT}:5432"
+    volumes:
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./MyFitnessJourneyBackend
     ports:
       - "${BACKEND_PORT}:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
+      DB_HOST: db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
@@ -23,7 +33,8 @@ services:
       FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   frontend:
     build: ./MyFitnessJourneyFrontend
@@ -31,3 +42,6 @@ services:
       - "${FRONTEND_PORT}:${FRONTEND_CONTAINER_PORT}"
     depends_on:
       - backend
+
+volumes:
+  postgres-data:

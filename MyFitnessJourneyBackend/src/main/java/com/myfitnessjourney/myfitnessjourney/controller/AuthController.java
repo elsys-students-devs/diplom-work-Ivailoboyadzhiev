@@ -4,90 +4,42 @@ import com.myfitnessjourney.myfitnessjourney.dto.LoginRequest;
 import com.myfitnessjourney.myfitnessjourney.dto.LoginResponse;
 import com.myfitnessjourney.myfitnessjourney.entity.User;
 import com.myfitnessjourney.myfitnessjourney.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.myfitnessjourney.myfitnessjourney.service.UserService;
+import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@AllArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            // Check if user exists and has a password (not OAuth2 only user)
-            User user = userRepository.findByEmail(loginRequest.getEmail())
-                    .orElse(null);
-            
-            if (user == null) {
-                return ResponseEntity.status(401)
-                        .body(new LoginResponse(null, null, "Invalid email or password"));
-            }
-            
-            if (user.getPassword() == null) {
-                return ResponseEntity.status(401)
-                        .body(new LoginResponse(null, null, "This account uses social login. Please use Google or Facebook to sign in."));
-            }
-            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return ResponseEntity.status(401)
-                        .body(new LoginResponse(null, null, "Invalid email or password"));
-            }
-
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-            user = userRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            LoginResponse.UserDto userDto = new LoginResponse.UserDto(user.getId(), user.getEmail());
-
-            LoginResponse response = new LoginResponse(null, userDto, "Login successful");
-
-            return ResponseEntity.ok(response);
-        } catch (org.springframework.security.core.AuthenticationException e) {
-            return ResponseEntity.status(401)
-                    .body(new LoginResponse(null, null, "Invalid email or password"));
-        } catch (Exception e) {
-            return ResponseEntity.status(401)
-                    .body(new LoginResponse(null, null, "Invalid email or password"));
-        }
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse.UserDto userDto = userService.login(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(new LoginResponse(null, userDto, "Login successful"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody LoginRequest registerRequest) {
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(new LoginResponse(null, null, "Email already exists"));
-        }
-
-        User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user = userRepository.save(user);
-
-        LoginResponse.UserDto userDto = new LoginResponse.UserDto(user.getId(), user.getEmail());
-
+    public ResponseEntity<LoginResponse> register(@RequestBody LoginRequest request) {
+        LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(new LoginResponse(null, userDto, "Registration successful"));
     }
 
@@ -95,10 +47,12 @@ public class AuthController {
     public void oauth2Success(OAuth2AuthenticationToken authentication, 
                               jakarta.servlet.http.HttpServletResponse response) throws java.io.IOException {
         try {
+            logger.info("OAuth2 success callback received");
             OAuth2User oauth2User = authentication.getPrincipal();
             Map<String, Object> attributes = oauth2User.getAttributes();
             
             final String provider = authentication.getAuthorizedClientRegistrationId();
+            logger.info("OAuth2 provider: {}", provider);
             
             // Extract email, name, picture, and providerId
             String email = (String) attributes.get("email");
@@ -132,6 +86,7 @@ public class AuthController {
             final String finalProviderId = providerId;
 
             if (finalEmail == null) {
+                logger.warn("OAuth2 failed: Email not provided by provider: {}", provider);
                 String frontendUrl = System.getenv("FRONTEND_URL") != null ? 
                         System.getenv("FRONTEND_URL") : "http://localhost:3000";
                 response.sendRedirect(frontendUrl + "/login?error=email_not_provided");
@@ -140,6 +95,7 @@ public class AuthController {
 
             User user = userRepository.findByEmail(finalEmail)
                     .orElseGet(() -> {
+                        logger.info("Creating new OAuth2 user: {}", finalEmail);
                         User newUser = new User();
                         newUser.setEmail(finalEmail);
                         newUser.setName(finalName);
@@ -151,6 +107,7 @@ public class AuthController {
 
             // Update OAuth2 info if user exists but doesn't have it
             if (user.getOauth2Provider() == null) {
+                logger.info("Updating OAuth2 info for existing user: {}", finalEmail);
                 user.setOauth2Provider(provider);
                 user.setOauth2ProviderId(finalProviderId);
                 if (finalName != null) user.setName(finalName);
@@ -158,12 +115,14 @@ public class AuthController {
                 user = userRepository.save(user);
             }
             
+            logger.info("OAuth2 login successful for user: {}", user.getEmail());
             // Redirect to frontend - session is automatically created by Spring Security
             String frontendUrl = System.getenv("FRONTEND_URL") != null ? 
                     System.getenv("FRONTEND_URL") : "http://localhost:3000";
             response.sendRedirect(frontendUrl + "/oauth2/callback?userId=" + user.getId() + 
                     "&email=" + java.net.URLEncoder.encode(user.getEmail(), "UTF-8"));
         } catch (Exception e) {
+            logger.error("OAuth2 error: ", e);
             String frontendUrl = System.getenv("FRONTEND_URL") != null ? 
                     System.getenv("FRONTEND_URL") : "http://localhost:3000";
             response.sendRedirect(frontendUrl + "/login?error=oauth2_failed");

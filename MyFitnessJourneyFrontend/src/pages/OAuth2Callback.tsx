@@ -20,7 +20,7 @@ const OAuth2Callback: React.FC = () => {
     if (userId && email) {
       // OAuth2 login successful, session is automatically created
       // Redirect to dashboard
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } else {
       // Missing parameters, redirect to login
       navigate('/login?error=oauth2_failed');
