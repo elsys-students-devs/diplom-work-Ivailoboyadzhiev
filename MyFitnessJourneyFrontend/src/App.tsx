@@ -1,12 +1,29 @@
-import React from 'react'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import OAuth2Callback from './pages/OAuth2Callback';
+import './App.css';
 
 const App: React.FC = () => {
   return (
-    <div style={{textAlign: 'center', padding: '2rem'}}>
-      <h1>Welcome to MyFitnessJourney (Vite + React + TypeScript)</h1>
-      <p>Frontend is running successfully 🚀</p>
-    </div>
-  )
-}
+    <Router>
+      <div className="app">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/dashboard" element={
+            <div style={{textAlign: 'center', padding: '2rem'}}>
+              <h1>Dashboard</h1>
+              <p>Welcome to your fitness journey! </p>
+            </div>
+          } />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
-export default App
+export default App;
