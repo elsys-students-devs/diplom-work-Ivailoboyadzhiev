@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Register from './pages/Register';
 import OAuth2Callback from './pages/OAuth2Callback';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
 const App: React.FC = () => {
@@ -14,12 +16,14 @@ const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/oauth2/callback" element={<OAuth2Callback />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/dashboard" element={
-            <div style={{textAlign: 'center', padding: '2rem'}}>
-              <h1>Dashboard</h1>
-              <p>Welcome to your fitness journey! </p>
-            </div>
-          } />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </div>
     </Router>
