@@ -4,10 +4,12 @@ import { register, loginWithGoogle, loginWithFacebook } from '../services/authSe
 import './Register.css';
 
 const Register: React.FC = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
@@ -15,6 +17,29 @@ const Register: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const validateUsername = (username: string): boolean => {
+    if (!username) {
+      setUsernameError('Username is required');
+      return false;
+    }
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length < 3) {
+      setUsernameError('Username must be at least 3 characters long');
+      return false;
+    }
+    if (trimmedUsername.length > 20) {
+      setUsernameError('Username must be less than 20 characters');
+      return false;
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(trimmedUsername)) {
+      setUsernameError('Username can only contain letters, numbers, and underscores');
+      return false;
+    }
+    setUsernameError('');
+    return true;
+  };
 
   const validateEmail = (email: string): boolean => {
     if (!email) {
@@ -67,22 +92,24 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setUsernameError('');
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
 
+    const isUsernameValid = validateUsername(username);
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
     const isConfirmPasswordValid = validateConfirmPassword(confirmPassword, password);
 
-    if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
+    if (!isUsernameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
       return;
     }
 
     setLoading(true);
 
     try {
-      await register(email, password);
+      await register(email, password, username.trim());
       // Session is automatically handled by cookies
       // Navigate to dashboard after successful registration
       navigate('/dashboard', { replace: true });
@@ -103,6 +130,28 @@ const Register: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="register-form">
           {error && <div className="error-message">{error}</div>}
+
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                if (usernameError) setUsernameError('');
+              }}
+              onBlur={() => validateUsername(username)}
+              placeholder="Enter your username (3-20 characters)"
+              autoComplete="username"
+              required
+              minLength={3}
+              maxLength={20}
+              disabled={loading}
+              className={usernameError ? 'error' : ''}
+            />
+            {usernameError && <span className="field-error">{usernameError}</span>}
+          </div>
 
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
