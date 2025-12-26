@@ -1,0 +1,438 @@
+.diets-container {
+  min-height: 100vh;
+  background-image: url('/background3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+/* Hamburger Menu Button */
+.hamburger-menu-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: rgba(195, 82, 20, 0.8);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hamburger-menu-btn:hover {
+  background: rgba(195, 82, 20, 1);
+  transform: scale(1.05);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: fixed;
+  top: 4.5rem;
+  left: 1rem;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  min-width: 200px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.dropdown-menu-item {
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+  font-weight: 500;
+}
+
+.dropdown-menu-item:hover {
+  background-color: rgba(255, 87, 34, 0.1);
+}
+
+.dropdown-menu-item:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.dropdown-menu-item:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.diets-header {
+  position: relative;
+  padding: 6rem 2rem 2rem;
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.diets-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.diets-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Content */
+.diets-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Diets Grid */
+.diets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.diet-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.diet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.diet-card-header {
+  margin-bottom: 1rem;
+}
+
+.diet-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.diet-card-body {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.diet-card-description {
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+}
+
+.diet-card-benefits {
+  background: rgba(255, 87, 34, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.diet-card-benefits strong {
+  color: #FF5722;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.diet-card-benefits p {
+  color: #555;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.diet-card-meals-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #FF5722;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.diet-card-footer {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  margin-top: auto;
+}
+
+.view-details {
+  color: #FF5722;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Meals View */
+.meals-view {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.back-to-diets {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-to-diets:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(-5px);
+}
+
+.selected-diet-info {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.selected-diet-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 1rem 0;
+}
+
+.selected-diet-description {
+  color: #666;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin: 0 0 1rem 0;
+}
+
+.selected-diet-benefits {
+  background: rgba(255, 87, 34, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.selected-diet-benefits strong {
+  color: #FF5722;
+}
+
+/* Meals Grid */
+.meals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.meal-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.meal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.meal-card-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.log-meal-button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: #FF5722;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.log-meal-button:hover:not(:disabled) {
+  background: #E64A19;
+  transform: translateY(-2px);
+}
+
+.log-meal-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.log-meal-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.meal-card-header {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #FF5722;
+  padding-bottom: 0.75rem;
+}
+
+.meal-card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.meal-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meal-card-description {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.meal-macros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.macro-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: rgba(255, 87, 34, 0.05);
+  border-radius: 8px;
+}
+
+.macro-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.macro-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FF5722;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .diets-header {
+    padding: 5rem 1rem 1.5rem;
+  }
+
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .diets-title {
+    font-size: 2rem;
+  }
+
+  .diets-content {
+    padding: 1rem;
+  }
+
+  .diets-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .meals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-macros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

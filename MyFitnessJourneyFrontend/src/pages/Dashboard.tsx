@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
+import { createMeal, CreateMealRequest } from '../services/dietService';
+import { logMeal } from '../services/mealLogService';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>('User');
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -11,6 +15,18 @@ const Dashboard: React.FC = () => {
   const [protein, setProtein] = useState<number>(0);
   const [carbs, setCarbs] = useState<number>(0);
   const [fat, setFat] = useState<number>(0);
+  const [showMealModal, setShowMealModal] = useState<boolean>(false);
+  const [mealForm, setMealForm] = useState<CreateMealRequest>({
+    name: '',
+    description: '',
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    fiber: 0,
+    sugar: 0
+  });
+  const [isCreating, setIsCreating] = useState<boolean>(false);
   
   // Target values (change this to target values from the workout plan)
   const targetCalories = 2000;
@@ -68,17 +84,43 @@ const Dashboard: React.FC = () => {
     };
   }, [menuOpen]);
 
-  // TODO: Replace this with actual data from API
-  // For testing: Uncomment the useEffect below to see circles fill up
+  // Fetch today's nutrition summary
+  const fetchNutritionSummary = async () => {
+    try {
+      const { getTodayNutritionSummary } = await import('../services/mealLogService');
+      const summary = await getTodayNutritionSummary();
+      setCalories(Math.round(summary.totalCalories || 0));
+      setProtein(Math.round(summary.totalProtein || 0));
+      setCarbs(Math.round(summary.totalCarbs || 0));
+      setFat(Math.round(summary.totalFat || 0));
+    } catch (error) {
+      console.error('Failed to fetch nutrition summary:', error);
+    }
+  };
+
   useEffect(() => {
-     const interval = setInterval(() => {
-          setCalories(prev => Math.min(prev + 50, targetCalories));
-          setProtein(prev => Math.min(prev + 5, targetProtein));
-          setCarbs(prev => Math.min(prev + 10, targetCarbs));
-       setFat(prev => Math.min(prev + 2, targetFat));
-     }, 1000);
-     return () => clearInterval(interval);
-   }, [targetCalories, targetProtein, targetCarbs, targetFat]);
+    fetchNutritionSummary();
+    
+    // Refresh nutrition summary when page becomes visible (user returns from diets page)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchNutritionSummary();
+      }
+    };
+    
+    // Refresh when window gets focus (user switches back to tab)
+    const handleFocus = () => {
+      fetchNutritionSummary();
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -164,7 +206,7 @@ const Dashboard: React.FC = () => {
         <div className="nutrition-section">
           <div className="nutrition-header">
             <h2 className="nutrition-title">Today's Nutrition</h2>
-            <button className="log-meal-btn">Log Meal</button>
+            <button className="log-meal-btn" onClick={() => setShowMealModal(true)}>Log Meal</button>
           </div>
           <div className="nutrition-circles">
             <div className="nutrition-circle">
@@ -212,7 +254,7 @@ const Dashboard: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="action-buttons">
-          <button className="action-button diet-plans">
+          <button className="action-button diet-plans" onClick={() => navigate('/diets')}>
             <div className="button-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6zM3 6h18M8 10v4M12 10v4M16 10v4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -258,8 +300,137 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Create Meal Modal */}
+      {showMealModal && (
+        <div className="modal-overlay" onClick={() => setShowMealModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Създай ново ястие</h2>
+              <button className="modal-close" onClick={() => setShowMealModal(false)}>×</button>
+            </div>
+            <form className="meal-form" onSubmit={handleCreateMeal}>
+              <div className="form-group">
+                <label>Име на ястието *</label>
+                <input
+                  type="text"
+                  value={mealForm.name}
+                  onChange={(e) => setMealForm({...mealForm, name: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Описание</label>
+                <textarea
+                  value={mealForm.description}
+                  onChange={(e) => setMealForm({...mealForm, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              <div className="macros-grid">
+                <div className="form-group">
+                  <label>Калории *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.calories || ''}
+                    onChange={(e) => setMealForm({...mealForm, calories: parseFloat(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Протеин (g) *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.protein || ''}
+                    onChange={(e) => setMealForm({...mealForm, protein: parseFloat(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Въглехидрати (g) *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.carbs || ''}
+                    onChange={(e) => setMealForm({...mealForm, carbs: parseFloat(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Мазнини (g) *</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.fat || ''}
+                    onChange={(e) => setMealForm({...mealForm, fat: parseFloat(e.target.value) || 0})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Фибри (g)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.fiber || ''}
+                    onChange={(e) => setMealForm({...mealForm, fiber: parseFloat(e.target.value) || 0})}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Захар (g)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={mealForm.sugar || ''}
+                    onChange={(e) => setMealForm({...mealForm, sugar: parseFloat(e.target.value) || 0})}
+                  />
+                </div>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => setShowMealModal(false)}>
+                  Отказ
+                </button>
+                <button type="submit" className="btn-submit" disabled={isCreating}>
+                  {isCreating ? 'Създаване...' : 'Създай и логни'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+  async function handleCreateMeal(e: React.FormEvent) {
+    e.preventDefault();
+    setIsCreating(true);
+    try {
+      // Create the meal
+      const createdMeal = await createMeal(mealForm);
+      
+      // Log the meal
+      await logMeal(createdMeal.id);
+      
+      // Refresh nutrition summary
+      await fetchNutritionSummary();
+      
+      // Close modal and navigate to diets page showing User Favorites
+      setShowMealModal(false);
+      navigate('/diets?diet=User Favorites');
+    } catch (error) {
+      console.error('Failed to create meal:', error);
+      alert('Грешка при създаване на ястието. Моля опитайте отново.');
+    } finally {
+      setIsCreating(false);
+    }
+  }
 };
 
 export default Dashboard;
