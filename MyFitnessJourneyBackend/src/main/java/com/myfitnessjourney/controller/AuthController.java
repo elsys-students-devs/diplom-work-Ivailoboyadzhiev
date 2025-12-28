@@ -9,8 +9,16 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -30,17 +41,79 @@ public class AuthController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse.UserDto userDto = userService.login(request.getEmail(), request.getPassword());
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, 
+                                                HttpServletRequest httpRequest,
+                                                HttpServletResponse httpResponse) {
+        // Authenticate user - this validates credentials
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        
+        //authentication in SecurityContext
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
+        
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        LoginResponse.UserDto userDto = new LoginResponse.UserDto(
+                user.getId(), 
+                user.getEmail(), 
+                user.getUsername(), 
+                user.getName()
+        );
+        
+        logger.info("Login successful for user: {}, session created", request.getEmail());
+        
         return ResponseEntity.ok(new LoginResponse(null, userDto, "Login successful"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(@RequestBody LoginRequest request) {
-        LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword());
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody LoginRequest request,
+                                                 HttpServletRequest httpRequest,
+                                                 HttpServletResponse httpResponse) {
+        LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword(), request.getUsername());
+        
+        // Authenticate the newly registered user
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        
+        // Set authentication in SecurityContext
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        // Save security context to session
+        securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
+        
+        logger.info("Registration and auto-login successful for user: {}", request.getEmail());
+        
         return ResponseEntity.ok(new LoginResponse(null, userDto, "Registration successful"));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<LoginResponse.UserDto> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        // Get user from UserDetails instead of querying by email
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        return ResponseEntity.ok(new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName()));
     }
 
     @GetMapping("/oauth2/success")

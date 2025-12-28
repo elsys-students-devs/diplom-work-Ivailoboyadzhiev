@@ -1,11 +1,13 @@
 package com.myfitnessjourney.util;
 
 import com.myfitnessjourney.exception.InvalidEmailException;
+import com.myfitnessjourney.exception.InvalidUsernameException;
 import com.myfitnessjourney.exception.WeakPasswordException;
 
 public class ValidationUtil {
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+    private static final String USERNAME_REGEX = "^[a-zA-Z0-9_]{3,20}$";
 
     public static void validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
@@ -34,6 +36,22 @@ public class ValidationUtil {
         boolean hasNumber = password.matches(".*[0-9].*");
         if (!hasLetter || !hasNumber) {
             throw new WeakPasswordException("Password must contain at least one letter and one number");
+        }
+    }
+
+    public static void validateUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new InvalidUsernameException("Username is required");
+        }
+        String trimmedUsername = username.trim();
+        if (trimmedUsername.length() < 3) {
+            throw new InvalidUsernameException("Username must be at least 3 characters long");
+        }
+        if (trimmedUsername.length() > 20) {
+            throw new InvalidUsernameException("Username must be less than 20 characters");
+        }
+        if (!trimmedUsername.matches(USERNAME_REGEX)) {
+            throw new InvalidUsernameException("Username can only contain letters, numbers, and underscores");
         }
     }
 }

@@ -4,6 +4,7 @@ import com.myfitnessjourney.dto.LoginResponse;
 import com.myfitnessjourney.entity.User;
 import com.myfitnessjourney.exception.EmailAlreadyExistsException;
 import com.myfitnessjourney.exception.InvalidLoginException;
+import com.myfitnessjourney.exception.UsernameAlreadyExistsException;
 import com.myfitnessjourney.repository.UserRepository;
 import com.myfitnessjourney.util.ValidationUtil;
 import lombok.AllArgsConstructor;
@@ -65,11 +66,11 @@ public class UserService {
                 });
 
         logger.info("Login successful for user: {}", user.getEmail());
-        return new LoginResponse.UserDto(user.getId(), user.getEmail());
+        return new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName());
     }
 
-    public LoginResponse.UserDto register(String email, String password) {
-        logger.info("Registration attempt for email: {}", email);
+    public LoginResponse.UserDto register(String email, String password, String username) {
+        logger.info("Registration attempt for email: {}, username: {}", email, username);
 
         // Validate email format
         ValidationUtil.validateEmail(email);
@@ -77,20 +78,30 @@ public class UserService {
         // Validate password strength
         ValidationUtil.validatePassword(password);
 
+        // Validate username
+        ValidationUtil.validateUsername(username);
+
         // Check if email already exists
         if (userRepository.existsByEmail(email)) {
             logger.warn("Registration failed: Email already exists: {}", email);
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
+        // Check if username already exists
+        if (userRepository.existsByUsername(username)) {
+            logger.warn("Registration failed: Username already exists: {}", username);
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
         // Create new user
         User user = new User();
         user.setEmail(email);
+        user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user = userRepository.save(user);
 
-        logger.info("Registration successful for user: {}", user.getEmail());
-        return new LoginResponse.UserDto(user.getId(), user.getEmail());
+        logger.info("Registration successful for user: {} with username: {}", user.getEmail(), user.getUsername());
+        return new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName());
     }
 }
 
