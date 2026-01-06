@@ -47,7 +47,7 @@ export interface CreateMealRequest {
 }
 
 export const createMeal = async (request: CreateMealRequest): Promise<MealDto> => {
-  const response = await api.post<MealDto>('/diets/meals/create', request);
+  const response = await api.post<MealDto>('/diets/meals', request);
   return response.data;
 };
 

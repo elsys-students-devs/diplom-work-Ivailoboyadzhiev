@@ -22,7 +22,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <createIndex indexName="idx_user_logged_date" tableName="user_logged_meals">
+        <createIndex indexName="idx_user_id_logged_date" tableName="user_logged_meals">
             <column name="user_id"/>
             <column name="logged_date"/>
         </createIndex>

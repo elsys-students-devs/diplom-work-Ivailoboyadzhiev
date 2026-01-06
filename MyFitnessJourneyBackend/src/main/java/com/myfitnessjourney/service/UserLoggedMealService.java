@@ -3,6 +3,8 @@ package com.myfitnessjourney.service;
 import com.myfitnessjourney.entity.Meal;
 import com.myfitnessjourney.entity.User;
 import com.myfitnessjourney.entity.UserLoggedMeal;
+import com.myfitnessjourney.exception.MealNotFoundException;
+import com.myfitnessjourney.exception.UserNotFoundException;
 import com.myfitnessjourney.repository.MealRepository;
 import com.myfitnessjourney.repository.UserLoggedMealRepository;
 import com.myfitnessjourney.repository.UserRepository;
@@ -11,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -25,16 +25,16 @@ public class UserLoggedMealService {
     @Transactional
     public UserLoggedMeal logMeal(Long userId, Long mealId, LocalDate date) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(userId));
         
         Meal meal = mealRepository.findById(mealId)
-                .orElseThrow(() -> new RuntimeException("Meal not found"));
+                .orElseThrow(() -> new MealNotFoundException(mealId));
 
-        UserLoggedMeal loggedMeal = new UserLoggedMeal();
-        loggedMeal.setUser(user);
-        loggedMeal.setMeal(meal);
-        loggedMeal.setLoggedDate(date != null ? date : LocalDate.now());
-        loggedMeal.setCreatedAt(LocalDateTime.now());
+        UserLoggedMeal loggedMeal = UserLoggedMeal.builder()
+                .user(user)
+                .meal(meal)
+                .loggedDate(date != null ? date : LocalDate.now())
+                .build();
 
         return userLoggedMealRepository.save(loggedMeal);
     }
