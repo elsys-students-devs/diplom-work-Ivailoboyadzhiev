@@ -103,5 +103,13 @@ public class UserService {
         logger.info("Registration successful for user: {} with username: {}", user.getEmail(), user.getUsername());
         return new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName());
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    logger.warn("User not found with email: {}", email);
+                    return new com.myfitnessjourney.exception.UserNotFoundException("User not found with email: " + email);
+                });
+    }
 }
 

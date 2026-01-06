@@ -2,11 +2,8 @@ package com.myfitnessjourney.controller;
 
 import com.myfitnessjourney.dto.LogMealRequest;
 import com.myfitnessjourney.dto.NutritionSummaryDto;
-import com.myfitnessjourney.entity.Meal;
-import com.myfitnessjourney.entity.User;
-import com.myfitnessjourney.entity.UserLoggedMeal;
-import com.myfitnessjourney.repository.UserRepository;
 import com.myfitnessjourney.service.UserLoggedMealService;
+import com.myfitnessjourney.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/meals")
@@ -28,7 +24,7 @@ import java.util.List;
 public class MealLogController {
 
     private final UserLoggedMealService userLoggedMealService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @PostMapping("/log")
     public ResponseEntity<?> logMeal(@RequestBody LogMealRequest request) {
@@ -38,11 +34,10 @@ public class MealLogController {
         }
 
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long userId = userService.getUserByEmail(email).getId();
 
-        UserLoggedMeal loggedMeal = userLoggedMealService.logMeal(
-                user.getId(),
+        userLoggedMealService.logMeal(
+                userId,
                 request.getMealId(),
                 request.getDate() != null ? request.getDate() : LocalDate.now()
         );
@@ -58,32 +53,9 @@ public class MealLogController {
         }
 
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long userId = userService.getUserByEmail(email).getId();
 
-        List<UserLoggedMeal> todayMeals = userLoggedMealService.getTodayMeals(user.getId());
-
-        double totalCalories = 0.0;
-        double totalProtein = 0.0;
-        double totalCarbs = 0.0;
-        double totalFat = 0.0;
-
-        for (UserLoggedMeal loggedMeal : todayMeals) {
-            Meal meal = loggedMeal.getMeal();
-            if (meal != null) {
-                totalCalories += meal.getCalories() != null ? meal.getCalories() : 0.0;
-                totalProtein += meal.getProtein() != null ? meal.getProtein() : 0.0;
-                totalCarbs += meal.getCarbs() != null ? meal.getCarbs() : 0.0;
-                totalFat += meal.getFat() != null ? meal.getFat() : 0.0;
-            }
-        }
-
-        NutritionSummaryDto summary = new NutritionSummaryDto(
-                totalCalories,
-                totalProtein,
-                totalCarbs,
-                totalFat
-        );
+        NutritionSummaryDto summary = userLoggedMealService.getTodayNutritionSummary(userId);
 
         return ResponseEntity.ok(summary);
     }

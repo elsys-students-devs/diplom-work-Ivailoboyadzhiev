@@ -3,8 +3,10 @@ package com.myfitnessjourney.controller;
 import com.myfitnessjourney.dto.LoginRequest;
 import com.myfitnessjourney.dto.LoginResponse;
 import com.myfitnessjourney.entity.User;
+import com.myfitnessjourney.exception.UserNotFoundException;
 import com.myfitnessjourney.repository.UserRepository;
 import com.myfitnessjourney.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,65 +48,55 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, 
                                                 HttpServletRequest httpRequest,
                                                 HttpServletResponse httpResponse) {
-        try {
-            // Authenticate user - this validates credentials
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
-            
-            //authentication in SecurityContext
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(authentication);
-            SecurityContextHolder.setContext(securityContext);
-            
-            securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
-            
-            User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            
-            LoginResponse.UserDto userDto = new LoginResponse.UserDto(
-                    user.getId(), 
-                    user.getEmail(), 
-                    user.getUsername(), 
-                    user.getName()
-            );
-            
-            logger.info("Login successful for user: {}, session created", request.getEmail());
-            
-            return ResponseEntity.ok(new LoginResponse(null, userDto, "Login successful"));
-        } catch (Exception e) {
-            logger.error("Login failed for email: {}", request.getEmail(), e);
-            throw e;
-        }
+        // Authenticate user - this validates credentials
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        
+        //authentication in SecurityContext
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
+        
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
+        
+        LoginResponse.UserDto userDto = new LoginResponse.UserDto(
+                user.getId(), 
+                user.getEmail(), 
+                user.getUsername(), 
+                user.getName()
+        );
+        
+        logger.info("Login successful for user: {}, session created", request.getEmail());
+        
+        return ResponseEntity.ok(new LoginResponse(null, userDto, "Login successful"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(@RequestBody LoginRequest request,
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody LoginRequest request,
                                                  HttpServletRequest httpRequest,
                                                  HttpServletResponse httpResponse) {
-        try {
-            LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword(), request.getUsername());
-            
-            // Authenticate the newly registered user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
-            
-            // Set authentication in SecurityContext
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(authentication);
-            SecurityContextHolder.setContext(securityContext);
-            
-            // Save security context to session
-            securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
-            
-            logger.info("Registration and auto-login successful for user: {}", request.getEmail());
-            
-            return ResponseEntity.ok(new LoginResponse(null, userDto, "Registration successful"));
-        } catch (Exception e) {
-            logger.error("Registration failed for email: {}", request.getEmail(), e);
-            throw e;
-        }
+        LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword(), request.getUsername());
+        
+        // Authenticate the newly registered user
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+        
+        // Set authentication in SecurityContext
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        
+        // Save security context to session
+        securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
+        
+        logger.info("Registration and auto-login successful for user: {}", request.getEmail());
+        
+        return ResponseEntity.ok(new LoginResponse(null, userDto, "Registration successful"));
     }
 
     @GetMapping("/me")
@@ -116,7 +108,7 @@ public class AuthController {
         
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         
         return ResponseEntity.ok(new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName()));
     }

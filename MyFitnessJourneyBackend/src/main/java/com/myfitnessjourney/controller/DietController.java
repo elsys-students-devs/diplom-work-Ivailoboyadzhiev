@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class DietController {
     }
 
     @PostMapping("/meals")
-    public ResponseEntity<MealDto> createMeal(@RequestBody CreateMealRequest request) {
+    public ResponseEntity<MealDto> createMeal(@Valid @RequestBody CreateMealRequest request) { 
         Meal savedMeal = mealService.createMeal(request);
         MealDto mealDto = mealMapper.toDto(savedMeal);
         return ResponseEntity.ok(mealDto);

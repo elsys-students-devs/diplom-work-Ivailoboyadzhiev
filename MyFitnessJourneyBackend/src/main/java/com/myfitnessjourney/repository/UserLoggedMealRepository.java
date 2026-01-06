@@ -14,6 +14,6 @@ public interface UserLoggedMealRepository extends JpaRepository<UserLoggedMeal, 
     List<UserLoggedMeal> findByUserIdAndLoggedDate(Long userId, LocalDate date);
     
     @Query("SELECT ulm FROM UserLoggedMeal ulm JOIN FETCH ulm.meal WHERE ulm.user.id = :userId AND ulm.loggedDate = :date")
-    List<UserLoggedMeal> findTodayMealsByUserId(@Param("userId") Long userId, @Param("date") LocalDate date);
+    List<UserLoggedMeal> findMealsByUserIdAndDate(@Param("userId") Long userId, @Param("date") LocalDate date);
 }
 
