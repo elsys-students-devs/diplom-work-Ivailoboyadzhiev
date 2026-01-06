@@ -10,6 +10,7 @@ const Diets: React.FC = () => {
   const [selectedDiet, setSelectedDiet] = useState<DietDto | null>(null);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [loggingMeal, setLoggingMeal] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -120,47 +121,84 @@ const Diets: React.FC = () => {
         </button>
         <h1 className="diets-title">Диети и Хранителни Планове</h1>
         <p className="diets-subtitle">Изберете диета, която отговаря на вашите цели</p>
+        
+        {/* Search Bar */}
+        <div className="search-container">
+          <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input
+            type="text"
+            className="search-input"
+            placeholder={selectedDiet ? "Търси ястие..." : "Търси диета..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="search-clear" onClick={() => setSearchQuery('')}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Main Content */}
       <div className="diets-content">
         {!selectedDiet ? (
           /* Diet Cards Grid */
-          <div className="diets-grid">
-            {diets.map((diet) => (
-              <div 
-                key={diet.id} 
-                className="diet-card"
-                onClick={() => setSelectedDiet(diet)}
-              >
-                <div className="diet-card-header">
-                  <h2 className="diet-card-title">{diet.name}</h2>
-                </div>
-                <div className="diet-card-body">
-                  <p className="diet-card-description">{diet.description}</p>
-                  {diet.benefits && (
-                    <div className="diet-card-benefits">
-                      <strong>Предимства:</strong>
-                      <p>{diet.benefits}</p>
+          diets.filter(diet => 
+            diet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            diet.description.toLowerCase().includes(searchQuery.toLowerCase())
+          ).length === 0 && searchQuery ? (
+            <div className="no-results">
+              <p>Няма намерени диети за "{searchQuery}"</p>
+            </div>
+          ) : (
+            <div className="diets-grid">
+              {diets
+                .filter(diet => 
+                  diet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  diet.description.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((diet) => (
+                  <div 
+                    key={diet.id} 
+                    className="diet-card"
+                    onClick={() => setSelectedDiet(diet)}
+                  >
+                    <div className="diet-card-header">
+                      <h2 className="diet-card-title">{diet.name}</h2>
                     </div>
-                  )}
-                  <div className="diet-card-meals-count">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6zM3 6h18M8 10v4M12 10v4M16 10v4"/>
-                    </svg>
-                    <span>{diet.meals?.length || 0} ястия</span>
+                    <div className="diet-card-body">
+                      <p className="diet-card-description">{diet.description}</p>
+                      {diet.benefits && (
+                        <div className="diet-card-benefits">
+                          <strong>Предимства:</strong>
+                          <p>{diet.benefits}</p>
+                        </div>
+                      )}
+                      <div className="diet-card-meals-count">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6zM3 6h18M8 10v4M12 10v4M16 10v4"/>
+                        </svg>
+                        <span>{diet.meals?.length || 0} ястия</span>
+                      </div>
+                    </div>
+                    <div className="diet-card-footer">
+                      <span className="view-details">Виж детайли →</span>
+                    </div>
                   </div>
-                </div>
-                <div className="diet-card-footer">
-                  <span className="view-details">Виж детайли →</span>
-                </div>
-              </div>
-            ))}
-          </div>
+                ))}
+            </div>
+          )
         ) : (
           /* Meal Details View */
           <div className="meals-view">
-            <button className="back-to-diets" onClick={() => setSelectedDiet(null)}>
+            <button className="back-to-diets" onClick={() => { setSelectedDiet(null); setSearchQuery(''); }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
               </svg>
@@ -175,8 +213,21 @@ const Diets: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="meals-grid">
-              {selectedDiet.meals?.map((meal) => (
+            {selectedDiet.meals?.filter(meal =>
+              meal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              (meal.description && meal.description.toLowerCase().includes(searchQuery.toLowerCase()))
+            ).length === 0 && searchQuery ? (
+              <div className="no-results">
+                <p>Няма намерени ястия за "{searchQuery}"</p>
+              </div>
+            ) : (
+              <div className="meals-grid">
+                {selectedDiet.meals
+                  ?.filter(meal =>
+                    meal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (meal.description && meal.description.toLowerCase().includes(searchQuery.toLowerCase()))
+                  )
+                  .map((meal) => (
                 <div key={meal.id} className="meal-card">
                   <div className="meal-card-header">
                     <h3 className="meal-card-title">{meal.name}</h3>
@@ -226,8 +277,9 @@ const Diets: React.FC = () => {
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
+                  ))}
+              </div>
+            )}
           </div>
         )}
       </div>
