@@ -1,5 +1,5 @@
 import React from 'react';
-import { DietDto } from '../../services/dietService';
+import { DietDto } from '../../../services/dietService';
 import './DietCard.css';
 
 interface DietCardProps {

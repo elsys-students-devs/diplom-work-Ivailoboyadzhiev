@@ -1,6 +1,6 @@
 import React from 'react';
-import { MealDto } from '../../services/dietService';
-import { MealCard } from './MealCard';
+import { MealDto } from '../../../services/dietService';
+import { MealCard } from '../MealCard';
 import './MealsGrid.css';
 
 interface MealsGridProps {

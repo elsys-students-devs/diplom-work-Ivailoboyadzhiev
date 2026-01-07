@@ -1,0 +1,2 @@
+export { DietGrid } from './DietGrid';
+

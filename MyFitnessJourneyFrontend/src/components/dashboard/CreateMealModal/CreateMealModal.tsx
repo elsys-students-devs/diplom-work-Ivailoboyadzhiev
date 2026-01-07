@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreateMealRequest } from '../../services/dietService';
+import { CreateMealRequest } from '../../../services/dietService';
 import './CreateMealModal.css';
 
 interface CreateMealModalProps {

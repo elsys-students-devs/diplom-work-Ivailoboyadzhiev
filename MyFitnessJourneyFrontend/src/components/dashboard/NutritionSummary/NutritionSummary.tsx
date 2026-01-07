@@ -1,5 +1,5 @@
 import React from 'react';
-import { NutritionCircle } from './NutritionCircle';
+import { NutritionCircle } from '../NutritionCircle';
 import './NutritionSummary.css';
 
 interface NutritionSummaryProps {
