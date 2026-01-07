@@ -5,9 +5,10 @@ import com.myfitnessjourney.dto.NutritionSummaryDto;
 import com.myfitnessjourney.service.UserLoggedMealService;
 import com.myfitnessjourney.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +28,15 @@ public class MealLogController {
     private final UserService userService;
 
     @PostMapping("/log")
-    public ResponseEntity<?> logMeal(@RequestBody LogMealRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> logMeal(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody LogMealRequest request
+    ) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String email = authentication.getName();
+        String email = userDetails.getUsername();
         Long userId = userService.getUserByEmail(email).getId();
 
         userLoggedMealService.logMeal(
@@ -46,13 +49,14 @@ public class MealLogController {
     }
 
     @GetMapping("/today/summary")
-    public ResponseEntity<NutritionSummaryDto> getTodayNutritionSummary() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<NutritionSummaryDto> getTodayNutritionSummary(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String email = authentication.getName();
+        String email = userDetails.getUsername();
         Long userId = userService.getUserByEmail(email).getId();
 
         NutritionSummaryDto summary = userLoggedMealService.getTodayNutritionSummary(userId);
