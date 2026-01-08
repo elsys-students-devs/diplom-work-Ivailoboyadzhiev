@@ -3,8 +3,10 @@ package com.myfitnessjourney.controller;
 import com.myfitnessjourney.dto.LoginRequest;
 import com.myfitnessjourney.dto.LoginResponse;
 import com.myfitnessjourney.entity.User;
+import com.myfitnessjourney.exception.UserNotFoundException;
 import com.myfitnessjourney.repository.UserRepository;
 import com.myfitnessjourney.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,7 @@ public class AuthController {
         securityContextRepository.saveContext(securityContext, httpRequest, httpResponse);
         
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
         
         LoginResponse.UserDto userDto = new LoginResponse.UserDto(
                 user.getId(), 
@@ -111,7 +113,7 @@ public class AuthController {
         String email = userDetails.getUsername();
         
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         
         return ResponseEntity.ok(new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName()));
     }

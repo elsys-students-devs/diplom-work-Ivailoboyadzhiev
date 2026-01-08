@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="002-create-diets-table" author="ivo">
+        <createTable tableName="diets">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benefits" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003-create-meals-table" author="ivo">
+        <createTable tableName="meals">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="calories" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="protein" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="carbs" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fat" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fiber" type="DOUBLE PRECISION">
+                <constraints nullable="true"/>
+            </column>
+            <column name="sugar" type="DOUBLE PRECISION">
+                <constraints nullable="true"/>
+            </column>
+            <column name="diet_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_meal_diet" references="diets(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Insert Diets -->
+    <changeSet id="004-insert-diets" author="ivo">
+        <insert tableName="diets">
+            <column name="name" value="Средиземноморска диета"/>
+            <column name="description" value="Средиземноморската диета е базирана на традиционната храна на страните около Средиземно море. Тя включва много зеленчуци, плодове, зърнени храни, риба и маслиново масло, и ограничено количество червено месо и захар."/>
+            <column name="benefits" value="Намалява риска от сърдечно-съдови заболявания, подобрява мозъчната функция и подпомага здравословното отслабване."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="Кето диета"/>
+            <column name="description" value="Кето диетата е високомазнинна и много нисковъглехидратна диета, която принуждава тялото да използва мазнини за енергия вместо въглехидрати. Тя включва месо, риба, яйца, зеленчуци с ниско съдържание на въглехидрати и здравословни мазнини."/>
+            <column name="benefits" value="Бързо отслабване, подобрена ментална яснота, намаляване на апетита и стабилизиране на кръвната захар."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="Веганска диета"/>
+            <column name="description" value="Веганската диета изключва всички продукти от животински произход, включително месо, риба, яйца, млечни продукти и мед. Фокусът е върху плодове, зеленчуци, зърнени храни, бобови култури, ядки и семена."/>
+            <column name="benefits" value="Намалява риска от хронични заболявания, подобрява здравето на сърцето, подпомага отслабването и е по-екологично устойчива."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="Палео диета"/>
+            <column name="description" value="Палео диетата имитира храната на нашите прадеди от каменната ера. Тя включва месо, риба, яйца, плодове, зеленчуци, ядки и семена, но изключва зърнени храни, бобови култури, млечни продукти и обработена храна."/>
+            <column name="benefits" value="Подобрява енергията, намалява възпаленията, подпомага отслабването и подобрява храносмилането."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="Интермитентно гладуване (IF)"/>
+            <column name="description" value="Интермитентното гладуване не е диета в традиционния смисъл, а модел на хранене, който редува периоди на хранене и гладуване. Най-популярните форми са 16:8 (16 часа гладуване, 8 часа прозорец за хранене) и 5:2 (5 дни нормално хранене, 2 дни ограничени калории)."/>
+            <column name="benefits" value="Подпомага отслабването, подобрява метаболизма, намалява възпаленията и може да подобри дълголетието."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="DASH диета"/>
+            <column name="description" value="DASH (Dietary Approaches to Stop Hypertension) диетата е специално създадена за намаляване на кръвното налягане. Тя включва много плодове, зеленчуци, нискомасни млечни продукти, зърнени храни, риба, птица и ядки, и ограничава натрия, захар и червено месо."/>
+            <column name="benefits" value="Ефективно намалява кръвното налягане, подобрява здравето на сърцето и подпомага здравословното отслабване."/>
+        </insert>
+        <insert tableName="diets">
+            <column name="name" value="User Favorites"/>
+            <column name="description" value="Вашите любими ястия, които сте създали. Добавете персонализирани ястия с вашите собствени макроси."/>
+            <column name="benefits" value="Персонализирана диета с ястия, които отговарят на вашите вкусове и цели."/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert Meals for Средиземноморска диета -->
+    <changeSet id="005-insert-mediterranean-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Гръцка салата с фета', 'Пресни домати, краставици, маслини, лук и сирене фета с маслиново масло', 320, 12, 15, 24, 4, 8, 1),
+            ('Печена сьомга с лимони', 'Сьомга с лимонов сок, мащерка и маслиново масло', 450, 35, 2, 32, 0, 1, 1),
+            ('Киноа с зеленчуци', 'Киноа с печени чушки, патладжани и домати', 380, 14, 58, 10, 6, 4, 1),
+            ('Хумус с пълнозърнести крекери', 'Доматен хумус с пълнозърнести крекери', 280, 10, 35, 12, 8, 3, 1),
+            ('Гръцки йогурт с мед и ядки', 'Пълномаслен гръцки йогурт с мед и бадеми', 250, 15, 25, 10, 3, 20, 1);
+        </sql>
+    </changeSet>
+
+    <!-- Insert Meals for Кето диета -->
+    <changeSet id="006-insert-keto-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Яйца с бекон и авокадо', '3 яйца, 2 ленти бекон и половин авокадо', 520, 28, 4, 42, 7, 1, 2),
+            ('Пилешко с броколи и сирене', 'Пилешко филе с броколи и чедър сирене', 480, 45, 6, 32, 3, 2, 2),
+            ('Сьомга с спанак и масло', 'Печена сьомга със спанак и масло', 420, 38, 3, 28, 2, 1, 2),
+            ('Кето салата с майонеза', 'Зелена салата с пилешко, авокадо и домашна майонеза', 380, 30, 5, 28, 4, 2, 2),
+            ('Кето чизкейк', 'Чизкейк без захар с ядки', 320, 12, 8, 28, 4, 2, 2);
+        </sql>
+    </changeSet>
+
+    <!-- Insert Meals for Веганска диета -->
+    <changeSet id="007-insert-vegan-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Веганска овсяна каша', 'Овес с банани, ядки и веганско мляко', 350, 12, 55, 12, 8, 18, 3),
+            ('Червена леща с ориз', 'Леща с ориз и зеленчуци', 420, 18, 72, 6, 15, 4, 3),
+            ('Тофу с броколи', 'Печен тофу с броколи и соев сос', 380, 28, 25, 20, 6, 5, 3),
+            ('Веганска салата с киноа', 'Киноа с нут, домати, краставици и веганска дресинг', 340, 14, 52, 10, 9, 6, 3),
+            ('Вегански смути боул', 'Смути боул с банани, ягоди, чиа семена и кокосово мляко', 320, 8, 45, 12, 10, 28, 3);
+        </sql>
+    </changeSet>
+
+    <!-- Insert Meals for Палео диета -->
+    <changeSet id="008-insert-paleo-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Пилешко с батати', 'Печено пилешко с печени батати и зеленчуци', 480, 42, 35, 18, 6, 12, 4),
+            ('Сьомга с авокадо салата', 'Печена сьомга с авокадо, рукола и ядки', 450, 35, 12, 32, 8, 4, 4),
+            ('Яйца с авокадо и сланина', 'Яйца на очи с авокадо и палео сланина', 420, 24, 8, 32, 7, 2, 4),
+            ('Телешко с печени зеленчуци', 'Телешко филе с печени чушки и патладжани', 520, 48, 15, 28, 6, 8, 4),
+            ('Палмова салата с ядки', 'Палмова салата с орехи, бадеми и олио', 380, 12, 18, 32, 6, 6, 4);
+        </sql>
+    </changeSet>
+
+    <!-- Insert Meals for Интермитентно гладуване -->
+    <changeSet id="009-insert-if-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Голяма закуска с яйца', '3 яйца, бекон, авокадо и пълнозърнен хляб', 580, 32, 35, 35, 8, 4, 5),
+            ('Пилешко с ориз и зеленчуци', 'Пилешко филе с кафяв ориз и микс от зеленчуци', 520, 45, 55, 12, 6, 5, 5),
+            ('Сьомга с киноа', 'Печена сьомга с киноа и печени зеленчуци', 480, 38, 42, 18, 6, 3, 5),
+            ('Протеинов смути', 'Протеинов прах, банани, ядки и мляко', 420, 35, 38, 15, 5, 22, 5),
+            ('Салата с пилешко', 'Голяма салата с пилешко, авокадо и дресинг', 380, 35, 25, 18, 8, 6, 5);
+        </sql>
+    </changeSet>
+
+    <!-- Insert Meals for DASH диета -->
+    <changeSet id="010-insert-dash-meals" author="ivo">
+        <sql>
+            INSERT INTO meals (name, description, calories, protein, carbs, fat, fiber, sugar, diet_id)
+            VALUES
+            ('Овсяна каша с ягоди', 'Пълнозърнена овсяна каша с ягоди и ядки', 320, 12, 52, 8, 8, 12, 6),
+            ('Пилешко с батати и броколи', 'Печено пилешко с батати и броколи', 450, 38, 45, 12, 8, 10, 6),
+            ('Риба с ориз и зеленчуци', 'Печена риба с кафяв ориз и микс от зеленчуци', 420, 32, 48, 10, 6, 4, 6),
+            ('Йогурт с плодове', 'Нискомасен йогурт с банани и ягоди', 280, 18, 38, 4, 4, 28, 6),
+            ('Салата с нут', 'Салата с нут, домати, краставици и нискомасна дресинг', 340, 15, 52, 8, 12, 8, 6);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

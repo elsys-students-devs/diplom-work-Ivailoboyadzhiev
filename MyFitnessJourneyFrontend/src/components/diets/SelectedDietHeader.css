@@ -1,0 +1,56 @@
+.back-to-diets {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-to-diets:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(-3px);
+}
+
+.selected-diet-info {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.selected-diet-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 1rem 0;
+}
+
+.selected-diet-description {
+  color: #666;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin: 0 0 1rem 0;
+}
+
+.selected-diet-benefits {
+  background: rgba(255, 87, 34, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.selected-diet-benefits strong {
+  color: #FF5722;
+}
+

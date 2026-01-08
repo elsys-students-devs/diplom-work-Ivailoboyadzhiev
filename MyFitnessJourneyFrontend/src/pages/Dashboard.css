@@ -7,77 +7,6 @@
   position: relative;
 }
 
-/* Hamburger Menu Button */
-.hamburger-menu-btn {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1000;
-  background: rgba(195, 82, 20, 0.8);
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.hamburger-menu-btn:hover {
-  background: rgba(195, 82, 20, 1);
-  transform: scale(1.05);
-}
-
-.hamburger-menu-btn:active {
-  transform: scale(0.95);
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-  position: fixed;
-  top: 4.5rem;
-  left: 1rem;
-  z-index: 999;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  min-width: 200px;
-  overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dropdown-menu-item {
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: #333;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.dropdown-menu-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-menu-item:hover {
-  background-color: rgba(195, 82, 20, 0.1);
-  color: #c35214;
-}
-
 .dashboard-header {
   background: linear-gradient(135deg, rgba(195, 82, 20, 0.7) 0%, rgba(160, 69, 16, 0.7) 100%);
   color: white;
@@ -113,157 +42,6 @@
   margin: 0 auto;
   padding: 2rem 1.5rem;
   transform: translateY(-3.5rem);
-}
-
-/* Summary Cards */
-.summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.summary-card {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-height: 140px;
-}
-
-.summary-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.card-title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #666;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.card-icon {
-  color: #999;
-  width: 24px;
-  height: 24px;
-}
-
-.card-value {
-  font-size: 2.0rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.card-subtitle {
-  font-size: 0.875rem;
-  color: #999;
-  margin-bottom: 0.5rem;
-}
-
-.card-trend {
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-}
-
-.card-trend.positive {
-  color: #FF5722;
-}
-
-/* Nutrition Section */
-.nutrition-section {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
-
-.nutrition-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.nutrition-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0;
-}
-
-.log-meal-btn {
-  background: #FF5722;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.log-meal-btn:hover {
-  background-color: #E64A19;
-}
-
-.nutrition-circles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 2rem;
-  justify-items: center;
-}
-
-.nutrition-circle {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.circle-progress {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  opacity: 1;
-}
-
-.circle-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-  z-index: 1;
-  margin-bottom: 0.5rem;
-  opacity: 1;
-}
-
-.circle-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  z-index: 1;
-  opacity: 1;
 }
 
 /* Action Buttons */
@@ -332,15 +110,6 @@
   opacity: 1;
 }
 
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-size: 1.5rem;
-  color: #666;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .user-name {
@@ -351,22 +120,7 @@
     padding: 1.5rem 1rem;
   }
 
-  .summary-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .nutrition-circles {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-
   .action-buttons {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .nutrition-circles {
     grid-template-columns: 1fr;
   }
 }

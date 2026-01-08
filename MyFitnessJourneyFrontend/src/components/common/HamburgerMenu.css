@@ -1,0 +1,17 @@
+.hamburger-menu-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hamburger-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+

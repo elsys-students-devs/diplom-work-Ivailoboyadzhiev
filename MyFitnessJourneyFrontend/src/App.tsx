@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import OAuth2Callback from './pages/OAuth2Callback';
 import Dashboard from './pages/Dashboard';
+import Diets from './pages/Diets';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -21,6 +22,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/diets" 
+            element={
+              <ProtectedRoute>
+                <Diets />
               </ProtectedRoute>
             } 
           />

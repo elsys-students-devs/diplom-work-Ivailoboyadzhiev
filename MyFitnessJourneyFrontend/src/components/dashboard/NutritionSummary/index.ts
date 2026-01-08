@@ -1,0 +1,2 @@
+export { NutritionSummary } from './NutritionSummary';
+

@@ -1,0 +1,2 @@
+export { MealsGrid } from './MealsGrid';
+
