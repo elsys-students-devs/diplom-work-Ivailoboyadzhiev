@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import OAuth2Callback from './pages/OAuth2Callback';
 import Dashboard from './pages/Dashboard';
 import Diets from './pages/Diets';
+import FitnessPrograms from './pages/FitnessPrograms';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -30,6 +31,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Diets />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/fitness-programs" 
+            element={
+              <ProtectedRoute>
+                <FitnessPrograms />
               </ProtectedRoute>
             } 
           />

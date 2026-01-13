@@ -1,0 +1,33 @@
+import React from 'react';
+import { FitnessProgramDto } from '../../../services/fitnessProgramService';
+import { FitnessProgramCard } from '../FitnessProgramCard';
+import './FitnessProgramGrid.css';
+
+interface FitnessProgramGridProps {
+  programs: FitnessProgramDto[];
+  search: string;
+  onSelect: (program: FitnessProgramDto) => void;
+}
+
+export const FitnessProgramGrid: React.FC<FitnessProgramGridProps> = ({ programs, search, onSelect }) => {
+  const filteredPrograms = programs.filter(program => 
+    program.name.toLowerCase().includes(search.toLowerCase()) ||
+    program.description.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (filteredPrograms.length === 0 && search) {
+    return (
+      <div className="no-results">
+        <p>Няма намерени програми за "{search}"</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fitness-programs-grid">
+      {filteredPrograms.map((program) => (
+        <FitnessProgramCard key={program.id} program={program} onClick={() => onSelect(program)} />
+      ))}
+    </div>
+  );
+};

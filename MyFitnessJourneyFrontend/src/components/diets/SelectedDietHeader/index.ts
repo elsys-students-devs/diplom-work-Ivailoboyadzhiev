@@ -1,0 +1,1 @@
+export { SelectedDietHeader } from './SelectedDietHeader';

@@ -4,8 +4,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="002-create-diets-table" author="ivo">
-        <createTable tableName="diets">
+    <changeSet id="004-create-fitness-programs-table" author="ivo">
+        <createTable tableName="fitness_programs">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true"/>
             </column>
@@ -21,8 +21,8 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="003-create-meals-table" author="ivo">
-        <createTable tableName="meals">
+    <changeSet id="005-create-exercises-table" author="ivo">
+        <createTable tableName="exercises">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true"/>
             </column>
@@ -32,47 +32,43 @@
             <column name="description" type="VARCHAR(500)">
                 <constraints nullable="true"/>
             </column>
-            <column name="calories" type="DOUBLE PRECISION">
+            <column name="day_of_week" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
-            <column name="protein" type="DOUBLE PRECISION">
-                <constraints nullable="false"/>
-            </column>
-            <column name="carbs" type="DOUBLE PRECISION">
-                <constraints nullable="false"/>
-            </column>
-            <column name="fat" type="DOUBLE PRECISION">
-                <constraints nullable="false"/>
-            </column>
-            <column name="fiber" type="DOUBLE PRECISION">
+            <column name="sets" type="INTEGER">
                 <constraints nullable="true"/>
             </column>
-            <column name="sugar" type="DOUBLE PRECISION">
+            <column name="reps" type="INTEGER">
                 <constraints nullable="true"/>
             </column>
-            <column name="diet_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_meal_diet" references="diets(id)"/>
+            <column name="weight" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="muscle_group" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="fitness_program_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_exercise_fitness_program" references="fitness_programs(id)"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- Load Diets from CSV -->
-    <changeSet id="004-load-diets" author="ivo">
+    <!-- Load Fitness Programs from CSV -->
+    <changeSet id="006-load-fitness-programs" author="ivo">
         <loadData
-            file="db/data/diets.csv"
-            tableName="diets"
+            file="db/data/fitness-programs.csv"
+            tableName="fitness_programs"
             separator=","
             encoding="UTF-8"/>
     </changeSet>
 
-    <!-- Load Meals from CSV -->
-    <changeSet id="005-load-meals" author="ivo">
+    <!-- Load Exercises from CSV -->
+    <changeSet id="007-load-exercises" author="ivo">
         <loadData
-            file="db/data/meals.csv"
-            tableName="meals"
+            file="db/data/exercises.csv"
+            tableName="exercises"
             separator=","
             encoding="UTF-8"/>
     </changeSet>
 
 </databaseChangeLog>
-

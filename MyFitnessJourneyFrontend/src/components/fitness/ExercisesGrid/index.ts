@@ -1,0 +1,1 @@
+export { ExercisesGrid } from './ExercisesGrid';
