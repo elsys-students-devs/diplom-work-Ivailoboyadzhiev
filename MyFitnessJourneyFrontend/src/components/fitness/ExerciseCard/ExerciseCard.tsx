@@ -1,5 +1,6 @@
 import React from 'react';
-import { ExerciseDto } from '../../../services/fitnessProgramService';
+import { ExerciseDto } from '../../../types/fitnessProgram';
+import { DAY_LABELS } from '../../../types/fitnessProgram';
 import './ExerciseCard.css';
 
 interface ExerciseCardProps {
@@ -7,7 +8,7 @@ interface ExerciseCardProps {
 }
 
 export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
-  const dayName = exercise.dayOfWeek;
+  const dayName = DAY_LABELS[exercise.dayOfWeek] || exercise.dayOfWeek;
 
   return (
     <div className="exercise-card">
@@ -26,22 +27,24 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
               <span className="exercise-detail-value">{exercise.muscleGroup}</span>
             </div>
           )}
-          {exercise.sets && (
+          {exercise.sets !== undefined && exercise.sets !== null && (
             <div className="exercise-detail-item">
               <span className="exercise-detail-label">Серии:</span>
               <span className="exercise-detail-value">{exercise.sets}</span>
             </div>
           )}
-          {exercise.reps && (
+          {exercise.reps !== undefined && exercise.reps !== null && (
             <div className="exercise-detail-item">
               <span className="exercise-detail-label">Повторения:</span>
               <span className="exercise-detail-value">{exercise.reps}</span>
             </div>
           )}
-          {exercise.weight && (
+          {exercise.weight !== undefined && exercise.weight !== null && (
             <div className="exercise-detail-item">
               <span className="exercise-detail-label">Тежест:</span>
-              <span className="exercise-detail-value">{exercise.weight}</span>
+              <span className="exercise-detail-value">
+                {exercise.weight} {exercise.weightUnit || ''}
+              </span>
             </div>
           )}
         </div>

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { getAllDiets, getDietById, DietDto } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
-import { SearchBar } from '../components/common/SearchBar';
 import { Loading } from '../components/common/Loading';
-import { DietGrid } from '../components/diets/DietGrid';
-import { SelectedDietHeader } from '../components/diets/SelectedDietHeader';
-import { MealsGrid } from '../components/diets/MealsGrid';
+import { DietsHeader } from '../components/diets/DietsHeader';
+import { DietsMain } from '../components/diets/DietsMain';
 import { ToastContainer } from '../components/common/Toast';
 import { useToast } from '../components/common/useToast';
 import './Diets.css';
@@ -20,7 +18,6 @@ const Diets: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [loggingMeal, setLoggingMeal] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toasts, showSuccess, showError, removeToast } = useToast();
 
@@ -98,46 +95,21 @@ const Diets: React.FC = () => {
       <HamburgerMenu open={menuOpen} onToggle={() => setMenuOpen(!menuOpen)} />
       <DropdownMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Header Section */}
-      <div className="diets-header">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <h1 className="diets-title">Диети и Хранителни Планове</h1>
-        <p className="diets-subtitle">Изберете диета, която отговаря на вашите цели</p>
-        
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder={selectedDiet ? 'Търси ястие...' : 'Търси диета...'}
-        />
-      </div>
+      <DietsHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        hasSelectedDiet={!!selectedDiet}
+      />
 
-      {/* Main Content */}
-      <div className="diets-content">
-        {!selectedDiet ? (
-          <DietGrid
-            diets={diets}
-            search={searchQuery}
-            onSelect={setSelectedDiet}
-          />
-        ) : (
-          <div className="meals-view">
-            <SelectedDietHeader
-              diet={selectedDiet}
-              onBack={handleBackToDiets}
-            />
-            <MealsGrid
-              meals={selectedDiet.meals ?? []}
-              search={searchQuery}
-              onLogMeal={handleLogMeal}
-              loggingMealId={loggingMeal}
-            />
-          </div>
-        )}
-      </div>
+      <DietsMain
+        diets={diets}
+        selectedDiet={selectedDiet}
+        searchQuery={searchQuery}
+        onSelectDiet={setSelectedDiet}
+        onBackToDiets={handleBackToDiets}
+        onLogMeal={handleLogMeal}
+        loggingMealId={loggingMeal}
+      />
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>

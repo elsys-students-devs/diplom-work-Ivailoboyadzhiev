@@ -1,0 +1,62 @@
+.diets-header {
+  position: relative;
+  padding: 6rem 2rem 2rem;
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.back-button {
+  position: absolute;
+  top: 1.5rem;
+  left: 5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  z-index: 998;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.diets-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.diets-subtitle {
+  font-size: 1.1rem;
+  margin: 0 0 1.5rem 0;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .diets-header {
+    padding: 5rem 1rem 1.5rem;
+  }
+
+  .back-button {
+    top: 0.75rem;
+    left: 4.5rem;
+  }
+
+  .diets-title {
+    font-size: 2rem;
+  }
+
+  .diets-subtitle {
+    margin-bottom: 1rem;
+  }
+}

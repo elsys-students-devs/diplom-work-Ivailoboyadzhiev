@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ExerciseDto } from '../../../services/fitnessProgramService';
+import { ExerciseDto, DayOfWeek, DAY_LABELS, DAY_ORDER } from '../../../types/fitnessProgram';
 import { ExerciseCard } from '../ExerciseCard';
 import './ExercisesGrid.css';
 
@@ -7,16 +7,6 @@ interface ExercisesGridProps {
   exercises: ExerciseDto[];
   search: string;
 }
-
-const dayOrder: { [key: string]: number } = {
-  'Понеделник': 1,
-  'Вторник': 2,
-  'Сряда': 3,
-  'Четвъртък': 4,
-  'Петък': 5,
-  'Събота': 6,
-  'Неделя': 7
-};
 
 export const ExercisesGrid: React.FC<ExercisesGridProps> = ({ exercises, search }) => {
   const filteredAndGroupedExercises = useMemo(() => {
@@ -30,19 +20,23 @@ export const ExercisesGrid: React.FC<ExercisesGridProps> = ({ exercises, search 
     const grouped: { [key: string]: ExerciseDto[] } = {};
     filtered.forEach(exercise => {
       const day = exercise.dayOfWeek;
-      if (!grouped[day]) {
-        grouped[day] = [];
+      const dayKey = day.toString();
+      if (!grouped[dayKey]) {
+        grouped[dayKey] = [];
       }
-      grouped[day].push(exercise);
+      grouped[dayKey].push(exercise);
     });
 
     // Sort days
-    const sortedDays = Object.keys(grouped).sort((a, b) => 
-      (dayOrder[a] || 99) - (dayOrder[b] || 99)
-    );
+    const sortedDays = Object.keys(grouped).sort((a, b) => {
+      const dayA = a as DayOfWeek;
+      const dayB = b as DayOfWeek;
+      return (DAY_ORDER[dayA] || 99) - (DAY_ORDER[dayB] || 99);
+    });
 
     return sortedDays.map(day => ({
-      day,
+      day: day as DayOfWeek,
+      dayLabel: DAY_LABELS[day as DayOfWeek],
       exercises: grouped[day]
     }));
   }, [exercises, search]);
@@ -57,9 +51,9 @@ export const ExercisesGrid: React.FC<ExercisesGridProps> = ({ exercises, search 
 
   return (
     <div className="exercises-container">
-      {filteredAndGroupedExercises.map(({ day, exercises: dayExercises }) => (
+      {filteredAndGroupedExercises.map(({ day, dayLabel, exercises: dayExercises }) => (
         <div key={day} className="day-exercises-section">
-          <h3 className="day-title">{day}</h3>
+          <h3 className="day-title">{dayLabel}</h3>
           <div className="exercises-grid">
             {dayExercises.map((exercise) => (
               <ExerciseCard key={exercise.id} exercise={exercise} />

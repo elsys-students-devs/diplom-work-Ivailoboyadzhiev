@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getAllFitnessPrograms, getFitnessProgramById, FitnessProgramDto } from '../services/fitnessProgramService';
+import { useSearchParams } from 'react-router-dom';
+import { getAllFitnessPrograms, getFitnessProgramById } from '../services/fitnessProgramService';
+import { FitnessProgramDto } from '../types/fitnessProgram';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
-import { SearchBar } from '../components/common/SearchBar';
 import { Loading } from '../components/common/Loading';
-import { FitnessProgramGrid } from '../components/fitness/FitnessProgramGrid';
-import { SelectedProgramHeader } from '../components/fitness/SelectedProgramHeader';
-import { ExercisesGrid } from '../components/fitness/ExercisesGrid';
+import { FitnessProgramsHeader } from '../components/fitness/FitnessProgramsHeader';
+import { FitnessProgramsMain } from '../components/fitness/FitnessProgramsMain';
 import { ToastContainer } from '../components/common/Toast';
 import { useToast } from '../components/common/useToast';
 import './FitnessPrograms.css';
@@ -18,7 +17,6 @@ const FitnessPrograms: React.FC = () => {
   const [selectedProgram, setSelectedProgram] = useState<FitnessProgramDto | null>(null);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toasts, showError, removeToast } = useToast();
 
@@ -79,43 +77,20 @@ const FitnessPrograms: React.FC = () => {
       <HamburgerMenu open={menuOpen} onToggle={() => setMenuOpen(!menuOpen)} />
       <DropdownMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Header Section */}
-      <div className="fitness-programs-header">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <h1 className="fitness-programs-title">Фитнес Програми</h1>
-        <p className="fitness-programs-subtitle">Изберете програма, която отговаря на вашите цели</p>
-        
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder={selectedProgram ? 'Търси упражнение...' : 'Търси програма...'}
-        />
-      </div>
+      <FitnessProgramsHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        hasSelectedProgram={!!selectedProgram}
+      />
 
-      {/* Main Content */}
       <div className="fitness-programs-content">
-        {!selectedProgram ? (
-          <FitnessProgramGrid
-            programs={programs}
-            search={searchQuery}
-            onSelect={setSelectedProgram}
-          />
-        ) : (
-          <div className="exercises-view">
-            <SelectedProgramHeader
-              program={selectedProgram}
-              onBack={handleBackToPrograms}
-            />
-            <ExercisesGrid
-              exercises={selectedProgram.exercises ?? []}
-              search={searchQuery}
-            />
-          </div>
-        )}
+        <FitnessProgramsMain
+          programs={programs}
+          selectedProgram={selectedProgram}
+          searchQuery={searchQuery}
+          onSelectProgram={setSelectedProgram}
+          onBackToPrograms={handleBackToPrograms}
+        />
       </div>
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />

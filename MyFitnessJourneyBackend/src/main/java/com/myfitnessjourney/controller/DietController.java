@@ -9,7 +9,6 @@ import com.myfitnessjourney.service.DietService;
 import com.myfitnessjourney.service.MealService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/diets")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 @AllArgsConstructor
 public class DietController {
 

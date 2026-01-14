@@ -41,7 +41,10 @@
             <column name="reps" type="INTEGER">
                 <constraints nullable="true"/>
             </column>
-            <column name="weight" type="VARCHAR(50)">
+            <column name="weight" type="NUMERIC(10,2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="weight_unit" type="VARCHAR(50)">
                 <constraints nullable="true"/>
             </column>
             <column name="muscle_group" type="VARCHAR(100)">

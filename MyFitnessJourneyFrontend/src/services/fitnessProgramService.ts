@@ -1,23 +1,7 @@
 import api from './authService';
+import { ExerciseDto, FitnessProgramDto } from '../types/fitnessProgram';
 
-export interface ExerciseDto {
-  id: number;
-  name: string;
-  description?: string;
-  dayOfWeek: string;
-  sets?: number;
-  reps?: number;
-  weight?: string;
-  muscleGroup?: string;
-}
-
-export interface FitnessProgramDto {
-  id: number;
-  name: string;
-  description: string;
-  benefits?: string;
-  exercises: ExerciseDto[];
-}
+export { ExerciseDto, FitnessProgramDto } from '../types/fitnessProgram';
 
 export const getAllFitnessPrograms = async (): Promise<FitnessProgramDto[]> => {
   const response = await api.get<FitnessProgramDto[]>('/fitness-programs');

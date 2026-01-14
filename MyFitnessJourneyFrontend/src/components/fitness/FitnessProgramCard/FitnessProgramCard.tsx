@@ -1,5 +1,5 @@
 import React from 'react';
-import { FitnessProgramDto } from '../../../services/fitnessProgramService';
+import { FitnessProgramDto } from '../../../types/fitnessProgram';
 import './FitnessProgramCard.css';
 
 interface FitnessProgramCardProps {

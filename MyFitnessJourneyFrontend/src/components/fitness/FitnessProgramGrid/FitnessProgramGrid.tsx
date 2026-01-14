@@ -1,5 +1,5 @@
-import React from 'react';
-import { FitnessProgramDto } from '../../../services/fitnessProgramService';
+import React, { useMemo } from 'react';
+import { FitnessProgramDto } from '../../../types/fitnessProgram';
 import { FitnessProgramCard } from '../FitnessProgramCard';
 import './FitnessProgramGrid.css';
 
@@ -10,10 +10,12 @@ interface FitnessProgramGridProps {
 }
 
 export const FitnessProgramGrid: React.FC<FitnessProgramGridProps> = ({ programs, search, onSelect }) => {
-  const filteredPrograms = programs.filter(program => 
-    program.name.toLowerCase().includes(search.toLowerCase()) ||
-    program.description.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredPrograms = useMemo(() => {
+    return programs.filter(program => 
+      program.name.toLowerCase().includes(search.toLowerCase()) ||
+      program.description.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [programs, search]);
 
   if (filteredPrograms.length === 0 && search) {
     return (

@@ -2,6 +2,8 @@ package com.myfitnessjourney.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "exercises")
@@ -31,8 +35,9 @@ public class Exercise {
     @Column(length = 500)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "day_of_week", nullable = false, length = 20)
-    private String dayOfWeek; // MONDAY, TUESDAY, WEDNESDAY, etc.
+    private DayOfWeek dayOfWeek;
 
     @Column
     private Integer sets;
@@ -40,8 +45,11 @@ public class Exercise {
     @Column
     private Integer reps;
 
+    @Column
+    private BigDecimal weight; 
+
     @Column(length = 50)
-    private String weight; // e.g., "10kg", "bodyweight", "20lbs"
+    private String weightUnit;
 
     @Column(name = "muscle_group", length = 100)
     private String muscleGroup; // e.g., "Chest", "Back", "Legs"

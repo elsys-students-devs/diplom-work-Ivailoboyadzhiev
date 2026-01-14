@@ -1,14 +1,25 @@
+:root {
+  --primary-color: #FF5722;
+  --primary-light: rgba(255, 87, 34, 0.05);
+  --text-primary: #333;
+  --text-secondary: #555;
+  --text-muted: #666;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .exercise-card {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .exercise-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .exercise-card-header {
@@ -22,13 +33,13 @@
 .exercise-card-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
 }
 
 .exercise-day-badge {
-  background: #FF5722;
+  background: var(--primary-color);
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -44,7 +55,7 @@
 }
 
 .exercise-card-description {
-  color: #666;
+  color: var(--text-muted);
   line-height: 1.5;
   margin: 0;
   font-size: 0.9rem;
@@ -61,18 +72,18 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
-  background: rgba(255, 87, 34, 0.05);
+  background: var(--primary-light);
   border-radius: 6px;
 }
 
 .exercise-detail-label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .exercise-detail-value {
-  color: #FF5722;
+  color: var(--primary-color);
   font-weight: 600;
   font-size: 0.9rem;
 }

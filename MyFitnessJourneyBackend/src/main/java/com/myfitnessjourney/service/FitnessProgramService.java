@@ -26,9 +26,14 @@ public class FitnessProgramService {
         return fitnessProgramRepository.findById(id);
     }
 
-    public Optional<FitnessProgramDto> getFitnessProgramByIdWithExercises(Long id) {
-        return fitnessProgramRepository.findById(id)
-                .map(fitnessProgramMapper::toDto);
+    public FitnessProgramDto getFitnessProgramByIdWithExercises(Long id) {
+        return fitnessProgramRepository.findByIdWithExercises(id)
+                .map(fitnessProgramMapper::toDto)
+                .orElseThrow(() -> new FitnessProgramNotFoundException("Fitness program not found with id: " + id));
+    }
+    
+    public boolean existsById(Long id) {
+        return fitnessProgramRepository.existsById(id);
     }
 
     public FitnessProgram saveFitnessProgram(FitnessProgram fitnessProgram) {

@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../services/authService';
 import { createMeal, getAllDiets, CreateMealRequest } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
 import { Loading } from '../components/common/Loading';
-import { SummaryCards } from '../components/dashboard/SummaryCards';
-import { NutritionSummary } from '../components/dashboard/NutritionSummary';
+import { DashboardHeader } from '../components/dashboard/DashboardHeader';
+import { DashboardMain } from '../components/dashboard/DashboardMain';
 import { CreateMealModal } from '../components/dashboard/CreateMealModal';
 import { ToastContainer } from '../components/common/Toast';
 import { useToast } from '../components/common/useToast';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [username, setUsername] = useState<string>('User');
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -119,12 +117,7 @@ const Dashboard: React.FC = () => {
       setShowMealModal(false);
       showSuccess('Ястието е създадено и логнато успешно!');
       
-      // Navigate to User Favorites diet if we have the ID
-      if (userFavoritesDietId) {
-        navigate(`/diets?dietId=${userFavoritesDietId}`);
-      } else {
-        navigate('/diets');
-      }
+      // Note: Navigation is handled by the modal or component that triggers this
     } catch (error) {
       console.error('Failed to create meal:', error);
       showError('Грешка при създаване на ястието. Моля опитайте отново.');
@@ -146,79 +139,19 @@ const Dashboard: React.FC = () => {
       <HamburgerMenu open={menuOpen} onToggle={() => setMenuOpen(!menuOpen)} />
       <DropdownMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Header Section */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <p className="welcome-text">Welcome back</p>
-          <h1 className="user-name">{username}</h1>
-          <p className="motivational-text">Let's crush your fitness goals today!</p>
-        </div>
-      </div>
+      <DashboardHeader username={username} />
 
-      {/* Main Content */}
-      <div className="dashboard-content">
-        <SummaryCards />
-        
-        <NutritionSummary
-          calories={calories}
-          protein={protein}
-          carbs={carbs}
-          fat={fat}
-          targetCalories={targetCalories}
-          targetProtein={targetProtein}
-          targetCarbs={targetCarbs}
-          targetFat={targetFat}
-          onLogMeal={() => setShowMealModal(true)}
-        />
-
-        {/* Action Buttons */}
-        <div className="action-buttons">
-          <button className="action-button diet-plans" onClick={() => navigate('/diets')}>
-            <div className="button-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6zM3 6h18M8 10v4M12 10v4M16 10v4" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="button-content">
-              <div className="button-title">Diet Plans</div>
-              <div className="button-subtitle">View meal plans & nutrition</div>
-            </div>
-            <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-
-          <button className="action-button fitness-programs" onClick={() => navigate('/fitness-programs')}>
-            <div className="button-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="button-content">
-              <div className="button-title">Fitness Programs</div>
-              <div className="button-subtitle">Workouts & training</div>
-            </div>
-            <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-
-          <button className="action-button messages">
-            <div className="button-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="button-content">
-              <div className="button-title">Messages</div>
-              <div className="button-subtitle">Chat with trainer</div>
-            </div>
-            <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+      <DashboardMain
+        calories={calories}
+        protein={protein}
+        carbs={carbs}
+        fat={fat}
+        targetCalories={targetCalories}
+        targetProtein={targetProtein}
+        targetCarbs={targetCarbs}
+        targetFat={targetFat}
+        onLogMeal={() => setShowMealModal(true)}
+      />
 
       <CreateMealModal
         isOpen={showMealModal}

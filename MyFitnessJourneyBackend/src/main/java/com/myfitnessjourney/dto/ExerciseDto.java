@@ -1,8 +1,11 @@
 package com.myfitnessjourney.dto;
 
+import com.myfitnessjourney.entity.DayOfWeek;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -11,9 +14,10 @@ public class ExerciseDto {
     private Long id;
     private String name;
     private String description;
-    private String dayOfWeek;
+    private DayOfWeek dayOfWeek;
     private Integer sets;
     private Integer reps;
-    private String weight;
+    private BigDecimal weight;
+    private String weightUnit;
     private String muscleGroup;
 }
