@@ -163,6 +163,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(FitnessProgramNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiError> handleFitnessProgramNotFoundException(FitnessProgramNotFoundException ex) {
+        return buildNotFoundResponse("Fitness program not found", ex);
+    }
+
+    @ExceptionHandler(ExerciseNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiError> handleExerciseNotFoundException(ExerciseNotFoundException ex) {
+        return buildNotFoundResponse("Exercise not found", ex);
+    }
+    
+    private ResponseEntity<ApiError> buildNotFoundResponse(String errorMessage, RuntimeException ex) {
+        logger.warn("{}: {}", errorMessage, ex.getMessage());
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                errorMessage,
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex) {

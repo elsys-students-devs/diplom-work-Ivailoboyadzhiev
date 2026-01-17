@@ -34,6 +34,12 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => 
       <div className="dropdown-menu-item" onClick={() => { navigate('/dashboard'); onClose(); }}>
         Dashboard
       </div>
+      <div className="dropdown-menu-item" onClick={() => { navigate('/diets'); onClose(); }}>
+        Диети
+      </div>
+      <div className="dropdown-menu-item" onClick={() => { navigate('/fitness-programs'); onClose(); }}>
+        Фитнес Програми
+      </div>
       <div className="dropdown-menu-item">Profile</div>
       <div className="dropdown-menu-item">Settings</div>
       <div className="dropdown-menu-item">Help</div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MealDto } from '../../services/dietService';
+import { MealDto } from '../../../services/dietService';
 import './MealCard.css';
 
 interface MealCardProps {
@@ -61,4 +61,3 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, onLogMeal, isLogging =
     </div>
   );
 };
-

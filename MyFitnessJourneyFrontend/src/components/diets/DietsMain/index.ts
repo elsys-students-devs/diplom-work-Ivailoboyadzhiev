@@ -1,0 +1,1 @@
+export { DietsMain } from './DietsMain';

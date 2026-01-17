@@ -8,5 +8,6 @@
     <include file="db/changelog/001-users.xml"/>
     <include file="db/changelog/002-diets-meals.xml"/>
     <include file="db/changelog/003-user-logged-meals.xml"/>
+    <include file="db/changelog/004-fitness-programs-exercises.xml"/>
 
 </databaseChangeLog>
