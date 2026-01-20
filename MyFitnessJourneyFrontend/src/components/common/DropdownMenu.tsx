@@ -35,10 +35,13 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => 
         Dashboard
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/diets'); onClose(); }}>
-        Диети
+        Diets
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/fitness-programs'); onClose(); }}>
-        Фитнес Програми
+        Fitness Programs
+      </div>
+      <div className="dropdown-menu-item" onClick={() => { navigate('/chat'); onClose(); }}>
+        Messages
       </div>
       <div className="dropdown-menu-item">Profile</div>
       <div className="dropdown-menu-item">Settings</div>
