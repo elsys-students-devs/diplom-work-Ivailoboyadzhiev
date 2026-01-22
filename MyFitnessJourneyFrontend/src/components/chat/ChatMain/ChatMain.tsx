@@ -42,7 +42,10 @@ export const ChatMain: React.FC<ChatMainProps> = ({ currentUserId }) => {
       setMessages((prev) => {
         const exists = prev.some((m) => m.id === message.id);
         if (exists) return prev;
-        return [...prev, message];
+        // Sort messages by sentAt to handle out-of-order delivery
+        return [...prev, message].sort((a, b) => 
+          new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+        );
       });
     }
   }, []);
@@ -116,7 +119,9 @@ export const ChatMain: React.FC<ChatMainProps> = ({ currentUserId }) => {
       setMessages((prev) => {
         const exists = prev.some((m) => m.id === message.id);
         if (exists) return prev;
-        return [...prev, message];
+        return [...prev, message].sort((a, b) => 
+          new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+        );
       });
     } catch (error) {
       console.error('Failed to send message:', error);

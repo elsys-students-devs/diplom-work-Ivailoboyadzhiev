@@ -43,16 +43,29 @@
                 referencedColumnNames="id"
                 onDelete="CASCADE"/>
 
-        <createIndex tableName="chat_messages" indexName="idx_chat_messages_sender">
+        <!-- Composite index for conversation queries -->
+        <createIndex tableName="chat_messages" indexName="idx_chat_messages_conversation">
             <column name="sender_id"/>
-        </createIndex>
-
-        <createIndex tableName="chat_messages" indexName="idx_chat_messages_recipient">
             <column name="recipient_id"/>
+            <column name="sent_at"/>
         </createIndex>
 
-        <createIndex tableName="chat_messages" indexName="idx_chat_messages_sent_at">
+        <!-- Index for sender with timestamp -->
+        <createIndex tableName="chat_messages" indexName="idx_chat_messages_sender_sent">
+            <column name="sender_id"/>
             <column name="sent_at"/>
+        </createIndex>
+
+        <!-- Index for recipient with timestamp -->
+        <createIndex tableName="chat_messages" indexName="idx_chat_messages_recipient_sent">
+            <column name="recipient_id"/>
+            <column name="sent_at"/>
+        </createIndex>
+
+        <!-- Index for unread messages -->
+        <createIndex tableName="chat_messages" indexName="idx_chat_messages_unread">
+            <column name="recipient_id"/>
+            <column name="is_read"/>
         </createIndex>
     </changeSet>
 

@@ -78,17 +78,17 @@ export const sendMessageViaWebSocket = (request: SendMessageRequest): void => {
 };
 
 export const sendMessage = async (request: SendMessageRequest): Promise<ChatMessageDto> => {
-  const response = await api.post<ChatMessageDto>('/chat/send', request);
+  const response = await api.post<ChatMessageDto>('/chat/messages', request);
   return response.data;
 };
 
-export const getConversation = async (userId: number): Promise<ChatMessageDto[]> => {
-  const response = await api.get<ChatMessageDto[]>(`/chat/conversation/${userId}`);
+export const getConversation = async (chatPartnerId: number): Promise<ChatMessageDto[]> => {
+  const response = await api.get<ChatMessageDto[]>(`/chat/conversations/${chatPartnerId}`);
   return response.data;
 };
 
-export const markMessagesAsRead = async (senderId: number): Promise<void> => {
-  await api.put(`/chat/read/${senderId}`);
+export const markMessagesAsRead = async (chatPartnerId: number): Promise<void> => {
+  await api.put(`/chat/messages/read/${chatPartnerId}`);
 };
 
 export const getChatPartners = async (): Promise<ChatUserDto[]> => {
@@ -97,13 +97,13 @@ export const getChatPartners = async (): Promise<ChatUserDto[]> => {
 };
 
 export const searchUsers = async (query: string): Promise<ChatUserDto[]> => {
-  const response = await api.get<ChatUserDto[]>('/chat/users/search', {
+  const response = await api.get<ChatUserDto[]>('/chat/users', {
     params: { query }
   });
   return response.data;
 };
 
 export const getUnreadCount = async (): Promise<number> => {
-  const response = await api.get<{ count: number }>('/chat/unread/count');
+  const response = await api.get<{ count: number }>('/chat/messages/unread/count');
   return response.data.count;
 };
