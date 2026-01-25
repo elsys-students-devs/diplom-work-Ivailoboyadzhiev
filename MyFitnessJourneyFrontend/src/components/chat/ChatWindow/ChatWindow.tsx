@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChatMessageDto, ChatUserDto } from '../../../types/chat';
+import { ChatUserDto, ChatMessageDto } from '../../../types/chat';
+import { MessageList } from '../MessageList';
 import './ChatWindow.css';
 
 interface ChatWindowProps {
@@ -50,38 +51,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
-  const parseDateTime = (dateString: string): Date => {
-    // Backend returns LocalDateTime in UTC without timezone suffix
-    // We treat it as UTC and let the browser convert to user's local timezone
-    // If it already has Z or timezone offset, parse directly
-    if (dateString.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(dateString)) {
-      return new Date(dateString);
-    }
-    // Remove nanoseconds/milliseconds if present and add Z to indicate UTC
-    const cleanedDateString = dateString.split('.')[0] + 'Z';
-    return new Date(cleanedDateString);
-  };
-
-  const formatTime = (dateString: string): string => {
-    const date = parseDateTime(dateString);
-    return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = parseDateTime(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return 'Today';
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
-    }
-  };
-
   const getDisplayName = (user: ChatUserDto): string => {
     return user.username || user.name || 'Потребител';
   };
@@ -89,18 +58,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const getInitial = (user: ChatUserDto): string => {
     const name = getDisplayName(user);
     return name.charAt(0).toUpperCase();
-  };
-
-  const groupMessagesByDate = (messages: ChatMessageDto[]): Map<string, ChatMessageDto[]> => {
-    const groups = new Map<string, ChatMessageDto[]>();
-    messages.forEach((message) => {
-      const dateKey = parseDateTime(message.sentAt).toDateString();
-      if (!groups.has(dateKey)) {
-        groups.set(dateKey, []);
-      }
-      groups.get(dateKey)!.push(message);
-    });
-    return groups;
   };
 
   if (!selectedUser) {
@@ -116,8 +73,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
     );
   }
-
-  const messageGroups = groupMessagesByDate(messages);
 
   return (
     <div className="chat-window-container">
@@ -145,24 +100,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             <p>Няма съобщения. Започнете разговор!</p>
           </div>
         ) : (
-          Array.from(messageGroups.entries()).map(([dateKey, dateMessages]) => (
-            <div key={dateKey} className="message-date-group">
-              <div className="message-date-divider">
-                <span>{formatDate(dateMessages[0].sentAt)}</span>
-              </div>
-              {dateMessages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`message ${message.senderId === currentUserId ? 'sent' : 'received'}`}
-                >
-                  <div className="message-content">
-                    <p>{message.content}</p>
-                    <span className="message-time">{formatTime(message.sentAt)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))
+          <MessageList messages={messages} currentUserId={currentUserId} />
         )}
         <div ref={messagesEndRef} />
       </div>

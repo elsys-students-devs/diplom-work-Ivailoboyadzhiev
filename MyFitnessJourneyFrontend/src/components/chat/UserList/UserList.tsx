@@ -79,6 +79,11 @@ export const UserList: React.FC<UserListProps> = ({
               <div className="user-info">
                 <span className="user-name">{getDisplayName(user)}</span>
               </div>
+              {user.unreadCount > 0 && (
+                <div className="user-unread-badge">
+                  {user.unreadCount > 99 ? '99+' : user.unreadCount}
+                </div>
+              )}
             </div>
           ))
         )}

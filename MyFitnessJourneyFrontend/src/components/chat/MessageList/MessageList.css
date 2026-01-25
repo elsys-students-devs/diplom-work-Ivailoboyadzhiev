@@ -1,0 +1,27 @@
+.message-date-group {
+  margin-bottom: 20px;
+}
+
+.message-date-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.message-date-divider::before,
+.message-date-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.message-date-divider span {
+  padding: 0 12px;
+  font-size: 12px;
+  color: #999;
+  background: white;
+  font-weight: 500;
+}

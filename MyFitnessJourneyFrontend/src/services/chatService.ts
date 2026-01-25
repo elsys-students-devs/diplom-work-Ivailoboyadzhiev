@@ -41,11 +41,8 @@ export const connectWebSocket = (
   });
 
   client.onConnect = () => {
-    console.log('WebSocket connected for user:', userId);
-    
     // Subscribe to user-specific topic
-    client.subscribe(`/topic/chat/${userId}`, (message) => {
-      console.log('Received WebSocket message:', message.body);
+    client?.subscribe(`/topic/chat/${userId}`, (message) => {
       const chatMessage: ChatMessageDto = JSON.parse(message.body);
       onMessageReceived(chatMessage);
     });

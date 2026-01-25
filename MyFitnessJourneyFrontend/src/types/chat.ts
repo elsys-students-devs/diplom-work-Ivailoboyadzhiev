@@ -14,6 +14,8 @@ export interface ChatUserDto {
   username: string;
   name: string;
   pictureUrl: string | null;
+  lastMessageAt: string | null;
+  unreadCount: number;
 }
 
 export interface SendMessageRequest {

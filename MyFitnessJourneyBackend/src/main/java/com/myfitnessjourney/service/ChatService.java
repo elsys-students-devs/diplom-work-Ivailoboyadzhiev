@@ -16,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,9 +82,37 @@ public class ChatService {
 
         User user = getUserByEmail(userEmail);
 
-        List<User> partners = chatMessageRepository.findChatPartners(user);
+        List<User> recipients = chatMessageRepository.findRecipientsBySender(user);
+        List<User> senders = chatMessageRepository.findSendersByRecipient(user);
+        
+        Set<User> partnersSet = new HashSet<>(recipients);
+        partnersSet.addAll(senders);
+        List<User> partners = new ArrayList<>(partnersSet);
 
-        return chatUserMapper.toDtoList(partners);
+        List<ChatUserDto> partnerDtos = partners.stream()
+                .map(partner -> {
+                    ChatUserDto dto = chatUserMapper.toDto(partner);
+                    java.time.LocalDateTime lastMessageAt = chatMessageRepository.findLastMessageTime(user, partner);
+                    long unreadCount = chatMessageRepository.countUnreadMessages(user, partner);
+                    dto.setLastMessageAt(lastMessageAt);
+                    dto.setUnreadCount(unreadCount);
+                    return dto;
+                })
+                .sorted((dto1, dto2) -> {
+                    if (dto1.getLastMessageAt() == null && dto2.getLastMessageAt() == null) {
+                        return 0;
+                    }
+                    if (dto1.getLastMessageAt() == null) {
+                        return 1;
+                    }
+                    if (dto2.getLastMessageAt() == null) {
+                        return -1;
+                    }
+                    return dto2.getLastMessageAt().compareTo(dto1.getLastMessageAt());
+                })
+                .collect(Collectors.toList());
+
+        return partnerDtos;
     }
 
     @Transactional(readOnly = true)
