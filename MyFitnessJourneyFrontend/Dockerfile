@@ -4,10 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 ENV NPM_CONFIG_PRODUCTION=false
 RUN npm install
-RUN npm install -g vite@^5
 
 COPY . .
-RUN vite build
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
