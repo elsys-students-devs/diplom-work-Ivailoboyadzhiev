@@ -6,6 +6,7 @@ import OAuth2Callback from './pages/OAuth2Callback';
 import Dashboard from './pages/Dashboard';
 import Diets from './pages/Diets';
 import FitnessPrograms from './pages/FitnessPrograms';
+import Chat from './pages/Chat';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -39,6 +40,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <FitnessPrograms />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/chat" 
+            element={
+              <ProtectedRoute>
+                <Chat />
               </ProtectedRoute>
             } 
           />

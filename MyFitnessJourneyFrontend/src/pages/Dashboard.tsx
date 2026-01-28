@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../services/authService';
 import { createMeal, getAllDiets, CreateMealRequest } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
+import { getUnreadCount } from '../services/chatService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
 import { Loading } from '../components/common/Loading';
@@ -24,6 +25,7 @@ const Dashboard: React.FC = () => {
   const [showMealModal, setShowMealModal] = useState<boolean>(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [userFavoritesDietId, setUserFavoritesDietId] = useState<number | null>(null);
+  const [unreadMessages, setUnreadMessages] = useState<number>(0);
   
   const { toasts, showSuccess, showError, removeToast } = useToast();
   
@@ -69,6 +71,25 @@ const Dashboard: React.FC = () => {
     };
 
     fetchUserFavoritesDiet();
+  }, []);
+
+  // Fetch unread message count
+  useEffect(() => {
+    const fetchUnreadMessages = async () => {
+      try {
+        const count = await getUnreadCount();
+        setUnreadMessages(count);
+      } catch (error) {
+        console.error('Failed to fetch unread messages:', error);
+      }
+    };
+
+    fetchUnreadMessages();
+
+    // Refresh unread count periodically
+    const interval = setInterval(fetchUnreadMessages, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Fetch today's nutrition summary
@@ -150,6 +171,7 @@ const Dashboard: React.FC = () => {
         targetProtein={targetProtein}
         targetCarbs={targetCarbs}
         targetFat={targetFat}
+        unreadMessages={unreadMessages}
         onLogMeal={() => setShowMealModal(true)}
       />
 

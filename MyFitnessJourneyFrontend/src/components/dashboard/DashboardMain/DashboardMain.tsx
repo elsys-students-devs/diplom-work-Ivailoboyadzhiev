@@ -13,6 +13,7 @@ interface DashboardMainProps {
   targetProtein: number;
   targetCarbs: number;
   targetFat: number;
+  unreadMessages: number;
   onLogMeal: () => void;
 }
 
@@ -25,13 +26,14 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
   targetProtein,
   targetCarbs,
   targetFat,
+  unreadMessages,
   onLogMeal
 }) => {
   const navigate = useNavigate();
 
   return (
     <div className="dashboard-content">
-      <SummaryCards />
+      <SummaryCards messages={unreadMessages} />
       
       <NutritionSummary
         calories={calories}
@@ -77,7 +79,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
           </svg>
         </button>
 
-        <button className="action-button messages">
+        <button className="action-button messages" onClick={() => navigate('/chat')}>
           <div className="button-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
