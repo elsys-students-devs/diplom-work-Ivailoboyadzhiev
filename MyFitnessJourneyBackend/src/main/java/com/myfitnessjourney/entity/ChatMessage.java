@@ -48,4 +48,16 @@ public class ChatMessage {
     @Builder.Default
     @Column(name = "is_read", nullable = false)
     private boolean isRead = false;
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "id=" + id +
+                ", senderId=" + (sender != null ? sender.getId() : null) +
+                ", recipientId=" + (recipient != null ? recipient.getId() : null) +
+                ", content='" + content + '\'' +
+                ", sentAt=" + sentAt +
+                ", isRead=" + isRead +
+                '}';
+    }
 }
