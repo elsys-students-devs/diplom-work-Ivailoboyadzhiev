@@ -80,7 +80,7 @@ public class UserService {
     public User updateLoginStreak(User user) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime lastLogin = user.getLastLoginAt();
-        Integer currentStreak = user.getLoginStreak() != null ? user.getLoginStreak() : 0;
+        int currentStreak = user.getLoginStreak() != null ? user.getLoginStreak() : 0;
 
         int newStreak;
         if (lastLogin == null) {
