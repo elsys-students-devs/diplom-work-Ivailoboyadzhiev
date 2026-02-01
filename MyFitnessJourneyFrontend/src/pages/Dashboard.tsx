@@ -26,6 +26,7 @@ const Dashboard: React.FC = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [userFavoritesDietId, setUserFavoritesDietId] = useState<number | null>(null);
   const [unreadMessages, setUnreadMessages] = useState<number>(0);
+  const [streak, setStreak] = useState<number>(0);
   
   const { toasts, showSuccess, showError, removeToast } = useToast();
   
@@ -45,6 +46,7 @@ const Dashboard: React.FC = () => {
                              (user.name && user.name.trim()) || 
                              (user.email ? user.email.split('@')[0] : 'User');
           setUsername(displayName);
+          setStreak(user.streak ?? 0);
         }
       } catch (error) {
         console.error('Failed to fetch user:', error);
@@ -172,6 +174,7 @@ const Dashboard: React.FC = () => {
         targetCarbs={targetCarbs}
         targetFat={targetFat}
         unreadMessages={unreadMessages}
+        streak={streak}
         onLogMeal={() => setShowMealModal(true)}
       />
 

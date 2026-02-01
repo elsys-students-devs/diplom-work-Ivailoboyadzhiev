@@ -27,11 +27,13 @@ import java.util.stream.Collectors;
 public class ChatService {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
+    private static final String AI_USER_EMAIL = "groc@myfitnessjourney.ai";
 
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
     private final ChatMessageMapper chatMessageMapper;
     private final ChatUserMapper chatUserMapper;
+    private final GroqAiService groqAiService;
 
     @Transactional
     public ChatMessageDto sendMessage(String senderEmail, SendMessageRequest request) {
@@ -40,16 +42,77 @@ public class ChatService {
         User sender = getUserByEmail(senderEmail);
         User recipient = getUserById(request.getRecipientId());
 
-        ChatMessage message = ChatMessage.builder()
+        // Save user's message
+        ChatMessage userMessage = ChatMessage.builder()
                 .sender(sender)
                 .recipient(recipient)
                 .content(request.getContent())
                 .build();
 
-        ChatMessage savedMessage = chatMessageRepository.save(message);
-        logger.debug("Message sent successfully with ID: {}", savedMessage.getId());
+        ChatMessage savedUserMessage = chatMessageRepository.save(userMessage);
+        logger.debug("User message sent successfully with ID: {}", savedUserMessage.getId());
 
-        return chatMessageMapper.toDto(savedMessage);
+        // If recipient is AI user, generate and save AI response
+        logger.debug("Checking if recipient {} is AI user {}", recipient.getEmail(), AI_USER_EMAIL);
+        if (AI_USER_EMAIL.equals(recipient.getEmail())) {
+            logger.info("AI message received from user {} (ID: {}) to AI user {} (ID: {}): {}", 
+                sender.getEmail(), sender.getId(), recipient.getEmail(), recipient.getId(), request.getContent());
+            try {
+                // Get conversation history for context
+                String conversationHistory = buildConversationHistory(sender, recipient);
+                logger.debug("Conversation history length: {}", conversationHistory.length());
+                
+                // Generate AI response
+                logger.info("Calling Groq AI service...");
+                String aiResponse = groqAiService.generateResponse(request.getContent(), conversationHistory);
+                String responsePreview = aiResponse != null && !aiResponse.isEmpty()
+                    ? aiResponse.substring(0, Math.min(100, aiResponse.length()))
+                    : "(empty)";
+                logger.info("AI response generated: {}", responsePreview);
+                
+                // Save AI response
+                ChatMessage aiMessage = ChatMessage.builder()
+                        .sender(recipient) // AI is the sender
+                        .recipient(sender) // User is the recipient
+                        .content(aiResponse)
+                        .isRead(false)
+                        .build();
+                
+                ChatMessage savedAiMessage = chatMessageRepository.save(aiMessage);
+                logger.info("AI response saved successfully with ID: {}", savedAiMessage.getId());
+            } catch (Exception e) {
+                logger.error("Error generating AI response for user {}: {}", sender.getEmail(), e.getMessage(), e);
+                // Save error message to user
+                try {
+                    ChatMessage errorMessage = ChatMessage.builder()
+                            .sender(recipient)
+                            .recipient(sender)
+                            .content("Извинявам се, възникна техническа грешка. Моля опитайте отново по-късно.")
+                            .isRead(false)
+                            .build();
+                    chatMessageRepository.save(errorMessage);
+                    logger.info("Error message saved to user");
+                } catch (Exception saveError) {
+                    logger.error("Failed to save error message", saveError);
+                }
+            }
+        }
+
+        return chatMessageMapper.toDto(savedUserMessage);
+    }
+
+    private String buildConversationHistory(User user, User aiUser) {
+        List<ChatMessage> recentMessages = chatMessageRepository.findConversation(user, aiUser);
+        if (recentMessages.size() > 10) {
+            recentMessages = recentMessages.subList(recentMessages.size() - 10, recentMessages.size());
+        }
+        
+        StringBuilder history = new StringBuilder();
+        for (ChatMessage msg : recentMessages) {
+            String role = msg.getSender().getId().equals(aiUser.getId()) ? "Assistant" : "User";
+            history.append(role).append(": ").append(msg.getContent()).append("\n");
+        }
+        return history.toString();
     }
 
     @Transactional(readOnly = true)
@@ -77,6 +140,28 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
+    public List<ChatUserDto> searchUsers(String query, String currentUserEmail) {
+        logger.debug("Searching users with query: {} for user: {}", query, currentUserEmail);
+
+        User currentUser = getUserByEmail(currentUserEmail);
+
+        List<User> matchedUsers = userRepository.findByUsernameContainingIgnoreCaseOrNameContainingIgnoreCase(query, query)
+                .stream()
+                .filter(user -> !user.getId().equals(currentUser.getId()))
+                .collect(Collectors.toList());
+
+        // Add AI user if query matches "groc" or "ai"
+        if (query != null && (query.toLowerCase().contains("groc") || query.toLowerCase().contains("ai") || query.toLowerCase().contains("асистент"))) {
+            User aiUser = getOrCreateAiUser();
+            if (!matchedUsers.stream().anyMatch(u -> u.getId().equals(aiUser.getId()))) {
+                matchedUsers.add(aiUser);
+            }
+        }
+
+        return chatUserMapper.toDtoList(matchedUsers);
+    }
+
+    @Transactional(readOnly = true)
     public List<ChatUserDto> getChatPartners(String userEmail) {
         logger.debug("Fetching chat partners for {}", userEmail);
 
@@ -87,6 +172,11 @@ public class ChatService {
         
         Set<User> partnersSet = new HashSet<>(recipients);
         partnersSet.addAll(senders);
+        
+        // Always include AI user
+        User aiUser = getOrCreateAiUser();
+        partnersSet.add(aiUser);
+        
         List<User> partners = new ArrayList<>(partnersSet);
 
         List<ChatUserDto> partnerDtos = partners.stream()
@@ -115,18 +205,23 @@ public class ChatService {
         return partnerDtos;
     }
 
-    @Transactional(readOnly = true)
-    public List<ChatUserDto> searchUsers(String query, String currentUserEmail) {
-        logger.debug("Searching users with query: {} for user: {}", query, currentUserEmail);
-
-        User currentUser = getUserByEmail(currentUserEmail);
-
-        List<User> matchedUsers = userRepository.findByUsernameContainingIgnoreCaseOrNameContainingIgnoreCase(query, query)
-                .stream()
-                .filter(user -> !user.getId().equals(currentUser.getId()))
-                .collect(Collectors.toList());
-
-        return chatUserMapper.toDtoList(matchedUsers);
+    @Transactional
+    public User getOrCreateAiUser() {
+        logger.debug("Getting or creating AI user with email: {}", AI_USER_EMAIL);
+        User aiUser = userRepository.findByEmail(AI_USER_EMAIL)
+                .orElseGet(() -> {
+                    logger.info("AI user not found, creating new AI user...");
+                    User newAiUser = new User();
+                    newAiUser.setEmail(AI_USER_EMAIL);
+                    newAiUser.setUsername("groc");
+                    newAiUser.setName("Groc - AI Fitness Assistant");
+                    newAiUser.setPassword(null); // No password for AI user
+                    User saved = userRepository.save(newAiUser);
+                    logger.info("AI user created successfully with ID: {}", saved.getId());
+                    return saved;
+                });
+        logger.debug("AI user found/created with ID: {}", aiUser.getId());
+        return aiUser;
     }
 
     @Transactional(readOnly = true)

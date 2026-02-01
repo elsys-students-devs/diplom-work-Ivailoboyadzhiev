@@ -10,5 +10,7 @@
     <include file="db/changelog/003-user-logged-meals.xml"/>
     <include file="db/changelog/004-fitness-programs-exercises.xml"/>
     <include file="db/changelog/005-chat-messages.xml"/>
+    <include file="db/changelog/006-user-login-streak.xml"/>
 
 </databaseChangeLog>
+

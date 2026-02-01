@@ -35,6 +35,7 @@ export interface UserDto {
   email: string;
   username?: string | null;
   name?: string | null;
+  streak?: number;
 }
 
 export const login = async (email: string, password: string): Promise<LoginResponse> => {

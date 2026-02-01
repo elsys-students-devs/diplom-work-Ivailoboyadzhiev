@@ -30,7 +30,7 @@ interface SummaryCardsProps {
 export const SummaryCards: React.FC<SummaryCardsProps> = ({
   workouts = 0,
   messages = 0,
-  streak = 7,
+  streak = 0,
 }) => {
   return (
     <div className="summary-cards">
