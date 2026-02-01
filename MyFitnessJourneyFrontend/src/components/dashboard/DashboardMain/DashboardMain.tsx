@@ -14,6 +14,7 @@ interface DashboardMainProps {
   targetCarbs: number;
   targetFat: number;
   unreadMessages: number;
+  streak: number;
   onLogMeal: () => void;
 }
 
@@ -27,13 +28,14 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
   targetCarbs,
   targetFat,
   unreadMessages,
+  streak,
   onLogMeal
 }) => {
   const navigate = useNavigate();
 
   return (
     <div className="dashboard-content">
-      <SummaryCards messages={unreadMessages} />
+      <SummaryCards messages={unreadMessages} streak={streak} />
       
       <NutritionSummary
         calories={calories}

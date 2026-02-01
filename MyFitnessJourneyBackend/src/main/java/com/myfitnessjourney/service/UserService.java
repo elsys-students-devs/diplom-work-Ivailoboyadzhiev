@@ -15,10 +15,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @AllArgsConstructor
 public class UserService {
+
+    private static final int STREAK_RESET_HOURS = 24;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -66,7 +72,59 @@ public class UserService {
                 });
 
         logger.info("Login successful for user: {}", user.getEmail());
-        return new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName());
+        user = updateLoginStreak(user);
+        return toUserDto(user);
+    }
+
+    @Transactional
+    public User updateLoginStreak(User user) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime lastLogin = user.getLastLoginAt();
+        Integer currentStreak = user.getLoginStreak() != null ? user.getLoginStreak() : 0;
+
+        int newStreak;
+        if (lastLogin == null) {
+            newStreak = 1;
+        } else {
+            java.time.LocalDate lastDate = lastLogin.toLocalDate();
+            java.time.LocalDate today = now.toLocalDate();
+            if (lastDate.equals(today)) {
+                newStreak = currentStreak;
+            } else if (lastDate.equals(today.minusDays(1))) {
+                newStreak = currentStreak + 1;
+            } else {
+                newStreak = 1;
+            }
+        }
+
+        user.setLastLoginAt(now);
+        user.setLoginStreak(newStreak);
+        return userRepository.save(user);
+    }
+
+    public int getEffectiveStreak(User user) {
+        if (user.getLastLoginAt() == null) {
+            return 0;
+        }
+        long hoursSinceLogin = ChronoUnit.HOURS.between(user.getLastLoginAt(), LocalDateTime.now());
+        if (hoursSinceLogin >= STREAK_RESET_HOURS) {
+            return 0;
+        }
+        return user.getLoginStreak() != null ? user.getLoginStreak() : 0;
+    }
+
+    public LoginResponse.UserDto getUserDto(User user) {
+        LoginResponse.UserDto dto = new LoginResponse.UserDto();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setUsername(user.getUsername());
+        dto.setName(user.getName());
+        dto.setStreak(getEffectiveStreak(user));
+        return dto;
+    }
+
+    private LoginResponse.UserDto toUserDto(User user) {
+        return getUserDto(user);
     }
 
     public LoginResponse.UserDto register(String email, String password, String username) {
@@ -101,7 +159,8 @@ public class UserService {
         user = userRepository.save(user);
 
         logger.info("Registration successful for user: {} with username: {}", user.getEmail(), user.getUsername());
-        return new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName());
+        user = updateLoginStreak(user);
+        return toUserDto(user);
     }
 
     public User getUserByEmail(String email) {

@@ -62,12 +62,8 @@ public class AuthController {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
         
-        LoginResponse.UserDto userDto = new LoginResponse.UserDto(
-                user.getId(), 
-                user.getEmail(), 
-                user.getUsername(), 
-                user.getName()
-        );
+        user = userService.updateLoginStreak(user);
+        LoginResponse.UserDto userDto = userService.getUserDto(user);
         
         logger.info("Login successful for user: {}, session created", request.getEmail());
         
@@ -112,7 +108,7 @@ public class AuthController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         
-        return ResponseEntity.ok(new LoginResponse.UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName()));
+        return ResponseEntity.ok(userService.getUserDto(user));
     }
 
     @GetMapping("/oauth2/success")
@@ -186,6 +182,8 @@ public class AuthController {
                 if (finalPicture != null) user.setPictureUrl(finalPicture);
                 user = userRepository.save(user);
             }
+
+            user = userService.updateLoginStreak(user);
             
             logger.info("OAuth2 login successful for user: {}", user.getEmail());
             // Redirect to frontend - session is automatically created by Spring Security

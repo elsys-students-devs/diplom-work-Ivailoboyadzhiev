@@ -20,6 +20,9 @@ class GroqAiServiceTest {
     @Mock
     private DietService dietService;
 
+    @Mock
+    private GroqContextBuilder groqContextBuilder;
+
     private GroqAiService groqAiService;
 
     @BeforeEach
@@ -27,6 +30,7 @@ class GroqAiServiceTest {
         groqAiService = new GroqAiService(
                 fitnessProgramService,
                 dietService,
+                groqContextBuilder,
                 "https://api.groq.com/openai/v1",
                 "",
                 "llama-3.1-8b-instant"

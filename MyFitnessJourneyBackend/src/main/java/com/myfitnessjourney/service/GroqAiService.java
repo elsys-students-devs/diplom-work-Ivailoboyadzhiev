@@ -17,9 +17,14 @@ import java.util.List;
 @Slf4j
 public class GroqAiService {
 
+    private static final double DEFAULT_TEMPERATURE = 0.7;
+    private static final int MAX_TOKENS = 1000;
+    private static final int LOG_MESSAGE_PREVIEW_LENGTH = 50;
+
     private final WebClient webClient;
     private final FitnessProgramService fitnessProgramService;
     private final DietService dietService;
+    private final GroqContextBuilder groqContextBuilder;
     private final String apiKey;
     private final String baseUrl;
     private final String model;
@@ -27,11 +32,13 @@ public class GroqAiService {
     public GroqAiService(
             FitnessProgramService fitnessProgramService,
             DietService dietService,
+            GroqContextBuilder groqContextBuilder,
             @Value("${groq.api.base-url:https://api.groq.com/openai/v1}") String baseUrl,
             @Value("${groq.api.key:}") String apiKey,
             @Value("${groq.api.model:llama-3.1-8b-instant}") String model) {
         this.fitnessProgramService = fitnessProgramService;
         this.dietService = dietService;
+        this.groqContextBuilder = groqContextBuilder;
         this.baseUrl = baseUrl;
         this.model = model;
         
@@ -60,7 +67,7 @@ public class GroqAiService {
         }
         
         try {
-            log.info("Generating AI response for message: {}", userMessage.substring(0, Math.min(50, userMessage.length())));
+            log.info("Generating AI response for message: {}", userMessage.substring(0, Math.min(LOG_MESSAGE_PREVIEW_LENGTH, userMessage.length())));
             
             // Get fitness programs and diets data
             log.debug("Fetching fitness programs and diets...");
@@ -68,8 +75,8 @@ public class GroqAiService {
             List<DietDto> diets = dietService.getAllDietsWithMeals();
             log.debug("Found {} fitness programs and {} diets", fitnessPrograms.size(), diets.size());
 
-            // Build context with available data
-            String context = buildContext(fitnessPrograms, diets);
+            // Build context with available data (cached by program/diet IDs)
+            String context = groqContextBuilder.buildContext(fitnessPrograms, diets);
             log.debug("Context built, length: {}", context.length());
 
             // Build system prompt
@@ -86,12 +93,11 @@ public class GroqAiService {
                     new GroqChatMessage("system", systemPrompt),
                     new GroqChatMessage("user", userPrompt)
             ));
-            request.setTemperature(0.7);
-            request.setMaxTokens(1000);
+            request.setTemperature(DEFAULT_TEMPERATURE);
+            request.setMaxTokens(MAX_TOKENS);
 
             log.info("Calling Groq API at {} with model {}", baseUrl, model);
-            
-            // Make API call
+
             GroqChatResponse response = webClient.post()
                     .uri("/chat/completions")
                     .bodyValue(request)
@@ -121,56 +127,23 @@ public class GroqAiService {
             return "Извинявам се, не мога да се свържа с AI услугата. Моля опитайте отново по-късно.";
         } catch (Exception e) {
             log.error("Unexpected error calling Groq API: {}", e.getMessage(), e);
-            e.printStackTrace();
             return "Извинявам се, възникна неочаквана грешка. Моля опитайте отново по-късно.";
         }
     }
 
-    private String buildContext(List<FitnessProgramDto> fitnessPrograms, List<DietDto> diets) {
-        StringBuilder context = new StringBuilder();
-
-        context.append("Достъпни фитнес програми:\n");
-        for (FitnessProgramDto program : fitnessPrograms) {
-            context.append(String.format("- %s (ID: %d): %s\n", 
-                program.getName(), program.getId(), program.getDescription()));
-            if (program.getBenefits() != null) {
-                context.append(String.format("  Предимства: %s\n", program.getBenefits()));
-            }
-            if (program.getExercises() != null && !program.getExercises().isEmpty()) {
-                context.append("  Упражнения:\n");
-                program.getExercises().forEach(exercise -> {
-                    context.append(String.format("    - %s (%s)", exercise.getName(), exercise.getDayOfWeek()));
-                    if (exercise.getSets() != null && exercise.getReps() != null) {
-                        context.append(String.format(": %d серии x %d повторения", 
-                            exercise.getSets(), exercise.getReps()));
-                    }
-                    context.append("\n");
-                });
-            }
-        }
-
-        context.append("\nДостъпни диети:\n");
-        for (DietDto diet : diets) {
-            context.append(String.format("- %s (ID: %d): %s\n", 
-                diet.getName(), diet.getId(), diet.getDescription()));
-            if (diet.getMeals() != null && !diet.getMeals().isEmpty()) {
-                context.append("  Ястия:\n");
-                diet.getMeals().forEach(meal -> {
-                    context.append(String.format("    - %s: %s\n", meal.getName(), meal.getDescription()));
-                });
-            }
-        }
-
-        return context.toString();
-    }
-
     private String buildSystemPrompt(String context) {
-        return "Ти си Groc, AI фитнес асистент в приложението MyFitnessJourney. " +
-                "Твоята роля е да помагаш на потребителите с въпроси относно фитнес програми и диети. " +
-                "Отговаряй на български език, бъди полезен, приятелски и професионален.\n\n" +
-                "Имаш достъп до следната информация:\n\n" + context + "\n\n" +
-                "Когато потребителят пита за конкретна фитнес програма или диета, използвай предоставената информация. " +
-                "Ако не знаеш нещо, признай го честно. Винаги бъди полезен и подкрепящ.";
+        return """
+            Ти си Groc, AI фитнес асистент в приложението MyFitnessJourney.
+            Твоята роля е да помагаш на потребителите с въпроси относно фитнес програми и диети.
+            Отговаряй на български език, бъди полезен, приятелски и професионален.
+
+            Имаш достъп до следната информация:
+
+            %s
+
+            Когато потребителят пита за конкретна фитнес програма или диета, използвай предоставената информация.
+            Ако не знаеш нещо, признай го честно. Винаги бъди полезен и подкрепящ.
+            """.formatted(context);
     }
 
 }

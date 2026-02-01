@@ -65,7 +65,10 @@ public class ChatService {
                 // Generate AI response
                 logger.info("Calling Groq AI service...");
                 String aiResponse = groqAiService.generateResponse(request.getContent(), conversationHistory);
-                logger.info("AI response generated: {}", aiResponse.substring(0, Math.min(100, aiResponse.length())));
+                String responsePreview = aiResponse != null && !aiResponse.isEmpty()
+                    ? aiResponse.substring(0, Math.min(100, aiResponse.length()))
+                    : "(empty)";
+                logger.info("AI response generated: {}", responsePreview);
                 
                 // Save AI response
                 ChatMessage aiMessage = ChatMessage.builder()
