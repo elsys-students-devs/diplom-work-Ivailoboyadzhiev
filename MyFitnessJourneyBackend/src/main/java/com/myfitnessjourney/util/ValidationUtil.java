@@ -31,9 +31,15 @@ public class ValidationUtil {
         if (password.length() > 50) {
             throw new WeakPasswordException("Password must be less than 50 characters");
         }
-        // Check for at least one letter and one number
-        boolean hasLetter = password.matches(".*[A-Za-z].*");
-        boolean hasNumber = password.matches(".*[0-9].*");
+        // Check for at least one letter and one number (avoid ReDoS from regex on user input)
+        boolean hasLetter = false;
+        boolean hasNumber = false;
+        for (int i = 0; i < password.length(); i++) {
+            char c = password.charAt(i);
+            if (Character.isLetter(c)) hasLetter = true;
+            if (Character.isDigit(c)) hasNumber = true;
+            if (hasLetter && hasNumber) break;
+        }
         if (!hasLetter || !hasNumber) {
             throw new WeakPasswordException("Password must contain at least one letter and one number");
         }
