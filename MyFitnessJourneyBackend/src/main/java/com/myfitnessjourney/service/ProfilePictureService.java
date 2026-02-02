@@ -57,12 +57,16 @@ public class ProfilePictureService {
         return "profiles/" + filename;
     }
 
-    public Path getProfilePicturePath(String relativePath) {
-        if (relativePath == null || relativePath.isBlank() || relativePath.contains("..")) {
+    public Path getProfilePicturePath(String filename) {
+        if (filename == null || filename.isBlank() || filename.contains("..")) {
             return null;
         }
-        Path path = profilesDir.resolve(Paths.get(relativePath).getFileName());
-        return path.normalize();
+        // Resolve only the file name within the profiles directory to prevent path traversal
+        Path candidate = profilesDir.resolve(Paths.get(filename).getFileName()).normalize();
+        if (!candidate.startsWith(profilesDir.normalize())) {
+            return null;
+        }
+        return candidate;
     }
 
     private static String getExtension(String contentType) {

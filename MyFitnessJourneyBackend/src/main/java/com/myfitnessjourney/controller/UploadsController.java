@@ -26,7 +26,7 @@ public class UploadsController {
         if (!filename.matches("[a-zA-Z0-9._-]+")) {
             return ResponseEntity.badRequest().build();
         }
-        Path path = profilePictureService.getProfilePicturePath("profiles/" + filename);
+        Path path = profilePictureService.getProfilePicturePath(filename);
         if (path == null || !path.toFile().exists()) {
             return ResponseEntity.notFound().build();
         }
