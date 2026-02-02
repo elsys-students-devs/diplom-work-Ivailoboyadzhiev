@@ -21,6 +21,7 @@ public class LoginResponse {
         private String username;
         private String name;
         private Integer streak;
+        private String pictureUrl;
     }
 }
 

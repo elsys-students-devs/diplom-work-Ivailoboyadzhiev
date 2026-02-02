@@ -7,6 +7,31 @@
 .dashboard-header .header-content {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.dashboard-header-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.dashboard-header-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard-header .header-text {
+  min-width: 0;
 }
 
 .dashboard-header .welcome-text {

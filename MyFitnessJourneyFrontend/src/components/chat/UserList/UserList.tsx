@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { ChatUserDto } from '../../../types/chat';
+import { getProfilePictureUrl } from '../../../services/authService';
 import './UserList.css';
 
 interface UserListProps {
@@ -19,6 +20,8 @@ export const UserList: React.FC<UserListProps> = ({
   onSearchChange,
   isLoading
 }) => {
+  const [failedImageIds, setFailedImageIds] = useState<Set<number>>(new Set());
+
   const getDisplayName = (user: ChatUserDto): string => {
     return user.username || user.name || 'Потребител';
   };
@@ -27,6 +30,10 @@ export const UserList: React.FC<UserListProps> = ({
     const name = getDisplayName(user);
     return name.charAt(0).toUpperCase();
   };
+
+  const handleImageError = useCallback((userId: number) => {
+    setFailedImageIds((prev) => new Set(prev).add(userId));
+  }, []);
 
   return (
     <div className="user-list-container">
@@ -63,15 +70,17 @@ export const UserList: React.FC<UserListProps> = ({
             {searchQuery ? 'Няма намерени потребители' : 'Няма чатове'}
           </div>
         ) : (
-          users.map((user) => (
+          users.map((user) => {
+            const avatarUrl = getProfilePictureUrl(user.pictureUrl);
+            return (
             <div
               key={user.id}
               className={`user-item ${selectedUserId === user.id ? 'selected' : ''}`}
               onClick={() => onSelectUser(user)}
             >
               <div className="user-avatar">
-                {user.pictureUrl ? (
-                  <img src={user.pictureUrl} alt={getDisplayName(user)} />
+                {avatarUrl && !failedImageIds.has(user.id) ? (
+                  <img src={avatarUrl} alt={getDisplayName(user)} onError={() => handleImageError(user.id)} />
                 ) : (
                   <span>{getInitial(user)}</span>
                 )}
@@ -85,7 +94,8 @@ export const UserList: React.FC<UserListProps> = ({
                 </div>
               )}
             </div>
-          ))
+          );
+          })
         )}
       </div>
     </div>

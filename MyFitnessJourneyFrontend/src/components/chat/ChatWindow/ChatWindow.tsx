@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatUserDto, ChatMessageDto } from '../../../types/chat';
+import { getProfilePictureUrl } from '../../../services/authService';
 import { MessageList } from '../MessageList';
 import './ChatWindow.css';
 
@@ -19,6 +20,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   isLoading
 }) => {
   const [messageInput, setMessageInput] = useState('');
+  const [avatarLoadError, setAvatarLoadError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,6 +33,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [messages]);
 
   useEffect(() => {
+    setAvatarLoadError(false);
     if (selectedUser && inputRef.current) {
       inputRef.current.focus();
     }
@@ -74,12 +77,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     );
   }
 
+  const avatarUrl = getProfilePictureUrl(selectedUser.pictureUrl);
+
   return (
     <div className="chat-window-container">
       <div className="chat-window-header">
         <div className="chat-user-avatar">
-          {selectedUser.pictureUrl ? (
-            <img src={selectedUser.pictureUrl} alt={getDisplayName(selectedUser)} />
+          {avatarUrl && !avatarLoadError ? (
+            <img src={avatarUrl} alt={getDisplayName(selectedUser)} onError={() => setAvatarLoadError(true)} />
           ) : (
             <span>{getInitial(selectedUser)}</span>
           )}

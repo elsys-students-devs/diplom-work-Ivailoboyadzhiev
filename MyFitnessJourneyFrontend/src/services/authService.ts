@@ -36,6 +36,17 @@ export interface UserDto {
   username?: string | null;
   name?: string | null;
   streak?: number;
+  pictureUrl?: string | null;
+}
+
+export interface UpdateProfileRequest {
+  username?: string;
+  email?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
 }
 
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
@@ -78,7 +89,36 @@ export const getCurrentUser = async (): Promise<UserDto | null> => {
 };
 
 export const logout = async () => {
-  localStorage.removeItem('access_token'); // Remove any leftover token
+  localStorage.removeItem('access_token');
+};
+
+export const updateProfile = async (data: UpdateProfileRequest): Promise<UserDto> => {
+  const response = await api.put<UserDto>('/auth/profile', data);
+  return response.data;
+};
+
+export const changePassword = async (data: ChangePasswordRequest): Promise<UserDto> => {
+  const response = await api.put<UserDto>('/auth/password', data);
+  return response.data;
+};
+
+export const uploadProfilePicture = async (file: File): Promise<UserDto> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  // Use axios directly without api instance so Content-Type is not application/json.
+  // Browser will set multipart/form-data with boundary automatically.
+  const response = await axios.post<UserDto>(`${API_BASE_URL}/auth/profile/picture`, formData, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+/** Build URL for profile picture. OAuth URLs as-is; uploaded pics use relative path so they load from same origin (proxy/nginx). */
+export const getProfilePictureUrl = (pictureUrl: string | null | undefined): string | null => {
+  if (!pictureUrl || !pictureUrl.trim()) return null;
+  if (pictureUrl.startsWith('http://') || pictureUrl.startsWith('https://')) return pictureUrl;
+  // Relative path so img loads from same host (dev proxy / production nginx forward /api to backend)
+  return `/api/uploads/${pictureUrl}`;
 };
 
 export default api;

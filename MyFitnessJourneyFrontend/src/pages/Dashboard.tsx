@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUser } from '../services/authService';
+import { getCurrentUser, getProfilePictureUrl } from '../services/authService';
 import { createMeal, getAllDiets, CreateMealRequest } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
 import { getUnreadCount } from '../services/chatService';
@@ -15,6 +15,7 @@ import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
   const [username, setUsername] = useState<string>('User');
+  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   
@@ -47,6 +48,7 @@ const Dashboard: React.FC = () => {
                              (user.email ? user.email.split('@')[0] : 'User');
           setUsername(displayName);
           setStreak(user.streak ?? 0);
+          setPictureUrl(getProfilePictureUrl(user.pictureUrl));
         }
       } catch (error) {
         console.error('Failed to fetch user:', error);
@@ -162,7 +164,7 @@ const Dashboard: React.FC = () => {
       <HamburgerMenu open={menuOpen} onToggle={() => setMenuOpen(!menuOpen)} />
       <DropdownMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <DashboardHeader username={username} />
+      <DashboardHeader username={username} pictureUrl={pictureUrl} />
 
       <DashboardMain
         calories={calories}
