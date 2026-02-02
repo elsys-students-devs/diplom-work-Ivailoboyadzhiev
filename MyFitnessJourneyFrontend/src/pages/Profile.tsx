@@ -158,7 +158,6 @@ const Profile: React.FC = () => {
   };
 
   const pictureUrl = user ? getProfilePictureUrl(user.pictureUrl) : null;
-  const hasPassword = user?.email != null; // OAuth-only users may not have password set on frontend; backend will reject change
 
   if (loading) {
     return (
