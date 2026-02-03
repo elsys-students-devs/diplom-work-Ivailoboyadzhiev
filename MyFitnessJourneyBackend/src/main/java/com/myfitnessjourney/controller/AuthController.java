@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -103,25 +104,22 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<LoginResponse.UserDto> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+    public ResponseEntity<LoginResponse.UserDto> getCurrentUser(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
         }
-        
-        // Get user from UserDetails instead of querying by email
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-        
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
-        
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         return ResponseEntity.ok(userService.getUserDto(user));
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<LoginResponse.UserDto> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
-        User currentUser = getCurrentUserOrThrow();
+    public ResponseEntity<LoginResponse.UserDto> updateProfile(
+            @Valid @RequestBody UpdateProfileRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         LoginResponse.UserDto updated = userService.updateProfile(
                 currentUser,
                 request.getUsername(),
@@ -131,8 +129,11 @@ public class AuthController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<LoginResponse.UserDto> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
-        User currentUser = getCurrentUserOrThrow();
+    public ResponseEntity<LoginResponse.UserDto> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         LoginResponse.UserDto updated = userService.changePassword(
                 currentUser,
                 request.getCurrentPassword(),
@@ -142,22 +143,14 @@ public class AuthController {
     }
 
     @PostMapping(value = "/profile/picture", consumes = "multipart/form-data")
-    public ResponseEntity<LoginResponse.UserDto> uploadProfilePicture(@RequestPart("file") MultipartFile file) throws IOException {
-        User currentUser = getCurrentUserOrThrow();
+    public ResponseEntity<LoginResponse.UserDto> uploadProfilePicture(
+            @RequestPart("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         String relativePath = profilePictureService.saveProfilePicture(currentUser.getId(), file);
         LoginResponse.UserDto updated = userService.updatePictureUrl(currentUser, relativePath);
         return ResponseEntity.ok(updated);
-    }
-
-    private User getCurrentUserOrThrow() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            throw new org.springframework.security.access.AccessDeniedException("Authentication required");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 
     @GetMapping("/oauth2/success")

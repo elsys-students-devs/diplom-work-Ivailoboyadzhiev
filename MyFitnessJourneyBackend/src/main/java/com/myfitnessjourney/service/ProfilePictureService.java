@@ -31,10 +31,7 @@ public class ProfilePictureService {
             throw new IllegalStateException("Could not create upload directory", e);
         }
     }
-
-    
-     //Saves the uploaded file for the given user and returns the relative URL path
-     
+   
     public String saveProfilePicture(Long userId, MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is required");
