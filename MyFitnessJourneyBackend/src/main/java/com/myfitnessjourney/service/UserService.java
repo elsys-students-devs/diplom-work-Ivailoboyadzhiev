@@ -120,6 +120,7 @@ public class UserService {
         dto.setUsername(user.getUsername());
         dto.setName(user.getName());
         dto.setStreak(getEffectiveStreak(user));
+        dto.setPictureUrl(user.getPictureUrl());
         return dto;
     }
 
@@ -169,6 +170,50 @@ public class UserService {
                     logger.warn("User not found with email: {}", email);
                     return new com.myfitnessjourney.exception.UserNotFoundException("User not found with email: " + email);
                 });
+    }
+
+    @Transactional
+    public LoginResponse.UserDto updateProfile(User currentUser, String username, String email) {
+        if (username != null && !username.isBlank()) {
+            ValidationUtil.validateUsername(username.trim());
+            if (!username.trim().equals(currentUser.getUsername()) && userRepository.existsByUsername(username.trim())) {
+                throw new UsernameAlreadyExistsException("Username already exists");
+            }
+            currentUser.setUsername(username.trim());
+        }
+        if (email != null && !email.isBlank()) {
+            ValidationUtil.validateEmail(email.trim());
+            if (!email.trim().equalsIgnoreCase(currentUser.getEmail()) && userRepository.existsByEmail(email.trim())) {
+                throw new EmailAlreadyExistsException("Email already exists");
+            }
+            currentUser.setEmail(email.trim());
+        }
+        User saved = userRepository.save(currentUser);
+        logger.info("Profile updated for user: {}", saved.getEmail());
+        return getUserDto(saved);
+    }
+
+    @Transactional
+    public LoginResponse.UserDto changePassword(User currentUser, String currentPassword, String newPassword) {
+        if (currentUser.getPassword() == null) {
+            throw new InvalidLoginException("This account uses social login. Password cannot be changed.");
+        }
+        if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+            throw new InvalidLoginException("Current password is incorrect");
+        }
+        ValidationUtil.validatePassword(newPassword);
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
+        User saved = userRepository.save(currentUser);
+        logger.info("Password changed for user: {}", saved.getEmail());
+        return getUserDto(saved);
+    }
+
+    @Transactional
+    public LoginResponse.UserDto updatePictureUrl(User user, String pictureUrl) {
+        user.setPictureUrl(pictureUrl);
+        User saved = userRepository.save(user);
+        logger.info("Profile picture updated for user: {}", saved.getEmail());
+        return getUserDto(saved);
     }
 }
 

@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Diets from './pages/Diets';
 import FitnessPrograms from './pages/FitnessPrograms';
 import Chat from './pages/Chat';
+import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -48,6 +49,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Chat />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } 
           />

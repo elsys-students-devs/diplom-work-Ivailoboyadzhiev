@@ -1,10 +1,13 @@
 package com.myfitnessjourney.controller;
 
+import com.myfitnessjourney.dto.ChangePasswordRequest;
 import com.myfitnessjourney.dto.LoginRequest;
 import com.myfitnessjourney.dto.LoginResponse;
+import com.myfitnessjourney.dto.UpdateProfileRequest;
 import com.myfitnessjourney.entity.User;
 import com.myfitnessjourney.exception.UserNotFoundException;
 import com.myfitnessjourney.repository.UserRepository;
+import com.myfitnessjourney.service.ProfilePictureService;
 import com.myfitnessjourney.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -23,12 +27,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -40,6 +48,7 @@ public class AuthController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ProfilePictureService profilePictureService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
@@ -95,20 +104,53 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<LoginResponse.UserDto> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+    public ResponseEntity<LoginResponse.UserDto> getCurrentUser(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
         }
-        
-        // Get user from UserDetails instead of querying by email
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-        
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
-        
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         return ResponseEntity.ok(userService.getUserDto(user));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<LoginResponse.UserDto> updateProfile(
+            @Valid @RequestBody UpdateProfileRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
+        LoginResponse.UserDto updated = userService.updateProfile(
+                currentUser,
+                request.getUsername(),
+                request.getEmail()
+        );
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<LoginResponse.UserDto> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
+        LoginResponse.UserDto updated = userService.changePassword(
+                currentUser,
+                request.getCurrentPassword(),
+                request.getNewPassword()
+        );
+        return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping(value = "/profile/picture", consumes = "multipart/form-data")
+    public ResponseEntity<LoginResponse.UserDto> uploadProfilePicture(
+            @RequestPart("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        User currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
+        String relativePath = profilePictureService.saveProfilePicture(currentUser.getId(), file);
+        LoginResponse.UserDto updated = userService.updatePictureUrl(currentUser, relativePath);
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/oauth2/success")

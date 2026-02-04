@@ -43,10 +43,22 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => 
       <div className="dropdown-menu-item" onClick={() => { navigate('/chat'); onClose(); }}>
         Messages
       </div>
-      <div className="dropdown-menu-item">Profile</div>
+      <div className="dropdown-menu-item" onClick={() => { navigate('/profile'); onClose(); }}>
+        Profile
+      </div>
       <div className="dropdown-menu-item">Settings</div>
       <div className="dropdown-menu-item">Help</div>
-      <div className="dropdown-menu-item">Logout</div>
+      <div className="dropdown-menu-item" onClick={async () => {
+        try {
+          const { logout } = await import('../../services/authService');
+          await logout();
+        } finally {
+          navigate('/login');
+          onClose();
+        }
+      }}>
+        Logout
+      </div>
     </div>
   );
 };
