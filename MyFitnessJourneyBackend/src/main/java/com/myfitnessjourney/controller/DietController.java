@@ -7,7 +7,9 @@ import com.myfitnessjourney.entity.Meal;
 import com.myfitnessjourney.mapper.MealMapper;
 import com.myfitnessjourney.service.DietService;
 import com.myfitnessjourney.service.MealService;
+import com.myfitnessjourney.util.LocalizationUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/diets")
@@ -45,13 +48,18 @@ public class DietController {
     public ResponseEntity<List<MealDto>> getMealsByDietId(@PathVariable Long id) {
         List<Meal> meals = mealService.getMealsByDietId(id);
         List<MealDto> mealDtos = mealMapper.toDtoList(meals);
+        Locale locale = LocaleContextHolder.getLocale();
+        for (int i = 0; i < mealDtos.size() && i < meals.size(); i++) {
+            LocalizationUtil.applyToMeal(mealDtos.get(i), meals.get(i), locale);
+        }
         return ResponseEntity.ok(mealDtos);
     }
 
     @PostMapping("/meals")
-    public ResponseEntity<MealDto> createMeal(@Valid @RequestBody CreateMealRequest request) { 
+    public ResponseEntity<MealDto> createMeal(@Valid @RequestBody CreateMealRequest request) {
         Meal savedMeal = mealService.createMeal(request);
         MealDto mealDto = mealMapper.toDto(savedMeal);
+        LocalizationUtil.applyToMeal(mealDto, savedMeal, LocaleContextHolder.getLocale());
         return ResponseEntity.ok(mealDto);
     }
 }

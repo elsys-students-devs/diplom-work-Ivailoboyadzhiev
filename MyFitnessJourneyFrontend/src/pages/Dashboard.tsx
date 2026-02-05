@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getCurrentUser, getProfilePictureUrl } from '../services/authService';
 import { createMeal, getAllDiets, CreateMealRequest } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
@@ -14,6 +15,7 @@ import { useToast } from '../components/common/useToast';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState<string>('User');
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -140,12 +142,12 @@ const Dashboard: React.FC = () => {
       await fetchNutritionSummary();
       
       setShowMealModal(false);
-      showSuccess('Ястието е създадено и логнато успешно!');
+      showSuccess(t('dashboard.mealCreated'));
       
       // Note: Navigation is handled by the modal or component that triggers this
     } catch (error) {
       console.error('Failed to create meal:', error);
-      showError('Грешка при създаване на ястието. Моля опитайте отново.');
+      showError(t('dashboard.mealCreateError'));
     } finally {
       setIsCreating(false);
     }
@@ -154,7 +156,7 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <Loading message="Loading..." />
+        <Loading message={t('dashboard.loading')} />
       </div>
     );
   }

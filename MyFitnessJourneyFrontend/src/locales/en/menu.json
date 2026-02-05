@@ -1,0 +1,13 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "diets": "Diets",
+    "fitnessPrograms": "Fitness Programs",
+    "messages": "Messages",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Logout",
+    "toggleMenu": "Toggle menu"
+  }
+}

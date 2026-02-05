@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { ExerciseDto, DayOfWeek, DAY_LABELS, DAY_ORDER } from '../../../types/fitnessProgram';
+import { useTranslation } from 'react-i18next';
+import { ExerciseDto, DayOfWeek, DAY_ORDER } from '../../../types/fitnessProgram';
 import { ExerciseCard } from '../ExerciseCard';
 import './ExercisesGrid.css';
 
@@ -9,6 +10,8 @@ interface ExercisesGridProps {
 }
 
 export const ExercisesGrid: React.FC<ExercisesGridProps> = ({ exercises, search }) => {
+  const { t } = useTranslation();
+
   const filteredAndGroupedExercises = useMemo(() => {
     const filtered = exercises.filter(exercise =>
       exercise.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -36,15 +39,15 @@ export const ExercisesGrid: React.FC<ExercisesGridProps> = ({ exercises, search 
 
     return sortedDays.map(day => ({
       day: day as DayOfWeek,
-      dayLabel: DAY_LABELS[day as DayOfWeek],
+      dayLabel: t(`fitness.days.${(day as string).toLowerCase()}`),
       exercises: grouped[day]
     }));
-  }, [exercises, search]);
+  }, [exercises, search, t]);
 
   if (filteredAndGroupedExercises.length === 0 && search) {
     return (
       <div className="no-results">
-        <p>Няма намерени упражнения за "{search}"</p>
+        <p>{t('fitness.noExercisesFor')} "{search}"</p>
       </div>
     );
   }

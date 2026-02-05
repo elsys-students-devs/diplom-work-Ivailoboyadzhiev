@@ -1,0 +1,40 @@
+{
+  "dashboard": {
+    "welcomeBack": "Welcome back",
+    "motivational": "Let's crush your fitness goals today!",
+    "loading": "Loading...",
+    "dietPlans": "Diet Plans",
+    "dietPlansSub": "View meal plans & nutrition",
+    "fitnessPrograms": "Fitness Programs",
+    "fitnessProgramsSub": "Workouts & training",
+    "messages": "Messages",
+    "messagesSub": "Chat with trainer",
+    "todayNutrition": "Today's Nutrition",
+    "logMeal": "Log Meal",
+    "calories": "CALORIES",
+    "protein": "PROTEIN",
+    "carbs": "CARBS",
+    "fat": "FAT",
+    "workouts": "WORKOUTS",
+    "workoutsCompleted": "completed",
+    "messagesUnread": "unread",
+    "streak": "STREAK",
+    "streakDays": "days",
+    "mealCreated": "Meal created and logged successfully!",
+    "mealCreateError": "Error creating meal. Please try again."
+  },
+  "createMeal": {
+    "title": "Create new meal",
+    "mealName": "Meal name *",
+    "description": "Description",
+    "calories": "Calories *",
+    "protein": "Protein (g) *",
+    "carbs": "Carbs (g) *",
+    "fat": "Fat (g) *",
+    "fiber": "Fiber (g)",
+    "sugar": "Sugar (g)",
+    "cancel": "Cancel",
+    "submit": "Create and log",
+    "submitting": "Creating..."
+  }
+}

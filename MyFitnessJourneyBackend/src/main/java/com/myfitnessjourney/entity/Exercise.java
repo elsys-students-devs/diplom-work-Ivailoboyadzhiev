@@ -32,8 +32,14 @@ public class Exercise {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "name_en", length = 100)
+    private String nameEn;
+
     @Column(length = 500)
     private String description;
+
+    @Column(name = "description_en", length = 500)
+    private String descriptionEn;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_week", nullable = false, length = 20)
@@ -53,6 +59,9 @@ public class Exercise {
 
     @Column(name = "muscle_group", length = 100)
     private String muscleGroup; // e.g., "Chest", "Back", "Legs"
+
+    @Column(name = "muscle_group_en", length = 100)
+    private String muscleGroupEnglish;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fitness_program_id", nullable = false)

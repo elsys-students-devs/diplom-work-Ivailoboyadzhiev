@@ -1,0 +1,10 @@
+{
+  "oauth": {
+    "title": "Authenticating...",
+    "subtitle": "Please wait while we process your authentication."
+  },
+  "errors": {
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registerFailed": "Registration failed. Please try again."
+  }
+}

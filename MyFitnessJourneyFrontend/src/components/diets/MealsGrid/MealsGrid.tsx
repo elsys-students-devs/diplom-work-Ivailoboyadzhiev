@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { MealDto } from '../../../services/dietService';
 import { MealCard } from '../MealCard';
 import './MealsGrid.css';
@@ -11,6 +12,7 @@ interface MealsGridProps {
 }
 
 export const MealsGrid: React.FC<MealsGridProps> = ({ meals, search, onLogMeal, loggingMealId }) => {
+  const { t } = useTranslation();
   const filteredMeals = meals.filter(meal =>
     meal.name.toLowerCase().includes(search.toLowerCase()) ||
     (meal.description && meal.description.toLowerCase().includes(search.toLowerCase()))
@@ -19,7 +21,7 @@ export const MealsGrid: React.FC<MealsGridProps> = ({ meals, search, onLogMeal, 
   if (filteredMeals.length === 0 && search) {
     return (
       <div className="no-results">
-        <p>Няма намерени ястия за "{search}"</p>
+        <p>{t('diets.noMealsFor')} "{search}"</p>
       </div>
     );
   }

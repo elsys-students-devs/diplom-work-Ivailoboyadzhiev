@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getCurrentUser, UserDto } from '../services/authService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
@@ -8,6 +9,7 @@ import { ChatMain } from '../components/chat/ChatMain';
 import './Chat.css';
 
 const Chat: React.FC = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<UserDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +32,7 @@ const Chat: React.FC = () => {
   if (loading) {
     return (
       <div className="chat-container">
-        <Loading message="Зареждане..." />
+        <Loading message={t('chat.loading')} />
       </div>
     );
   }
@@ -39,7 +41,7 @@ const Chat: React.FC = () => {
     return (
       <div className="chat-container">
         <div className="chat-error">
-          <p>Не може да се зареди потребителят. Моля, влезте отново.</p>
+          <p>{t('chat.userError')}</p>
         </div>
       </div>
     );
@@ -51,8 +53,8 @@ const Chat: React.FC = () => {
       <DropdownMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <ChatHeader 
-        title="Съобщения" 
-        subtitle="Разговаряйте с други потребители"
+        title={t('chat.title')} 
+        subtitle={t('chat.subtitle')}
       />
 
       <ChatMain currentUserId={user.id} />

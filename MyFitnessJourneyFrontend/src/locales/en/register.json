@@ -1,0 +1,35 @@
+{
+  "register": {
+    "title": "My Fitness Journey",
+    "subtitle": "Create your account to start your fitness journey.",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your username (3-20 characters)",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password (min. 6 characters)",
+    "confirmPassword": "Confirm Password",
+    "confirmPlaceholder": "Confirm your password",
+    "signUp": "Sign Up",
+    "creating": "Creating account...",
+    "or": "or",
+    "continueGoogle": "Continue with Google",
+    "continueFacebook": "Continue with Facebook",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
+  "registerValidation": {
+    "usernameRequired": "Username is required",
+    "usernameMin": "Username must be at least 3 characters long",
+    "usernameMax": "Username must be less than 20 characters",
+    "usernameChars": "Username can only contain letters, numbers, and underscores",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Email must contain @ symbol",
+    "emailValid": "Please enter a valid email address (e.g., user@example.com)",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters long",
+    "passwordMax": "Password must be less than 50 characters",
+    "confirmRequired": "Please confirm your password",
+    "confirmMatch": "Passwords do not match"
+  }
+}

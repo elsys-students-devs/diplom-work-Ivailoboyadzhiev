@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './Login.css';
 
 const OAuth2Callback: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -31,8 +33,8 @@ const OAuth2Callback: React.FC = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>Автентификация...</h1>
-          <p>Моля изчакайте, обработваме вашата автентикация.</p>
+          <h1>{t('oauth.title')}</h1>
+          <p>{t('oauth.subtitle')}</p>
         </div>
       </div>
     </div>

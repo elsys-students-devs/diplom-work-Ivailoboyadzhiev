@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { SearchBar } from '../../common/SearchBar';
 import './DietsHeader.css';
 
@@ -15,6 +16,7 @@ export const DietsHeader: React.FC<DietsHeaderProps> = ({
   hasSelectedDiet
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="diets-header">
@@ -23,13 +25,13 @@ export const DietsHeader: React.FC<DietsHeaderProps> = ({
           <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
       </button>
-      <h1 className="diets-title">Диети и Хранителни Планове</h1>
-      <p className="diets-subtitle">Изберете диета, която отговаря на вашите цели</p>
+      <h1 className="diets-title">{t('diets.title')}</h1>
+      <p className="diets-subtitle">{t('diets.subtitle')}</p>
       
       <SearchBar
         value={searchQuery}
         onChange={onSearchChange}
-        placeholder={hasSelectedDiet ? 'Търси ястие...' : 'Търси диета...'}
+        placeholder={hasSelectedDiet ? t('diets.searchMeal') : t('diets.searchDiet')}
       />
     </div>
   );

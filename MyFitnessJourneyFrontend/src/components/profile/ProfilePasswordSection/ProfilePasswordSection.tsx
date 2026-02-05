@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { changePassword } from '../../../services/authService';
 
 export interface ProfilePasswordSectionProps {
@@ -10,6 +11,7 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
   onSuccess,
   onError,
 }) => {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -18,15 +20,15 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentPassword.trim()) {
-      onError('Въведете текущата парола');
+      onError(t('profile.currentPasswordError'));
       return;
     }
     if (newPassword.length < 6) {
-      onError('Новата парола трябва да е поне 6 символа');
+      onError(t('profile.newPasswordMinError'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      onError('Новата парола и потвърждението не съвпадат');
+      onError(t('profile.passwordMismatch'));
       return;
     }
     setChangingPassword(true);
@@ -35,11 +37,11 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      onSuccess('Паролата е сменена успешно');
+      onSuccess(t('profile.passwordChanged'));
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        'Грешка при смяна на паролата';
+        t('profile.passwordChangeError');
       onError(message);
     } finally {
       setChangingPassword(false);
@@ -48,9 +50,9 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
 
   return (
     <section className="profile-card">
-      <h2 className="profile-card-title">Парола</h2>
+      <h2 className="profile-card-title">{t('profile.password')}</h2>
       <p className="profile-hint">
-        За да смените паролата, въведете текущата парола и новата.
+        {t('profile.passwordHint')}
       </p>
       <form onSubmit={handleChangePassword} className="profile-password-form">
         <input
@@ -58,7 +60,7 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           className="profile-input"
-          placeholder="Текуща парола"
+          placeholder={t('profile.currentPassword')}
           autoComplete="current-password"
         />
         <input
@@ -66,7 +68,7 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           className="profile-input"
-          placeholder="Нова парола"
+          placeholder={t('profile.newPassword')}
           autoComplete="new-password"
           minLength={6}
         />
@@ -75,7 +77,7 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="profile-input"
-          placeholder="Потвърдете новата парола"
+          placeholder={t('profile.confirmPassword')}
           autoComplete="new-password"
         />
         <button
@@ -83,7 +85,7 @@ export const ProfilePasswordSection: React.FC<ProfilePasswordSectionProps> = ({
           className="profile-btn profile-btn-primary"
           disabled={changingPassword}
         >
-          {changingPassword ? 'Зареждане...' : 'Смени паролата'}
+          {changingPassword ? t('profile.changing') : t('profile.changePassword')}
         </button>
       </form>
     </section>

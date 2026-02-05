@@ -28,8 +28,14 @@ public class Meal {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "name_en", length = 100)
+    private String nameEn;
+
     @Column(length = 500)
     private String description;
+
+    @Column(name = "description_en", length = 500)
+    private String descriptionEn;
 
     @Column(nullable = false)
     private Double calories;

@@ -30,11 +30,20 @@ public class Diet {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "name_en", length = 100)
+    private String nameEn;
+
     @Column(nullable = false, length = 1000)
     private String description;
 
+    @Column(name = "description_en", length = 1000)
+    private String descriptionEn;
+
     @Column(length = 500)
     private String benefits;
+
+    @Column(name = "benefits_en", length = 500)
+    private String benefitsEn;
 
     @OneToMany(mappedBy = "diet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Meal> meals;

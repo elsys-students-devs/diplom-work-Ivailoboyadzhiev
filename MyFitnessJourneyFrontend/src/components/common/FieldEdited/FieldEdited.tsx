@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './FieldEdited.css';
 
 export interface FieldEditedProps {
@@ -32,6 +33,7 @@ export const FieldEdited: React.FC<FieldEditedProps> = ({
   inputMinLength,
   inputMaxLength,
 }) => {
+  const { t } = useTranslation();
   return (
     <section className="profile-card">
       <h2 className="profile-card-title">{title}</h2>
@@ -52,14 +54,14 @@ export const FieldEdited: React.FC<FieldEditedProps> = ({
             onClick={onSave}
             disabled={saving}
           >
-            Запази
+            {t('profile.save')}
           </button>
           <button
             type="button"
             className="profile-btn profile-btn-secondary"
             onClick={onCancel}
           >
-            Отказ
+            {t('profile.cancel')}
           </button>
         </div>
       ) : (
@@ -70,7 +72,7 @@ export const FieldEdited: React.FC<FieldEditedProps> = ({
             className="profile-btn profile-btn-link"
             onClick={onStartEdit}
           >
-            Редактирай
+            {t('profile.edit')}
           </button>
         </div>
       )}

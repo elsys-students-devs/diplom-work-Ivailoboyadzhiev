@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FitnessProgramDto } from '../../../types/fitnessProgram';
 import './FitnessProgramCard.css';
 
@@ -8,6 +9,8 @@ interface FitnessProgramCardProps {
 }
 
 export const FitnessProgramCard: React.FC<FitnessProgramCardProps> = ({ program, onClick }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="fitness-program-card" onClick={onClick}>
       <div className="fitness-program-card-header">
@@ -17,7 +20,7 @@ export const FitnessProgramCard: React.FC<FitnessProgramCardProps> = ({ program,
         <p className="fitness-program-card-description">{program.description}</p>
         {program.benefits && (
           <div className="fitness-program-card-benefits">
-            <strong>Предимства:</strong>
+            <strong>{t('fitness.benefits')}</strong>
             <p>{program.benefits}</p>
           </div>
         )}
@@ -29,11 +32,11 @@ export const FitnessProgramCard: React.FC<FitnessProgramCardProps> = ({ program,
             <line x1="16" y1="17" x2="8" y2="17"/>
             <polyline points="10 9 9 9 8 9"/>
           </svg>
-          <span>{program.exercises?.length || 0} упражнения</span>
+          <span>{program.exercises?.length || 0} {t('fitness.exercisesCount')}</span>
         </div>
       </div>
       <div className="fitness-program-card-footer">
-        <span className="view-details">Виж детайли →</span>
+        <span className="view-details">{t('fitness.viewDetails')}</span>
       </div>
     </div>
   );
