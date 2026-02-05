@@ -5,15 +5,19 @@ import com.myfitnessjourney.dto.ExerciseDto;
 import com.myfitnessjourney.dto.FitnessProgramDto;
 import com.myfitnessjourney.dto.MealDto;
 import com.myfitnessjourney.entity.Diet;
+import com.myfitnessjourney.entity.DietTranslation;
 import com.myfitnessjourney.entity.Exercise;
+import com.myfitnessjourney.entity.ExerciseTranslation;
 import com.myfitnessjourney.entity.FitnessProgram;
+import com.myfitnessjourney.entity.FitnessProgramTranslation;
 import com.myfitnessjourney.entity.Meal;
+import com.myfitnessjourney.entity.MealTranslation;
 
 import java.util.List;
 import java.util.Locale;
 
 
-//Applies locale (en/bg) to DTOs. Default entity fields are Bulgarian; *_en fields are English.
+//Applies locale (en/bg) to DTOs using translation tables.
 
 public final class LocalizationUtil {
 
@@ -28,10 +32,12 @@ public final class LocalizationUtil {
 
     public static void applyToDiet(DietDto dto, Diet entity, Locale locale) {
         if (dto == null || entity == null) return;
-        if (useEnglish(locale)) {
-            dto.setName(entity.getNameEn() != null ? entity.getNameEn() : entity.getName());
-            dto.setDescription(entity.getDescriptionEn() != null ? entity.getDescriptionEn() : entity.getDescription());
-            dto.setBenefits(entity.getBenefitsEn() != null ? entity.getBenefitsEn() : entity.getBenefits());
+        String localeCode = useEnglish(locale) ? EN : "bg";
+        DietTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (t != null) {
+            dto.setName(t.getName());
+            dto.setDescription(t.getDescription());
+            dto.setBenefits(t.getBenefits());
         }
         if (dto.getMeals() != null && entity.getMeals() != null) {
             List<Meal> meals = entity.getMeals();
@@ -44,18 +50,22 @@ public final class LocalizationUtil {
 
     public static void applyToMeal(MealDto dto, Meal entity, Locale locale) {
         if (dto == null || entity == null) return;
-        if (useEnglish(locale)) {
-            dto.setName(entity.getNameEn() != null ? entity.getNameEn() : entity.getName());
-            dto.setDescription(entity.getDescriptionEn() != null ? entity.getDescriptionEn() : entity.getDescription());
+        String localeCode = useEnglish(locale) ? EN : "bg";
+        MealTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (t != null) {
+            dto.setName(t.getName());
+            dto.setDescription(t.getDescription());
         }
     }
 
     public static void applyToFitnessProgram(FitnessProgramDto dto, FitnessProgram entity, Locale locale) {
         if (dto == null || entity == null) return;
-        if (useEnglish(locale)) {
-            dto.setName(entity.getNameEn() != null ? entity.getNameEn() : entity.getName());
-            dto.setDescription(entity.getDescriptionEn() != null ? entity.getDescriptionEn() : entity.getDescription());
-            dto.setBenefits(entity.getBenefitsEn() != null ? entity.getBenefitsEn() : entity.getBenefits());
+        String localeCode = useEnglish(locale) ? EN : "bg";
+        FitnessProgramTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (t != null) {
+            dto.setName(t.getName());
+            dto.setDescription(t.getDescription());
+            dto.setBenefits(t.getBenefits());
         }
         if (dto.getExercises() != null && entity.getExercises() != null) {
             List<Exercise> exercises = entity.getExercises();
@@ -68,10 +78,12 @@ public final class LocalizationUtil {
 
     public static void applyToExercise(ExerciseDto dto, Exercise entity, Locale locale) {
         if (dto == null || entity == null) return;
-        if (useEnglish(locale)) {
-            dto.setName(entity.getNameEn() != null ? entity.getNameEn() : entity.getName());
-            dto.setDescription(entity.getDescriptionEn() != null ? entity.getDescriptionEn() : entity.getDescription());
-            dto.setMuscleGroup(entity.getMuscleGroupEnglish() != null ? entity.getMuscleGroupEnglish() : entity.getMuscleGroup());
+        String localeCode = useEnglish(locale) ? EN : "bg";
+        ExerciseTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (t != null) {
+            dto.setName(t.getName());
+            dto.setDescription(t.getDescription());
+            dto.setMuscleGroup(t.getMuscleGroup());
         }
     }
 }

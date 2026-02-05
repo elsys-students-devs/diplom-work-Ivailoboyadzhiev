@@ -54,7 +54,8 @@ public class FitnessProgramService {
     }
 
     public FitnessProgram getFitnessProgramByName(String name) {
-        return fitnessProgramRepository.findByName(name)
+        return fitnessProgramRepository.findFirstByTranslations_LocaleAndTranslations_Name("en", name)
+                .or(() -> fitnessProgramRepository.findFirstByTranslations_LocaleAndTranslations_Name("bg", name))
                 .orElseThrow(() -> new FitnessProgramNotFoundException("Fitness program not found: " + name));
     }
 }

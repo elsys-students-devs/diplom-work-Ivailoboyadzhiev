@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="011-create-fitness-program-translations-table" author="ivo">
+        <createTable tableName="fitness_program_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="fitness_program_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_fp_translation_fp" references="fitness_programs(id)"/>
+            </column>
+            <column name="locale" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benefits" type="VARCHAR(500)"/>
+        </createTable>
+        <addUniqueConstraint tableName="fitness_program_translations" columnNames="fitness_program_id, locale" constraintName="uq_fp_translation_locale"/>
+    </changeSet>
+    <changeSet id="011-migrate-fitness-programs-to-translations-bg" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="fitness_programs" columnName="name"/>
+        </preConditions>
+        <sql>INSERT INTO fitness_program_translations (fitness_program_id, locale, name, description, benefits) SELECT id, 'bg', name, description, benefits FROM fitness_programs</sql>
+    </changeSet>
+    <changeSet id="011-migrate-fitness-programs-to-translations-en" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="fitness_programs" columnName="name_en"/>
+        </preConditions>
+        <sql>INSERT INTO fitness_program_translations (fitness_program_id, locale, name, description, benefits)
+            SELECT id, 'en', COALESCE(name_en, name), COALESCE(description_en, description), COALESCE(benefits_en, benefits) FROM fitness_programs</sql>
+    </changeSet>
+    <changeSet id="011-drop-fitness-program-translation-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="fitness_programs" columnName="name"/>
+        </preConditions>
+        <dropColumn tableName="fitness_programs" columnName="name"/>
+        <dropColumn tableName="fitness_programs" columnName="name_en"/>
+        <dropColumn tableName="fitness_programs" columnName="description"/>
+        <dropColumn tableName="fitness_programs" columnName="description_en"/>
+        <dropColumn tableName="fitness_programs" columnName="benefits"/>
+        <dropColumn tableName="fitness_programs" columnName="benefits_en"/>
+    </changeSet>
+</databaseChangeLog>

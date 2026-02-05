@@ -1,5 +1,6 @@
 package com.myfitnessjourney.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,11 +9,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "meals")
@@ -25,17 +31,9 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Column(name = "name_en", length = 100)
-    private String nameEn;
-
-    @Column(length = 500)
-    private String description;
-
-    @Column(name = "description_en", length = 500)
-    private String descriptionEn;
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<MealTranslation> translations;
 
     @Column(nullable = false)
     private Double calories;
@@ -58,5 +56,17 @@ public class Meal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diet_id", nullable = false)
     private Diet diet;
+
+    public Optional<MealTranslation> getTranslation(String locale) {
+        if (translations == null || locale == null) return Optional.empty();
+        return translations.stream()
+                .filter(t -> locale.equalsIgnoreCase(t.getLocale()))
+                .findFirst();
+    }
+
+    public MealTranslation getDefaultTranslation() {
+        if (translations == null || translations.isEmpty()) return null;
+        return getTranslation("bg").orElse(translations.get(0));
+    }
 }
 

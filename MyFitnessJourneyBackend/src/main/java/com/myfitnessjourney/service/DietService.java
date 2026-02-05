@@ -35,7 +35,7 @@ public class DietService {
 
     public Optional<DietDto> getDietByIdWithMeals(Long id) {
         Locale locale = LocaleContextHolder.getLocale();
-        return dietRepository.findById(id)
+        return dietRepository.findByIdWithMeals(id)
                 .map(diet -> {
                     DietDto dto = dietMapper.toDto(diet);
                     LocalizationUtil.applyToDiet(dto, diet, locale);
@@ -48,7 +48,8 @@ public class DietService {
     }
 
     public Optional<Diet> getDietByName(String name) {
-        return dietRepository.findByName(name);
+        return dietRepository.findFirstByTranslations_LocaleAndTranslations_Name("en", name)
+                .or(() -> dietRepository.findFirstByTranslations_LocaleAndTranslations_Name("bg", name));
     }
 }
 

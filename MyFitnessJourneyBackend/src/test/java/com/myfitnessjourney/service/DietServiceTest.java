@@ -2,6 +2,7 @@ package com.myfitnessjourney.service;
 
 import com.myfitnessjourney.dto.DietDto;
 import com.myfitnessjourney.entity.Diet;
+import com.myfitnessjourney.entity.DietTranslation;
 import com.myfitnessjourney.mapper.DietMapper;
 import com.myfitnessjourney.repository.DietRepository;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,11 @@ class DietServiceTest {
     void getAllDietsWithMeals_whenHasDiets_returnsMappedList() {
         Diet diet = new Diet();
         diet.setId(1L);
-        diet.setName("Test Diet");
+        DietTranslation tr = new DietTranslation();
+        tr.setName("Test Diet");
+        tr.setDescription("desc");
+        tr.setLocale("bg");
+        diet.setTranslations(List.of(tr));
         List<Diet> diets = List.of(diet);
         DietDto dto = new DietDto();
         dto.setId(1L);
@@ -64,7 +69,7 @@ class DietServiceTest {
 
     @Test
     void getDietByIdWithMeals_whenNotFound_returnsEmpty() {
-        when(dietRepository.findById(999L)).thenReturn(Optional.empty());
+        when(dietRepository.findByIdWithMeals(999L)).thenReturn(Optional.empty());
 
         Optional<DietDto> result = dietService.getDietByIdWithMeals(999L);
 
@@ -75,12 +80,16 @@ class DietServiceTest {
     void getDietByIdWithMeals_whenFound_returnsMappedDto() {
         Diet diet = new Diet();
         diet.setId(1L);
-        diet.setName("Test");
+        DietTranslation tr = new DietTranslation();
+        tr.setName("Test");
+        tr.setDescription("desc");
+        tr.setLocale("bg");
+        diet.setTranslations(List.of(tr));
         DietDto dto = new DietDto();
         dto.setId(1L);
         dto.setName("Test");
 
-        when(dietRepository.findById(1L)).thenReturn(Optional.of(diet));
+        when(dietRepository.findByIdWithMeals(1L)).thenReturn(Optional.of(diet));
         when(dietMapper.toDto(diet)).thenReturn(dto);
 
         Optional<DietDto> result = dietService.getDietByIdWithMeals(1L);

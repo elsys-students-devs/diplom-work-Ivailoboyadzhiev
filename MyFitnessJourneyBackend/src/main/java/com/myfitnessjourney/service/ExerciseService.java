@@ -20,7 +20,7 @@ public class ExerciseService {
     private final ExerciseMapper exerciseMapper;
 
     public List<ExerciseDto> getExercisesByFitnessProgramId(Long fitnessProgramId) {
-        List<Exercise> exercises = exerciseRepository.findByFitnessProgramId(fitnessProgramId);
+        List<Exercise> exercises = exerciseRepository.findByFitnessProgramIdWithTranslations(fitnessProgramId);
         List<ExerciseDto> dtos = exerciseMapper.toDtoList(exercises);
         Locale locale = LocaleContextHolder.getLocale();
         for (int i = 0; i < dtos.size() && i < exercises.size(); i++) {
