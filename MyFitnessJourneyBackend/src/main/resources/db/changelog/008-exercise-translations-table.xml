@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Scalable translation table: one row per (exercise, locale). Add "de", etc. later without schema change. -->
+    <changeSet id="008-create-exercise-translations-table" author="ivo">
+        <createTable tableName="exercise_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="exercise_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_exercise_translation_exercise" references="exercises(id)"/>
+            </column>
+            <column name="locale" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)"/>
+            <column name="muscle_group" type="VARCHAR(100)"/>
+        </createTable>
+        <addUniqueConstraint tableName="exercise_translations" columnNames="exercise_id, locale" constraintName="uq_exercise_translation_locale"/>
+    </changeSet>
+
+    <changeSet id="008-migrate-exercises-to-translations-bg" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="exercises"/>
+            <columnExists tableName="exercises" columnName="name"/>
+        </preConditions>
+        <sql>
+            INSERT INTO exercise_translations (exercise_id, locale, name, description, muscle_group)
+            SELECT id, 'bg', name, description, muscle_group FROM exercises
+        </sql>
+    </changeSet>
+
+    <changeSet id="008-migrate-exercises-to-translations-en" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="exercises" columnName="name_en"/>
+        </preConditions>
+        <sql>
+            INSERT INTO exercise_translations (exercise_id, locale, name, description, muscle_group)
+            SELECT id, 'en',
+                   COALESCE(name_en, name),
+                   COALESCE(description_en, description),
+                   COALESCE(muscle_group_en, muscle_group)
+            FROM exercises
+        </sql>
+    </changeSet>
+
+    <changeSet id="008-drop-exercise-translation-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="exercises" columnName="name"/>
+        </preConditions>
+        <dropColumn tableName="exercises" columnName="name"/>
+        <dropColumn tableName="exercises" columnName="name_en"/>
+        <dropColumn tableName="exercises" columnName="description"/>
+        <dropColumn tableName="exercises" columnName="description_en"/>
+        <dropColumn tableName="exercises" columnName="muscle_group"/>
+        <dropColumn tableName="exercises" columnName="muscle_group_en"/>
+    </changeSet>
+</databaseChangeLog>

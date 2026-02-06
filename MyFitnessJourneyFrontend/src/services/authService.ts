@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import axios from 'axios';
+import i18n from '../i18n';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
   (import.meta.env.PROD ? '/api' : 'http://localhost:8080/api');
@@ -12,6 +13,12 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true, // Enable cookies/sessions
+});
+
+api.interceptors.request.use((config) => {
+  const lang = i18n.language || 'en';
+  config.headers['Accept-Language'] = lang;
+  return config;
 });
 
 export interface LoginRequest {
@@ -109,6 +116,7 @@ export const uploadProfilePicture = async (file: File): Promise<UserDto> => {
   // Browser will set multipart/form-data with boundary automatically.
   const response = await axios.post<UserDto>(`${API_BASE_URL}/auth/profile/picture`, formData, {
     withCredentials: true,
+    headers: { 'Accept-Language': i18n.language || 'en' },
   });
   return response.data;
 };

@@ -9,12 +9,14 @@ import FitnessPrograms from './pages/FitnessPrograms';
 import Chat from './pages/Chat';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import { LanguageSwitcher } from './components/common/LanguageSwitcher';
 import './App.css';
 
 const App: React.FC = () => {
   return (
     <Router>
       <div className="app">
+        <LanguageSwitcher />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

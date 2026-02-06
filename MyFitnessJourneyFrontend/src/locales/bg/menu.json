@@ -1,0 +1,13 @@
+{
+  "menu": {
+    "dashboard": "Табло",
+    "diets": "Диети",
+    "fitnessPrograms": "Фитнес програми",
+    "messages": "Съобщения",
+    "profile": "Профил",
+    "settings": "Настройки",
+    "help": "Помощ",
+    "logout": "Изход",
+    "toggleMenu": "Отвори/затвори меню"
+  }
+}

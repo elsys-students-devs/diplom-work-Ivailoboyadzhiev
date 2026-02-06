@@ -2,6 +2,7 @@ package com.myfitnessjourney.service;
 
 import com.myfitnessjourney.dto.FitnessProgramDto;
 import com.myfitnessjourney.entity.FitnessProgram;
+import com.myfitnessjourney.entity.FitnessProgramTranslation;
 import com.myfitnessjourney.exception.FitnessProgramNotFoundException;
 import com.myfitnessjourney.mapper.FitnessProgramMapper;
 import com.myfitnessjourney.repository.FitnessProgramRepository;
@@ -47,7 +48,11 @@ class FitnessProgramServiceTest {
     void getAllFitnessProgramsWithExercises_whenHasPrograms_returnsMappedList() {
         FitnessProgram program = new FitnessProgram();
         program.setId(1L);
-        program.setName("Силова");
+        FitnessProgramTranslation tr = new FitnessProgramTranslation();
+        tr.setName("Силова");
+        tr.setDescription("desc");
+        tr.setLocale("bg");
+        program.setTranslations(List.of(tr));
         List<FitnessProgram> programs = List.of(program);
         FitnessProgramDto dto = new FitnessProgramDto();
         dto.setId(1L);
@@ -76,7 +81,11 @@ class FitnessProgramServiceTest {
     void getFitnessProgramByIdWithExercises_whenFound_returnsDto() {
         FitnessProgram program = new FitnessProgram();
         program.setId(1L);
-        program.setName("Кардио");
+        FitnessProgramTranslation tr = new FitnessProgramTranslation();
+        tr.setName("Кардио");
+        tr.setDescription("desc");
+        tr.setLocale("bg");
+        program.setTranslations(List.of(tr));
         FitnessProgramDto dto = new FitnessProgramDto();
         dto.setId(1L);
         dto.setName("Кардио");

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './DashboardHeader.css';
 
 interface DashboardHeaderProps {
@@ -7,6 +8,7 @@ interface DashboardHeaderProps {
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ username, pictureUrl }) => {
+  const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
   const initial = (username && username[0]) ? username[0].toUpperCase() : '?';
   const showImage = pictureUrl && !imageError;
@@ -19,9 +21,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ username, pict
           <div className="dashboard-header-avatar dashboard-header-avatar-placeholder">{initial}</div>
         )}
         <div className="header-text">
-          <p className="welcome-text">Welcome back</p>
+          <p className="welcome-text">{t('dashboard.welcomeBack')}</p>
           <h1 className="user-name">{username}</h1>
-          <p className="motivational-text">Let's crush your fitness goals today!</p>
+          <p className="motivational-text">{t('dashboard.motivational')}</p>
         </div>
       </div>
     </div>

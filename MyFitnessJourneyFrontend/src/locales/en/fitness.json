@@ -1,0 +1,29 @@
+{
+  "fitness": {
+    "title": "Fitness Programs",
+    "subtitle": "Choose a program that fits your goals",
+    "searchProgram": "Search program...",
+    "searchExercise": "Search exercise...",
+    "loading": "Loading...",
+    "loadError": "Error loading programs",
+    "programNotFound": "Program not found",
+    "benefits": "Benefits:",
+    "exercisesCount": "exercises",
+    "viewDetails": "View details →",
+    "backToPrograms": "Back to programs",
+    "noExercisesFor": "No exercises found for",
+    "muscleGroup": "Muscle group:",
+    "sets": "Sets:",
+    "reps": "Reps:",
+    "weight": "Weight:",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
+  }
+}

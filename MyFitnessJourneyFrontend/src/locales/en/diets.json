@@ -1,0 +1,26 @@
+{
+  "diets": {
+    "title": "Diets & Meal Plans",
+    "subtitle": "Choose a diet that fits your goals",
+    "searchDiet": "Search diet...",
+    "searchMeal": "Search meal...",
+    "loading": "Loading...",
+    "loadError": "Error loading diets",
+    "dietNotFound": "Diet not found",
+    "mealLogged": "Meal logged successfully! Dashboard circles updated.",
+    "logError": "Error logging meal. Please try again.",
+    "benefits": "Benefits:",
+    "mealsCount": "meals",
+    "viewDetails": "View details →",
+    "backToDiets": "Back to diets",
+    "noMealsFor": "No meals found for",
+    "caloriesLabel": "Calories",
+    "proteinLabel": "Protein",
+    "carbsLabel": "Carbs",
+    "fatLabel": "Fat",
+    "fiberLabel": "Fiber",
+    "sugarLabel": "Sugar",
+    "logMealButton": "Log meal",
+    "logging": "Logging..."
+  }
+}

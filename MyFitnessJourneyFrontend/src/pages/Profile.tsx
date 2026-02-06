@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getCurrentUser, updateProfile, UserDto } from '../services/authService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
@@ -12,6 +13,7 @@ import { useToast } from '../components/common/useToast';
 import './Profile.css';
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<UserDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,7 +36,7 @@ const Profile: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to fetch user:', error);
-      showError('Грешка при зареждане на профила');
+      showError(t('profile.saveError'));
     } finally {
       setLoading(false);
     }
@@ -48,7 +50,7 @@ const Profile: React.FC = () => {
     if (!user || savingProfile) return;
     const trimmed = usernameValue.trim();
     if (trimmed.length < 3) {
-      showError('Потребителското име трябва да е поне 3 символа');
+      showError(t('profile.usernameMinError'));
       return;
     }
     setSavingProfile(true);
@@ -56,11 +58,11 @@ const Profile: React.FC = () => {
       const updated = await updateProfile({ username: trimmed });
       setUser(updated);
       setEditUsername(false);
-      showSuccess('Потребителското име е обновено');
+      showSuccess(t('profile.usernameUpdated'));
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        'Грешка при запазване';
+        t('profile.saveError');
       showError(message);
     } finally {
       setSavingProfile(false);
@@ -71,7 +73,7 @@ const Profile: React.FC = () => {
     if (!user || savingProfile) return;
     const trimmed = emailValue.trim();
     if (!trimmed.includes('@')) {
-      showError('Въведете валиден имейл');
+      showError(t('profile.validEmailError'));
       return;
     }
     setSavingProfile(true);
@@ -79,11 +81,11 @@ const Profile: React.FC = () => {
       const updated = await updateProfile({ email: trimmed });
       setUser(updated);
       setEditEmail(false);
-      showSuccess('Имейлът е обновен');
+      showSuccess(t('profile.emailUpdated'));
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        'Грешка при запазване';
+        t('profile.saveError');
       showError(message);
     } finally {
       setSavingProfile(false);
@@ -93,7 +95,7 @@ const Profile: React.FC = () => {
   if (loading) {
     return (
       <div className="profile-container">
-        <Loading message="Зареждане..." />
+        <Loading message={t('profile.loading')} />
       </div>
     );
   }
@@ -103,7 +105,7 @@ const Profile: React.FC = () => {
       <div className="profile-container">
         <ProfileHeader />
         <div className="profile-content">
-          <p className="profile-error">Не сте влезли в системата.</p>
+          <p className="profile-error">{t('profile.notLoggedIn')}</p>
         </div>
       </div>
     );
@@ -125,7 +127,7 @@ const Profile: React.FC = () => {
         />
 
         <FieldEdited
-          title="Потребителско име"
+          title={t('profile.username')}
           displayValue={user.username || '—'}
           value={usernameValue}
           onChange={setUsernameValue}
@@ -137,13 +139,13 @@ const Profile: React.FC = () => {
           onStartEdit={() => setEditUsername(true)}
           isEditing={editUsername}
           saving={savingProfile}
-          inputPlaceholder="Потребителско име"
+          inputPlaceholder={t('profile.usernamePlaceholder')}
           inputMinLength={3}
           inputMaxLength={50}
         />
 
         <FieldEdited
-          title="Имейл"
+          title={t('profile.email')}
           displayValue={user.email || '—'}
           value={emailValue}
           onChange={setEmailValue}
@@ -156,7 +158,7 @@ const Profile: React.FC = () => {
           isEditing={editEmail}
           saving={savingProfile}
           inputType="email"
-          inputPlaceholder="Имейл"
+          inputPlaceholder={t('profile.emailPlaceholder')}
         />
 
         <ProfilePasswordSection onSuccess={showSuccess} onError={showError} />

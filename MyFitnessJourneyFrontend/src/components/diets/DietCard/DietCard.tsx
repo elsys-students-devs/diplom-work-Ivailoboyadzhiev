@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { DietDto } from '../../../services/dietService';
 import './DietCard.css';
 
@@ -8,6 +9,8 @@ interface DietCardProps {
 }
 
 export const DietCard: React.FC<DietCardProps> = ({ diet, onClick }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="diet-card" onClick={onClick}>
       <div className="diet-card-header">
@@ -17,7 +20,7 @@ export const DietCard: React.FC<DietCardProps> = ({ diet, onClick }) => {
         <p className="diet-card-description">{diet.description}</p>
         {diet.benefits && (
           <div className="diet-card-benefits">
-            <strong>Предимства:</strong>
+            <strong>{t('diets.benefits')}</strong>
             <p>{diet.benefits}</p>
           </div>
         )}
@@ -25,11 +28,11 @@ export const DietCard: React.FC<DietCardProps> = ({ diet, onClick }) => {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6zM3 6h18M8 10v4M12 10v4M16 10v4"/>
           </svg>
-          <span>{diet.meals?.length || 0} ястия</span>
+          <span>{diet.meals?.length || 0} {t('diets.mealsCount')}</span>
         </div>
       </div>
       <div className="diet-card-footer">
-        <span className="view-details">Виж детайли →</span>
+        <span className="view-details">{t('diets.viewDetails')}</span>
       </div>
     </div>
   );

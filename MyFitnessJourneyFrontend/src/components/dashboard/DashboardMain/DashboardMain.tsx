@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { SummaryCards } from '../SummaryCards';
 import { NutritionSummary } from '../NutritionSummary';
 import './DashboardMain.css';
@@ -32,6 +33,7 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
   onLogMeal
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="dashboard-content">
@@ -58,8 +60,8 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
             </svg>
           </div>
           <div className="button-content">
-            <div className="button-title">Diet Plans</div>
-            <div className="button-subtitle">View meal plans & nutrition</div>
+            <div className="button-title">{t('dashboard.dietPlans')}</div>
+            <div className="button-subtitle">{t('dashboard.dietPlansSub')}</div>
           </div>
           <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
@@ -73,8 +75,8 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
             </svg>
           </div>
           <div className="button-content">
-            <div className="button-title">Fitness Programs</div>
-            <div className="button-subtitle">Workouts & training</div>
+            <div className="button-title">{t('dashboard.fitnessPrograms')}</div>
+            <div className="button-subtitle">{t('dashboard.fitnessProgramsSub')}</div>
           </div>
           <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
@@ -88,8 +90,8 @@ export const DashboardMain: React.FC<DashboardMainProps> = ({
             </svg>
           </div>
           <div className="button-content">
-            <div className="button-title">Messages</div>
-            <div className="button-subtitle">Chat with trainer</div>
+            <div className="button-title">{t('dashboard.messages')}</div>
+            <div className="button-subtitle">{t('dashboard.messagesSub')}</div>
           </div>
           <svg className="button-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>

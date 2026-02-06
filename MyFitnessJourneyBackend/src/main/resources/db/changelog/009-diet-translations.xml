@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="009-create-diet-translations-table" author="ivo">
+        <createTable tableName="diet_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="diet_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_diet_translation_diet" references="diets(id)"/>
+            </column>
+            <column name="locale" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benefits" type="VARCHAR(500)"/>
+        </createTable>
+        <addUniqueConstraint tableName="diet_translations" columnNames="diet_id, locale" constraintName="uq_diet_translation_locale"/>
+    </changeSet>
+    <changeSet id="009-migrate-diets-to-translations-bg" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="diets"/>
+            <columnExists tableName="diets" columnName="name"/>
+        </preConditions>
+        <sql>INSERT INTO diet_translations (diet_id, locale, name, description, benefits) SELECT id, 'bg', name, description, benefits FROM diets</sql>
+    </changeSet>
+    <changeSet id="009-migrate-diets-to-translations-en" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="diets" columnName="name_en"/>
+        </preConditions>
+        <sql>INSERT INTO diet_translations (diet_id, locale, name, description, benefits)
+            SELECT id, 'en', COALESCE(name_en, name), COALESCE(description_en, description), COALESCE(benefits_en, benefits) FROM diets</sql>
+    </changeSet>
+    <changeSet id="009-drop-diet-translation-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="diets" columnName="name"/>
+        </preConditions>
+        <dropColumn tableName="diets" columnName="name"/>
+        <dropColumn tableName="diets" columnName="name_en"/>
+        <dropColumn tableName="diets" columnName="description"/>
+        <dropColumn tableName="diets" columnName="description_en"/>
+        <dropColumn tableName="diets" columnName="benefits"/>
+        <dropColumn tableName="diets" columnName="benefits_en"/>
+    </changeSet>
+</databaseChangeLog>

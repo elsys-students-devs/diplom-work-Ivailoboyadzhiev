@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface FitnessProgramRepository extends JpaRepository<FitnessProgram, Long> {
-    Optional<FitnessProgram> findByName(String name);
+    Optional<FitnessProgram> findFirstByTranslations_LocaleAndTranslations_Name(String locale, String name);
     
     @Query("SELECT DISTINCT fp FROM FitnessProgram fp LEFT JOIN FETCH fp.exercises")
     List<FitnessProgram> findAllWithExercises();

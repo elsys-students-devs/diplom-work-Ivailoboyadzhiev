@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { CreateMealRequest } from '../../../services/dietService';
 import './CreateMealModal.css';
 
@@ -15,6 +16,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
   onSubmit,
   isCreating = false,
 }) => {
+  const { t } = useTranslation();
   const [mealForm, setMealForm] = React.useState<CreateMealRequest>({
     name: '',
     description: '',
@@ -48,12 +50,12 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Създай ново ястие</h2>
+          <h2>{t('createMeal.title')}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
         <form className="meal-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Име на ястието *</label>
+            <label>{t('createMeal.mealName')}</label>
             <input
               type="text"
               value={mealForm.name}
@@ -62,7 +64,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
             />
           </div>
           <div className="form-group">
-            <label>Описание</label>
+            <label>{t('createMeal.description')}</label>
             <textarea
               value={mealForm.description}
               onChange={(e) => setMealForm({...mealForm, description: e.target.value})}
@@ -71,7 +73,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
           </div>
           <div className="macros-grid">
             <div className="form-group">
-              <label>Калории *</label>
+              <label>{t('createMeal.calories')}</label>
               <input
                 type="number"
                 min="0"
@@ -82,7 +84,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
               />
             </div>
             <div className="form-group">
-              <label>Протеин (g) *</label>
+              <label>{t('createMeal.protein')}</label>
               <input
                 type="number"
                 min="0"
@@ -93,7 +95,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
               />
             </div>
             <div className="form-group">
-              <label>Въглехидрати (g) *</label>
+              <label>{t('createMeal.carbs')}</label>
               <input
                 type="number"
                 min="0"
@@ -104,7 +106,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
               />
             </div>
             <div className="form-group">
-              <label>Мазнини (g) *</label>
+              <label>{t('createMeal.fat')}</label>
               <input
                 type="number"
                 min="0"
@@ -115,7 +117,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
               />
             </div>
             <div className="form-group">
-              <label>Фибри (g)</label>
+              <label>{t('createMeal.fiber')}</label>
               <input
                 type="number"
                 min="0"
@@ -125,7 +127,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
               />
             </div>
             <div className="form-group">
-              <label>Захар (g)</label>
+              <label>{t('createMeal.sugar')}</label>
               <input
                 type="number"
                 min="0"
@@ -137,10 +139,10 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({
           </div>
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>
-              Отказ
+              {t('createMeal.cancel')}
             </button>
             <button type="submit" className="btn-submit" disabled={isCreating}>
-              {isCreating ? 'Създаване...' : 'Създай и логни'}
+              {isCreating ? t('createMeal.submitting') : t('createMeal.submit')}
             </button>
           </div>
         </form>

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { register, loginWithGoogle, loginWithFacebook } from '../services/authService';
 import './Register.css';
 
 const Register: React.FC = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,21 +22,21 @@ const Register: React.FC = () => {
 
   const validateUsername = (username: string): boolean => {
     if (!username) {
-      setUsernameError('Username is required');
+      setUsernameError(t('registerValidation.usernameRequired'));
       return false;
     }
     const trimmedUsername = username.trim();
     if (trimmedUsername.length < 3) {
-      setUsernameError('Username must be at least 3 characters long');
+      setUsernameError(t('registerValidation.usernameMin'));
       return false;
     }
     if (trimmedUsername.length > 20) {
-      setUsernameError('Username must be less than 20 characters');
+      setUsernameError(t('registerValidation.usernameMax'));
       return false;
     }
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!usernameRegex.test(trimmedUsername)) {
-      setUsernameError('Username can only contain letters, numbers, and underscores');
+      setUsernameError(t('registerValidation.usernameChars'));
       return false;
     }
     setUsernameError('');
@@ -43,16 +45,16 @@ const Register: React.FC = () => {
 
   const validateEmail = (email: string): boolean => {
     if (!email) {
-      setEmailError('Email is required');
+      setEmailError(t('registerValidation.emailRequired'));
       return false;
     }
     if (!email.includes('@')) {
-      setEmailError('Email must contain @ symbol');
+      setEmailError(t('registerValidation.emailInvalid'));
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address (e.g., user@example.com)');
+      setEmailError(t('registerValidation.emailValid'));
       return false;
     }
     setEmailError('');
@@ -61,15 +63,15 @@ const Register: React.FC = () => {
 
   const validatePassword = (password: string): boolean => {
     if (!password) {
-      setPasswordError('Password is required');
+      setPasswordError(t('registerValidation.passwordRequired'));
       return false;
     }
     if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
+      setPasswordError(t('registerValidation.passwordMin'));
       return false;
     }
     if (password.length > 50) {
-      setPasswordError('Password must be less than 50 characters');
+      setPasswordError(t('registerValidation.passwordMax'));
       return false;
     }
     setPasswordError('');
@@ -78,11 +80,11 @@ const Register: React.FC = () => {
 
   const validateConfirmPassword = (confirmPassword: string, password: string): boolean => {
     if (!confirmPassword) {
-      setConfirmPasswordError('Please confirm your password');
+      setConfirmPasswordError(t('registerValidation.confirmRequired'));
       return false;
     }
     if (confirmPassword !== password) {
-      setConfirmPasswordError('Passwords do not match');
+      setConfirmPasswordError(t('registerValidation.confirmMatch'));
       return false;
     }
     setConfirmPasswordError('');
@@ -114,7 +116,7 @@ const Register: React.FC = () => {
       // Navigate to dashboard after successful registration
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || t('errors.registerFailed'));
     } finally {
       setLoading(false);
     }
@@ -124,15 +126,15 @@ const Register: React.FC = () => {
     <div className="register-container">
       <div className="register-card">
         <div className="register-header">
-          <h1>My Fitness Journey</h1>
-          <p>Create your account to start your fitness journey.</p>
+          <h1>{t('register.title')}</h1>
+          <p>{t('register.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="register-form">
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">{t('register.username')}</label>
             <input
               type="text"
               id="username"
@@ -142,7 +144,7 @@ const Register: React.FC = () => {
                 if (usernameError) setUsernameError('');
               }}
               onBlur={() => validateUsername(username)}
-              placeholder="Enter your username (3-20 characters)"
+              placeholder={t('register.usernamePlaceholder')}
               autoComplete="username"
               required
               minLength={3}
@@ -154,7 +156,7 @@ const Register: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">{t('register.email')}</label>
             <input
               type="email"
               id="email"
@@ -164,7 +166,7 @@ const Register: React.FC = () => {
                 if (emailError) setEmailError('');
               }}
               onBlur={() => validateEmail(email)}
-              placeholder="Enter your email"
+              placeholder={t('register.emailPlaceholder')}
               autoComplete="email"
               required
               disabled={loading}
@@ -174,7 +176,7 @@ const Register: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('register.password')}</label>
             <div className="password-input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -188,7 +190,7 @@ const Register: React.FC = () => {
                   }
                 }}
                 onBlur={() => validatePassword(password)}
-                placeholder="Enter your password (min. 6 characters)"
+                placeholder={t('register.passwordPlaceholder')}
                 autoComplete="new-password"
                 required
                 minLength={6}
@@ -200,7 +202,7 @@ const Register: React.FC = () => {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
               >
                 {showPassword ? (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -219,7 +221,7 @@ const Register: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">{t('register.confirmPassword')}</label>
             <div className="password-input-wrapper">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -230,7 +232,7 @@ const Register: React.FC = () => {
                   if (confirmPasswordError) setConfirmPasswordError('');
                 }}
                 onBlur={() => validateConfirmPassword(confirmPassword, password)}
-                placeholder="Confirm your password"
+                placeholder={t('register.confirmPlaceholder')}
                 autoComplete="off"
                 required
                 minLength={6}
@@ -242,7 +244,7 @@ const Register: React.FC = () => {
                 className="password-toggle"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 disabled={loading}
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                aria-label={showConfirmPassword ? t('login.hidePassword') : t('login.showPassword')}
               >
                 {showConfirmPassword ? (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -265,12 +267,12 @@ const Register: React.FC = () => {
             className="register-button"
             disabled={loading}
           >
-            {loading ? 'Creating account...' : 'Sign Up'}
+            {loading ? t('register.creating') : t('register.signUp')}
           </button>
         </form>
 
         <div className="social-login-divider">
-          <span>или</span>
+          <span>{t('register.or')}</span>
         </div>
 
         <div className="social-login-buttons">
@@ -286,7 +288,7 @@ const Register: React.FC = () => {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Продължи с Google
+            {t('register.continueGoogle')}
           </button>
           <button
             type="button"
@@ -297,14 +299,14 @@ const Register: React.FC = () => {
             <svg className="social-icon" viewBox="0 0 24 24" fill="#1877F2">
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            Продължи с Facebook
+            {t('register.continueFacebook')}
           </button>
         </div>
 
         <div className="register-footer">
           <p>
-            Already have an account?{' '}
-            <Link to="/login" className="link">Sign in</Link>
+            {t('register.hasAccount')}{' '}
+            <Link to="/login" className="link">{t('register.signIn')}</Link>
           </p>
         </div>
       </div>

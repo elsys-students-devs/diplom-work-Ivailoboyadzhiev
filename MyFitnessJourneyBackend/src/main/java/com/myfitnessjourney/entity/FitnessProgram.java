@@ -1,7 +1,6 @@
 package com.myfitnessjourney.entity;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,8 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "fitness_programs")
@@ -27,15 +28,22 @@ public class FitnessProgram {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Column(nullable = false, length = 1000)
-    private String description;
-
-    @Column(length = 500)
-    private String benefits;
+    @OneToMany(mappedBy = "fitnessProgram", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    private List<FitnessProgramTranslation> translations;
 
     @OneToMany(mappedBy = "fitnessProgram", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Exercise> exercises;
+
+    public Optional<FitnessProgramTranslation> getTranslation(String locale) {
+        if (translations == null || locale == null) return Optional.empty();
+        return translations.stream()
+                .filter(t -> locale.equalsIgnoreCase(t.getLocale()))
+                .findFirst();
+    }
+
+    public FitnessProgramTranslation getDefaultTranslation() {
+        if (translations == null || translations.isEmpty()) return null;
+        return getTranslation("bg").orElse(translations.get(0));
+    }
 }

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { login, loginWithGoogle, loginWithFacebook } from '../services/authService';
 import './Login.css';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,16 +25,16 @@ const Login: React.FC = () => {
 
   const validateEmail = (email: string): boolean => {
     if (!email) {
-      setEmailError('Email is required');
+      setEmailError(t('loginValidation.emailRequired'));
       return false;
     }
     if (!email.includes('@')) {
-      setEmailError('Email must contain @ symbol');
+      setEmailError(t('loginValidation.emailInvalid'));
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address (e.g., user@example.com)');
+      setEmailError(t('loginValidation.emailValid'));
       return false;
     }
     setEmailError('');
@@ -41,11 +43,11 @@ const Login: React.FC = () => {
 
   const validatePassword = (password: string): boolean => {
     if (!password) {
-      setPasswordError('Password is required');
+      setPasswordError(t('loginValidation.passwordRequired'));
       return false;
     }
     if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
+      setPasswordError(t('loginValidation.passwordMin'));
       return false;
     }
     setPasswordError('');
@@ -73,7 +75,7 @@ const Login: React.FC = () => {
       // Navigate to dashboard or home page
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.message || t('errors.loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -83,15 +85,15 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>My Fitness Journey</h1>
-          <p>Welcome back! Please sign in to your account.</p>
+          <h1>{t('login.title')}</h1>
+          <p>{t('login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">{t('login.email')}</label>
             <input
               type="email"
               id="email"
@@ -101,7 +103,7 @@ const Login: React.FC = () => {
                 if (emailError) setEmailError('');
               }}
               onBlur={() => validateEmail(email)}
-              placeholder="Enter your email"
+              placeholder={t('login.emailPlaceholder')}
               autoComplete="email"
               required
               disabled={loading}
@@ -111,7 +113,7 @@ const Login: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('login.password')}</label>
             <div className="password-input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -122,7 +124,7 @@ const Login: React.FC = () => {
                   if (passwordError) setPasswordError('');
                 }}
                 onBlur={() => validatePassword(password)}
-                placeholder="Enter your password"
+                placeholder={t('login.passwordPlaceholder')}
                 autoComplete="current-password"
                 required
                 disabled={loading}
@@ -133,7 +135,7 @@ const Login: React.FC = () => {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
               >
                 {showPassword ? (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -156,12 +158,12 @@ const Login: React.FC = () => {
             className="login-button"
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('login.signingIn') : t('login.signIn')}
           </button>
         </form>
 
         <div className="social-login-divider">
-          <span>или</span>
+          <span>{t('login.or')}</span>
         </div>
 
         <div className="social-login-buttons">
@@ -177,7 +179,7 @@ const Login: React.FC = () => {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Продължи с Google
+            {t('login.continueGoogle')}
           </button>
           <button
             type="button"
@@ -188,14 +190,14 @@ const Login: React.FC = () => {
             <svg className="social-icon" viewBox="0 0 24 24" fill="#1877F2">
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            Продължи с Facebook
+            {t('login.continueFacebook')}
           </button>
         </div>
 
         <div className="login-footer">
           <p>
-            Don't have an account?{' '}
-            <Link to="/register" className="link">Sign up</Link>
+            {t('login.noAccount')}{' '}
+            <Link to="/register" className="link">{t('login.signUp')}</Link>
           </p>
         </div>
       </div>

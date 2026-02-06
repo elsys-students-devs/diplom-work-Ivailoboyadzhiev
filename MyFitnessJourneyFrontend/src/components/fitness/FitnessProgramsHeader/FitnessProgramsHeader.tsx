@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { SearchBar } from '../../common/SearchBar';
 import './FitnessProgramsHeader.css';
 
@@ -15,6 +16,7 @@ export const FitnessProgramsHeader: React.FC<FitnessProgramsHeaderProps> = ({
   hasSelectedProgram
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="fitness-programs-header">
@@ -23,13 +25,13 @@ export const FitnessProgramsHeader: React.FC<FitnessProgramsHeaderProps> = ({
           <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
       </button>
-      <h1 className="fitness-programs-title">Фитнес Програми</h1>
-      <p className="fitness-programs-subtitle">Изберете програма, която отговаря на вашите цели</p>
+      <h1 className="fitness-programs-title">{t('fitness.title')}</h1>
+      <p className="fitness-programs-subtitle">{t('fitness.subtitle')}</p>
       
       <SearchBar
         value={searchQuery}
         onChange={onSearchChange}
-        placeholder={hasSelectedProgram ? 'Търси упражнение...' : 'Търси програма...'}
+        placeholder={hasSelectedProgram ? t('fitness.searchExercise') : t('fitness.searchProgram')}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { MealDto } from '../../../services/dietService';
 import './MealCard.css';
 
@@ -9,6 +10,8 @@ interface MealCardProps {
 }
 
 export const MealCard: React.FC<MealCardProps> = ({ meal, onLogMeal, isLogging = false }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="meal-card">
       <div className="meal-card-header">
@@ -20,30 +23,30 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, onLogMeal, isLogging =
         )}
         <div className="meal-macros">
           <div className="macro-item">
-            <span className="macro-label">Калории</span>
+            <span className="macro-label">{t('diets.caloriesLabel')}</span>
             <span className="macro-value">{meal.calories} kcal</span>
           </div>
           <div className="macro-item">
-            <span className="macro-label">Протеин</span>
+            <span className="macro-label">{t('diets.proteinLabel')}</span>
             <span className="macro-value">{meal.protein}g</span>
           </div>
           <div className="macro-item">
-            <span className="macro-label">Въглехидрати</span>
+            <span className="macro-label">{t('diets.carbsLabel')}</span>
             <span className="macro-value">{meal.carbs}g</span>
           </div>
           <div className="macro-item">
-            <span className="macro-label">Мазнини</span>
+            <span className="macro-label">{t('diets.fatLabel')}</span>
             <span className="macro-value">{meal.fat}g</span>
           </div>
           {meal.fiber && (
             <div className="macro-item">
-              <span className="macro-label">Фибри</span>
+              <span className="macro-label">{t('diets.fiberLabel')}</span>
               <span className="macro-value">{meal.fiber}g</span>
             </div>
           )}
           {meal.sugar && (
             <div className="macro-item">
-              <span className="macro-label">Захар</span>
+              <span className="macro-label">{t('diets.sugarLabel')}</span>
               <span className="macro-value">{meal.sugar}g</span>
             </div>
           )}
@@ -55,7 +58,7 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, onLogMeal, isLogging =
           onClick={() => onLogMeal(meal.id)}
           disabled={isLogging}
         >
-          {isLogging ? 'Логване...' : 'Логни ястие'}
+          {isLogging ? t('diets.logging') : t('diets.logMealButton')}
         </button>
       </div>
     </div>

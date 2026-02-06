@@ -1,0 +1,35 @@
+{
+  "register": {
+    "title": "Моето Фитнес Пътуване",
+    "subtitle": "Създайте акаунт и започнете фитнес пътуването си.",
+    "username": "Потребителско име",
+    "usernamePlaceholder": "Въведете потребителско име (3-20 символа)",
+    "email": "Имейл адрес",
+    "emailPlaceholder": "Въведете имейл",
+    "password": "Парола",
+    "passwordPlaceholder": "Въведете парола (мин. 6 символа)",
+    "confirmPassword": "Потвърдете паролата",
+    "confirmPlaceholder": "Потвърдете паролата",
+    "signUp": "Регистрация",
+    "creating": "Създаване на акаунт...",
+    "or": "или",
+    "continueGoogle": "Продължи с Google",
+    "continueFacebook": "Продължи с Facebook",
+    "hasAccount": "Вече имате акаунт?",
+    "signIn": "Вход"
+  },
+  "registerValidation": {
+    "usernameRequired": "Потребителското име е задължително",
+    "usernameMin": "Потребителското име трябва да е поне 3 символа",
+    "usernameMax": "Потребителското име трябва да е под 20 символа",
+    "usernameChars": "Потребителското име може да съдържа само букви, цифри и долна черта",
+    "emailRequired": "Имейлът е задължителен",
+    "emailInvalid": "Имейлът трябва да съдържа @",
+    "emailValid": "Моля въведете валиден имейл (напр. user@example.com)",
+    "passwordRequired": "Паролата е задължителна",
+    "passwordMin": "Паролата трябва да е поне 6 символа",
+    "passwordMax": "Паролата трябва да е под 50 символа",
+    "confirmRequired": "Моля потвърдете паролата",
+    "confirmMatch": "Паролите не съвпадат"
+  }
+}

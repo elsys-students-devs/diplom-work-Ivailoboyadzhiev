@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UserDto, getProfilePictureUrl, uploadProfilePicture } from '../../../services/authService';
 
 export interface ProfilePictureSectionProps {
@@ -14,6 +15,7 @@ export const ProfilePictureSection: React.FC<ProfilePictureSectionProps> = ({
   onSuccess,
   onError,
 }) => {
+  const { t } = useTranslation();
   const [uploadingPicture, setUploadingPicture] = React.useState(false);
   const [avatarLoadError, setAvatarLoadError] = React.useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,11 +29,11 @@ export const ProfilePictureSection: React.FC<ProfilePictureSectionProps> = ({
     if (!file) return;
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      onError('Изберете снимка (JPEG, PNG, GIF или WebP)');
+      onError(t('profile.pictureErrorType'));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      onError('Файлът трябва да е под 5 MB');
+      onError(t('profile.pictureErrorSize'));
       return;
     }
     setUploadingPicture(true);
@@ -39,11 +41,11 @@ export const ProfilePictureSection: React.FC<ProfilePictureSectionProps> = ({
     try {
       const updated = await uploadProfilePicture(file);
       onUserUpdate(updated);
-      onSuccess('Профилната снимка е обновена');
+      onSuccess(t('profile.pictureUpdated'));
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-        'Грешка при качване';
+        t('profile.uploadError');
       onError(message);
     } finally {
       setUploadingPicture(false);
@@ -59,7 +61,7 @@ export const ProfilePictureSection: React.FC<ProfilePictureSectionProps> = ({
         ) : pictureUrl && !avatarLoadError ? (
           <img
             src={pictureUrl}
-            alt="Профил"
+            alt={t('profile.profilePicture')}
             className="profile-avatar"
             onError={() => setAvatarLoadError(true)}
           />
@@ -68,7 +70,7 @@ export const ProfilePictureSection: React.FC<ProfilePictureSectionProps> = ({
             {(user.username || user.email)?.[0]?.toUpperCase() ?? '?'}
           </div>
         )}
-        <span className="profile-avatar-overlay">Промяна</span>
+        <span className="profile-avatar-overlay">{t('profile.changePicture')}</span>
       </div>
       <input
         ref={fileInputRef}

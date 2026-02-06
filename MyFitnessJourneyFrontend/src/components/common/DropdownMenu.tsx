@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './DropdownMenu.css';
 
 interface DropdownMenuProps {
@@ -9,6 +10,7 @@ interface DropdownMenuProps {
 
 export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,22 +34,22 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => 
   return (
     <div className="dropdown-menu">
       <div className="dropdown-menu-item" onClick={() => { navigate('/dashboard'); onClose(); }}>
-        Dashboard
+        {t('menu.dashboard')}
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/diets'); onClose(); }}>
-        Diets
+        {t('menu.diets')}
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/fitness-programs'); onClose(); }}>
-        Fitness Programs
+        {t('menu.fitnessPrograms')}
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/chat'); onClose(); }}>
-        Messages
+        {t('menu.messages')}
       </div>
       <div className="dropdown-menu-item" onClick={() => { navigate('/profile'); onClose(); }}>
-        Profile
+        {t('menu.profile')}
       </div>
-      <div className="dropdown-menu-item">Settings</div>
-      <div className="dropdown-menu-item">Help</div>
+      <div className="dropdown-menu-item">{t('menu.settings')}</div>
+      <div className="dropdown-menu-item">{t('menu.help')}</div>
       <div className="dropdown-menu-item" onClick={async () => {
         try {
           const { logout } = await import('../../services/authService');
@@ -57,7 +59,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ open, onClose }) => 
           onClose();
         }
       }}>
-        Logout
+        {t('menu.logout')}
       </div>
     </div>
   );

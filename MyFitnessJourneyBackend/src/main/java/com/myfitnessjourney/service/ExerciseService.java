@@ -5,10 +5,13 @@ import com.myfitnessjourney.entity.DayOfWeek;
 import com.myfitnessjourney.entity.Exercise;
 import com.myfitnessjourney.mapper.ExerciseMapper;
 import com.myfitnessjourney.repository.ExerciseRepository;
+import com.myfitnessjourney.util.LocalizationUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -17,8 +20,13 @@ public class ExerciseService {
     private final ExerciseMapper exerciseMapper;
 
     public List<ExerciseDto> getExercisesByFitnessProgramId(Long fitnessProgramId) {
-        List<Exercise> exercises = exerciseRepository.findByFitnessProgramId(fitnessProgramId);
-        return exerciseMapper.toDtoList(exercises);
+        List<Exercise> exercises = exerciseRepository.findByFitnessProgramIdWithTranslations(fitnessProgramId);
+        List<ExerciseDto> dtos = exerciseMapper.toDtoList(exercises);
+        Locale locale = LocaleContextHolder.getLocale();
+        for (int i = 0; i < dtos.size() && i < exercises.size(); i++) {
+            LocalizationUtil.applyToExercise(dtos.get(i), exercises.get(i), locale);
+        }
+        return dtos;
     }
 
     public List<Exercise> getExercisesByFitnessProgramIdAndDay(Long fitnessProgramId, DayOfWeek dayOfWeek) {
