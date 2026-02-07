@@ -5,13 +5,17 @@ import com.myfitnessjourney.service.ExerciseService;
 import com.myfitnessjourney.service.FitnessProgramService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -19,7 +23,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(FitnessProgramController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class FitnessProgramControllerIntegrationTest {
 
     @Autowired
@@ -36,7 +42,7 @@ class FitnessProgramControllerIntegrationTest {
     void getAllFitnessPrograms_whenAuthenticated_returnsOkAndList() throws Exception {
         when(fitnessProgramService.getAllFitnessProgramsWithExercises()).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/fitness-programs").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fitness-programs").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -52,16 +58,16 @@ class FitnessProgramControllerIntegrationTest {
         dto.setName("Силова програма");
         when(fitnessProgramService.getAllFitnessProgramsWithExercises()).thenReturn(List.of(dto));
 
-        mockMvc.perform(get("/api/fitness-programs").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fitness-programs").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Силова програма"));
     }
 
     @Test
-    void getAllFitnessPrograms_whenNotAuthenticated_returnsUnauthorized() throws Exception {
+    void getAllFitnessPrograms_whenNotAuthenticated_redirectsToLogin() throws Exception {
         mockMvc.perform(get("/api/fitness-programs").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isFound());
     }
 
     @Test
@@ -72,7 +78,7 @@ class FitnessProgramControllerIntegrationTest {
         dto.setName("Кардио");
         when(fitnessProgramService.getFitnessProgramByIdWithExercises(1L)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/fitness-programs/1").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fitness-programs/1").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Кардио"));
@@ -84,7 +90,7 @@ class FitnessProgramControllerIntegrationTest {
         when(fitnessProgramService.existsById(1L)).thenReturn(true);
         when(exerciseService.getExercisesByFitnessProgramId(1L)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/fitness-programs/1/exercises").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fitness-programs/1/exercises").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
@@ -96,7 +102,7 @@ class FitnessProgramControllerIntegrationTest {
     void getExercisesByFitnessProgramId_whenProgramNotExists_returnsNotFound() throws Exception {
         when(fitnessProgramService.existsById(999L)).thenReturn(false);
 
-        mockMvc.perform(get("/api/fitness-programs/999/exercises").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fitness-programs/999/exercises").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 }

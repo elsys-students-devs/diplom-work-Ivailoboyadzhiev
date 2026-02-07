@@ -6,10 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GroqAiServiceTest {
@@ -39,9 +36,6 @@ class GroqAiServiceTest {
 
     @Test
     void generateResponse_whenApiKeyEmpty_returnsConfigErrorMessage() {
-        when(fitnessProgramService.getAllFitnessProgramsWithExercises()).thenReturn(Collections.emptyList());
-        when(dietService.getAllDietsWithMeals()).thenReturn(Collections.emptyList());
-
         String result = groqAiService.generateResponse("Здравей", "");
 
         assertThat(result).contains("не е конфигурирана");

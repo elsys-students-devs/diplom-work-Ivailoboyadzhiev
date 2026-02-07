@@ -26,6 +26,11 @@
   gap: 1.5rem;
 }
 
+.day-complete-wrap {
+  margin-top: 0.5rem;
+  max-width: 320px;
+}
+
 .no-results {
   text-align: center;
   padding: 3rem;

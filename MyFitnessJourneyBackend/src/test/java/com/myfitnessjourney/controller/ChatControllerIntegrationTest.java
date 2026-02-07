@@ -1,6 +1,8 @@
 package com.myfitnessjourney.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.myfitnessjourney.dto.ChatMessageDto;
 import com.myfitnessjourney.dto.ChatUserDto;
 import com.myfitnessjourney.dto.SendMessageRequest;
@@ -8,13 +10,18 @@ import com.myfitnessjourney.service.ChatNotificationService;
 import com.myfitnessjourney.service.ChatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,14 +32,17 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ChatController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class ChatControllerIntegrationTest {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockitoBean
     private ChatService chatService;
@@ -45,7 +55,7 @@ class ChatControllerIntegrationTest {
     void getChatPartners_whenAuthenticated_returnsOkAndList() throws Exception {
         when(chatService.getChatPartners("user@test.com")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/chat/partners").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/chat/partners").with(user("user@test.com")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -59,16 +69,16 @@ class ChatControllerIntegrationTest {
         ChatUserDto partner = new ChatUserDto(2L, "partner", "Partner User", null, null, 0L);
         when(chatService.getChatPartners("user@test.com")).thenReturn(List.of(partner));
 
-        mockMvc.perform(get("/api/chat/partners").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/chat/partners").with(user("user@test.com")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].username").value("partner"));
     }
 
     @Test
-    void getChatPartners_whenNotAuthenticated_returnsUnauthorized() throws Exception {
+    void getChatPartners_whenNotAuthenticated_redirectsToLogin() throws Exception {
         mockMvc.perform(get("/api/chat/partners").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isFound());
     }
 
     @Test
@@ -76,7 +86,7 @@ class ChatControllerIntegrationTest {
     void getConversation_whenAuthenticated_returnsOkAndMessages() throws Exception {
         when(chatService.getConversation("user@test.com", 2L)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/chat/conversations/2").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/chat/conversations/2").with(user("user@test.com")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
@@ -88,7 +98,7 @@ class ChatControllerIntegrationTest {
     void getUnreadCount_whenAuthenticated_returnsOkAndCount() throws Exception {
         when(chatService.getUnreadMessageCount("user@test.com")).thenReturn(3L);
 
-        mockMvc.perform(get("/api/chat/messages/unread/count").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/chat/messages/unread/count").with(user("user@test.com")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.count").value(3));
 
@@ -106,6 +116,8 @@ class ChatControllerIntegrationTest {
         when(chatService.sendMessage(eq("user@test.com"), eq(request))).thenReturn(messageDto);
 
         mockMvc.perform(post("/api/chat/messages")
+                        .with(user("user@test.com"))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -119,7 +131,9 @@ class ChatControllerIntegrationTest {
     @Test
     @WithMockUser(username = "user@test.com")
     void markAsRead_whenAuthenticated_returnsNoContent() throws Exception {
-        mockMvc.perform(put("/api/chat/messages/read/2"))
+        mockMvc.perform(put("/api/chat/messages/read/2")
+                        .with(user("user@test.com"))
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
 
         verify(chatService).markMessagesAsRead("user@test.com", 2L);
@@ -130,7 +144,7 @@ class ChatControllerIntegrationTest {
     void searchUsers_whenAuthenticated_returnsOkAndList() throws Exception {
         when(chatService.searchUsers("test", "user@test.com")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/chat/users").param("query", "test").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/chat/users").with(user("user@test.com")).param("query", "test").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 

@@ -87,3 +87,35 @@
   font-weight: 600;
   font-size: 0.9rem;
 }
+
+.exercise-complete-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.exercise-complete-btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.exercise-complete-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.exercise-complete-btn:disabled {
+  cursor: default;
+}
+
+.exercise-complete-btn--completed,
+.exercise-complete-btn.exercise-complete-btn--completed:disabled {
+  background: #9e9e9e;
+  color: rgba(255, 255, 255, 0.95);
+}

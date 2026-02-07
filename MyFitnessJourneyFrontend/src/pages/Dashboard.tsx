@@ -4,6 +4,7 @@ import { getCurrentUser, getProfilePictureUrl } from '../services/authService';
 import { createMeal, getAllDiets, CreateMealRequest } from '../services/dietService';
 import { logMeal } from '../services/mealLogService';
 import { getUnreadCount } from '../services/chatService';
+import { getCompletedWorkoutsCount } from '../services/fitnessProgramService';
 import { HamburgerMenu } from '../components/common/HamburgerMenu';
 import { DropdownMenu } from '../components/common/DropdownMenu';
 import { Loading } from '../components/common/Loading';
@@ -30,6 +31,7 @@ const Dashboard: React.FC = () => {
   const [userFavoritesDietId, setUserFavoritesDietId] = useState<number | null>(null);
   const [unreadMessages, setUnreadMessages] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
+  const [workoutsCount, setWorkoutsCount] = useState<number>(0);
   
   const { toasts, showSuccess, showError, removeToast } = useToast();
   
@@ -96,6 +98,28 @@ const Dashboard: React.FC = () => {
     const interval = setInterval(fetchUnreadMessages, 30000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  const fetchWorkoutsCount = async () => {
+    try {
+      const count = await getCompletedWorkoutsCount();
+      setWorkoutsCount(count);
+    } catch {
+      setWorkoutsCount(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkoutsCount();
+    const handleVisibilityChange = () => {
+      if (!document.hidden) fetchWorkoutsCount();
+    };
+    window.addEventListener('focus', fetchWorkoutsCount);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('focus', fetchWorkoutsCount);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Fetch today's nutrition summary
@@ -179,6 +203,7 @@ const Dashboard: React.FC = () => {
         targetFat={targetFat}
         unreadMessages={unreadMessages}
         streak={streak}
+        workoutsCount={workoutsCount}
         onLogMeal={() => setShowMealModal(true)}
       />
 

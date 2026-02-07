@@ -58,7 +58,7 @@ public class Exercise {
     @JoinColumn(name = "fitness_program_id", nullable = false)
     private FitnessProgram fitnessProgram;
 
-
+    /** Returns translation for the given locale (e.g. "bg", "en", "de"). */
     public Optional<ExerciseTranslation> getTranslation(String locale) {
         if (translations == null || locale == null) return Optional.empty();
         return translations.stream()
@@ -66,6 +66,7 @@ public class Exercise {
                 .findFirst();
     }
 
+    /** Fallback when requested locale is missing: prefer "bg", then first available. */
     public ExerciseTranslation getDefaultTranslation() {
         if (translations == null || translations.isEmpty()) return null;
         return getTranslation("bg").orElse(translations.get(0));

@@ -38,6 +38,8 @@ export const FitnessProgramsMain: React.FC<FitnessProgramsMainProps> = ({
       <ExercisesGrid
         exercises={selectedProgram.exercises ?? []}
         search={searchQuery}
+        programId={selectedProgram.id}
+        onWorkoutCompleted={undefined}
       />
     </div>
   );

@@ -17,6 +17,7 @@
     <include file="db/changelog/009-diet-translations.xml"/>
     <include file="db/changelog/010-meal-translations.xml"/>
     <include file="db/changelog/011-fitness-program-translations.xml"/>
+    <include file="db/changelog/012-completed-workouts.xml"/>
 
 </databaseChangeLog>
 
