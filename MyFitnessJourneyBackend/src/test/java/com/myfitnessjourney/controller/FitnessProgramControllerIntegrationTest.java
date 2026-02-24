@@ -1,7 +1,7 @@
 package com.myfitnessjourney.controller;
 
 import com.myfitnessjourney.dto.FitnessProgramDto;
-import com.myfitnessjourney.service.ExerciseService;
+import com.myfitnessjourney.exception.FitnessProgramNotFoundException;
 import com.myfitnessjourney.service.FitnessProgramService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +33,6 @@ class FitnessProgramControllerIntegrationTest {
 
     @MockitoBean
     private FitnessProgramService fitnessProgramService;
-
-    @MockitoBean
-    private ExerciseService exerciseService;
 
     @Test
     @WithMockUser
@@ -87,20 +84,20 @@ class FitnessProgramControllerIntegrationTest {
     @Test
     @WithMockUser
     void getExercisesByFitnessProgramId_whenProgramExists_returnsOkAndList() throws Exception {
-        when(fitnessProgramService.existsById(1L)).thenReturn(true);
-        when(exerciseService.getExercisesByFitnessProgramId(1L)).thenReturn(Collections.emptyList());
+        when(fitnessProgramService.getExercisesByProgramId(1L)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/fitness-programs/1/exercises").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
-        verify(exerciseService).getExercisesByFitnessProgramId(1L);
+        verify(fitnessProgramService).getExercisesByProgramId(1L);
     }
 
     @Test
     @WithMockUser
     void getExercisesByFitnessProgramId_whenProgramNotExists_returnsNotFound() throws Exception {
-        when(fitnessProgramService.existsById(999L)).thenReturn(false);
+        when(fitnessProgramService.getExercisesByProgramId(999L))
+                .thenThrow(new FitnessProgramNotFoundException("Fitness program not found with id: 999"));
 
         mockMvc.perform(get("/api/fitness-programs/999/exercises").with(user("user")).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());

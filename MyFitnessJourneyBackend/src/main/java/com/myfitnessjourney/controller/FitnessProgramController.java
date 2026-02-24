@@ -2,8 +2,6 @@ package com.myfitnessjourney.controller;
 
 import com.myfitnessjourney.dto.ExerciseDto;
 import com.myfitnessjourney.dto.FitnessProgramDto;
-import com.myfitnessjourney.exception.FitnessProgramNotFoundException;
-import com.myfitnessjourney.service.ExerciseService;
 import com.myfitnessjourney.service.FitnessProgramService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,6 @@ import java.util.List;
 public class FitnessProgramController {
 
     private final FitnessProgramService fitnessProgramService;
-    private final ExerciseService exerciseService;
 
     @GetMapping
     public ResponseEntity<List<FitnessProgramDto>> getAllFitnessPrograms() {
@@ -36,10 +33,7 @@ public class FitnessProgramController {
 
     @GetMapping("/{id}/exercises")
     public ResponseEntity<List<ExerciseDto>> getExercisesByFitnessProgramId(@PathVariable Long id) {
-        if (!fitnessProgramService.existsById(id)) {
-            throw new FitnessProgramNotFoundException("Fitness program not found with id: " + id);
-        }
-        List<ExerciseDto> exerciseDtos = exerciseService.getExercisesByFitnessProgramId(id);
+        List<ExerciseDto> exerciseDtos = fitnessProgramService.getExercisesByProgramId(id);
         return ResponseEntity.ok(exerciseDtos);
     }
 }

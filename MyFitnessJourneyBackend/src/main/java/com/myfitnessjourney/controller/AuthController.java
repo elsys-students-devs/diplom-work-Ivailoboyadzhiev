@@ -3,6 +3,7 @@ package com.myfitnessjourney.controller;
 import com.myfitnessjourney.dto.ChangePasswordRequest;
 import com.myfitnessjourney.dto.LoginRequest;
 import com.myfitnessjourney.dto.LoginResponse;
+import com.myfitnessjourney.dto.LoginUserDto;
 import com.myfitnessjourney.dto.UpdateProfileRequest;
 import com.myfitnessjourney.entity.User;
 import com.myfitnessjourney.exception.UserNotFoundException;
@@ -72,7 +73,7 @@ public class AuthController {
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
         
         user = userService.updateLoginStreak(user);
-        LoginResponse.UserDto userDto = userService.getUserDto(user);
+        LoginUserDto userDto = userService.getUserDto(user);
         
         logger.info("Login successful for user: {}, session created", request.getEmail());
         
@@ -83,7 +84,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> register(@Valid @RequestBody LoginRequest request,
                                                  HttpServletRequest httpRequest,
                                                  HttpServletResponse httpResponse) {
-        LoginResponse.UserDto userDto = userService.register(request.getEmail(), request.getPassword(), request.getUsername());
+        LoginUserDto userDto = userService.register(request.getEmail(), request.getPassword(), request.getUsername());
         
         // Authenticate the newly registered user
         Authentication authentication = authenticationManager.authenticate(
@@ -104,7 +105,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<LoginResponse.UserDto> getCurrentUser(
+    public ResponseEntity<LoginUserDto> getCurrentUser(
             @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
@@ -115,12 +116,12 @@ public class AuthController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<LoginResponse.UserDto> updateProfile(
+    public ResponseEntity<LoginUserDto> updateProfile(
             @Valid @RequestBody UpdateProfileRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
-        LoginResponse.UserDto updated = userService.updateProfile(
+        LoginUserDto updated = userService.updateProfile(
                 currentUser,
                 request.getUsername(),
                 request.getEmail()
@@ -129,12 +130,12 @@ public class AuthController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<LoginResponse.UserDto> changePassword(
+    public ResponseEntity<LoginUserDto> changePassword(
             @Valid @RequestBody ChangePasswordRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
-        LoginResponse.UserDto updated = userService.changePassword(
+        LoginUserDto updated = userService.changePassword(
                 currentUser,
                 request.getCurrentPassword(),
                 request.getNewPassword()
@@ -143,13 +144,13 @@ public class AuthController {
     }
 
     @PostMapping(value = "/profile/picture", consumes = "multipart/form-data")
-    public ResponseEntity<LoginResponse.UserDto> uploadProfilePicture(
+    public ResponseEntity<LoginUserDto> uploadProfilePicture(
             @RequestPart("file") MultipartFile file,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
         User currentUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + userDetails.getUsername()));
         String relativePath = profilePictureService.saveProfilePicture(currentUser.getId(), file);
-        LoginResponse.UserDto updated = userService.updatePictureUrl(currentUser, relativePath);
+        LoginUserDto updated = userService.updatePictureUrl(currentUser, relativePath);
         return ResponseEntity.ok(updated);
     }
 

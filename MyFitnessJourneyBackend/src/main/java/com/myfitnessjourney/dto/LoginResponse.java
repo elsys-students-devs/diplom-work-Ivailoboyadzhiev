@@ -9,19 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginResponse {
     private String token;
-    private UserDto user;
+    private LoginUserDto user;
     private String message;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserDto {
-        private Long id;
-        private String email;
-        private String username;
-        private String name;
-        private Integer streak;
-        private String pictureUrl;
-    }
 }
 

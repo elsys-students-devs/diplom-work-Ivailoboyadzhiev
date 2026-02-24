@@ -33,11 +33,11 @@ public final class LocalizationUtil {
     public static void applyToDiet(DietDto dto, Diet entity, Locale locale) {
         if (dto == null || entity == null) return;
         String localeCode = useEnglish(locale) ? EN : "bg";
-        DietTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
-        if (t != null) {
-            dto.setName(t.getName());
-            dto.setDescription(t.getDescription());
-            dto.setBenefits(t.getBenefits());
+        DietTranslation translation = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (translation != null) {
+            dto.setName(translation.getName());
+            dto.setDescription(translation.getDescription());
+            dto.setBenefits(translation.getBenefits());
         }
         if (dto.getMeals() != null && entity.getMeals() != null) {
             List<Meal> meals = entity.getMeals();
@@ -51,21 +51,21 @@ public final class LocalizationUtil {
     public static void applyToMeal(MealDto dto, Meal entity, Locale locale) {
         if (dto == null || entity == null) return;
         String localeCode = useEnglish(locale) ? EN : "bg";
-        MealTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
-        if (t != null) {
-            dto.setName(t.getName());
-            dto.setDescription(t.getDescription());
+        MealTranslation translation = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (translation != null) {
+            dto.setName(translation.getName());
+            dto.setDescription(translation.getDescription());
         }
     }
 
     public static void applyToFitnessProgram(FitnessProgramDto dto, FitnessProgram entity, Locale locale) {
         if (dto == null || entity == null) return;
         String localeCode = useEnglish(locale) ? EN : "bg";
-        FitnessProgramTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
-        if (t != null) {
-            dto.setName(t.getName());
-            dto.setDescription(t.getDescription());
-            dto.setBenefits(t.getBenefits());
+        FitnessProgramTranslation translation = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (translation != null) {
+            dto.setName(translation.getName());
+            dto.setDescription(translation.getDescription());
+            dto.setBenefits(translation.getBenefits());
         }
         if (dto.getExercises() != null && entity.getExercises() != null) {
             List<Exercise> exercises = entity.getExercises();
@@ -79,11 +79,11 @@ public final class LocalizationUtil {
     public static void applyToExercise(ExerciseDto dto, Exercise entity, Locale locale) {
         if (dto == null || entity == null) return;
         String localeCode = useEnglish(locale) ? EN : "bg";
-        ExerciseTranslation t = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
-        if (t != null) {
-            dto.setName(t.getName());
-            dto.setDescription(t.getDescription());
-            dto.setMuscleGroup(t.getMuscleGroup());
+        ExerciseTranslation translation = entity.getTranslation(localeCode).orElse(entity.getDefaultTranslation());
+        if (translation != null) {
+            dto.setName(translation.getName());
+            dto.setDescription(translation.getDescription());
+            dto.setMuscleGroup(translation.getMuscleGroup());
         }
     }
 }

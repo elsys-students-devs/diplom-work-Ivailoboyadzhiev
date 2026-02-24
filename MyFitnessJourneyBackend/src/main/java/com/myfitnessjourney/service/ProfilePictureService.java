@@ -2,6 +2,8 @@ package com.myfitnessjourney.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -19,6 +22,7 @@ public class ProfilePictureService {
             "image/jpeg", "image/png", "image/gif", "image/webp"
     );
     private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+    private static final String FILENAME_PATTERN = "[a-zA-Z0-9._-]+";
 
     private final Path profilesDir;
 
@@ -65,6 +69,38 @@ public class ProfilePictureService {
         }
         return candidate;
     }
+
+    public boolean isValidProfilePictureFilename(String filename) {
+        return filename != null && filename.matches(FILENAME_PATTERN);
+    }
+
+    public Optional<ProfilePictureResource> getProfilePicture(String filename) {
+        if (!isValidProfilePictureFilename(filename)) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+        Path path = getProfilePicturePath(filename);
+        if (path == null || !path.toFile().exists()) {
+            return Optional.empty();
+        }
+        try {
+            Resource resource = new UrlResource(path.toUri());
+            String contentType = getContentTypeFromFilename(filename);
+            return Optional.of(new ProfilePictureResource(resource, contentType));
+        } catch (Exception e) {
+            log.warn("Could not load profile picture: {}", filename, e);
+            return Optional.empty();
+        }
+    }
+
+    public static String getContentTypeFromFilename(String filename) {
+        String lower = filename.toLowerCase();
+        if (lower.endsWith(".png")) return "image/png";
+        if (lower.endsWith(".gif")) return "image/gif";
+        if (lower.endsWith(".webp")) return "image/webp";
+        return "image/jpeg";
+    }
+
+    public record ProfilePictureResource(Resource resource, String contentType) {}
 
     private static String getExtension(String contentType) {
         return switch (contentType) {
