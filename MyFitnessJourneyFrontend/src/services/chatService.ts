@@ -65,15 +65,6 @@ export const disconnectWebSocket = (): void => {
   }
 };
 
-export const sendMessageViaWebSocket = (request: SendMessageRequest): void => {
-  if (stompClient && stompClient.connected) {
-    stompClient.publish({
-      destination: '/app/chat.send',
-      body: JSON.stringify(request),
-    });
-  }
-};
-
 export const sendMessage = async (request: SendMessageRequest): Promise<ChatMessageDto> => {
   const response = await api.post<ChatMessageDto>('/chat/messages', request);
   return response.data;

@@ -34,14 +34,10 @@ public class ChatWebSocketController {
         
         ChatMessageDto message = chatService.sendMessage(principal.getName(), request);
         
-        // Send to recipient's private queue using username
-        messagingTemplate.convertAndSendToUser(
-                message.getRecipientUsername(),
-                "/queue/messages",
-                message
-        );
+        String recipientDestination = "/topic/chat/" + message.getRecipientId();
+        messagingTemplate.convertAndSend(recipientDestination, message);
         
-        logger.debug("Message delivered via WebSocket to user {}", message.getRecipientUsername());
+        logger.debug("Message delivered via WebSocket to topic {}", recipientDestination);
     }
 
     @MessageMapping("/chat.read")
