@@ -2,7 +2,7 @@ Before starting the project, make sure you have the following installed:
 
 - **Docker** (version 20.10 or higher)
 - **Docker Compose** (version 2.0 or higher)
-- **Java 21** (if running backend locally)
+- **Java 25** (if running backend locally)
 - **Node.js 20+** (if running frontend locally)
 - **Maven 3.9+** (if running backend locally)
 

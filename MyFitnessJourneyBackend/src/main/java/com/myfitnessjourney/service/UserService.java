@@ -1,6 +1,6 @@
 package com.myfitnessjourney.service;
 
-import com.myfitnessjourney.dto.LoginResponse;
+import com.myfitnessjourney.dto.LoginUserDto;
 import com.myfitnessjourney.entity.User;
 import com.myfitnessjourney.exception.EmailAlreadyExistsException;
 import com.myfitnessjourney.exception.InvalidLoginException;
@@ -32,7 +32,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public LoginResponse.UserDto login(String email, String password) {
+    @Transactional
+    public LoginUserDto login(String email, String password) {
         logger.info("Login attempt for email: {}", email);
 
         // Check if user exists
@@ -113,8 +114,8 @@ public class UserService {
         return user.getLoginStreak() != null ? user.getLoginStreak() : 0;
     }
 
-    public LoginResponse.UserDto getUserDto(User user) {
-        LoginResponse.UserDto dto = new LoginResponse.UserDto();
+    public LoginUserDto getUserDto(User user) {
+        LoginUserDto dto = new LoginUserDto();
         dto.setId(user.getId());
         dto.setEmail(user.getEmail());
         dto.setUsername(user.getUsername());
@@ -124,11 +125,12 @@ public class UserService {
         return dto;
     }
 
-    private LoginResponse.UserDto toUserDto(User user) {
+    private LoginUserDto toUserDto(User user) {
         return getUserDto(user);
     }
 
-    public LoginResponse.UserDto register(String email, String password, String username) {
+    @Transactional
+    public LoginUserDto register(String email, String password, String username) {
         logger.info("Registration attempt for email: {}, username: {}", email, username);
 
         // Validate email format
@@ -173,7 +175,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse.UserDto updateProfile(User currentUser, String username, String email) {
+    public LoginUserDto updateProfile(User currentUser, String username, String email) {
         if (username != null && !username.isBlank()) {
             ValidationUtil.validateUsername(username.trim());
             if (!username.trim().equals(currentUser.getUsername()) && userRepository.existsByUsername(username.trim())) {
@@ -194,7 +196,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse.UserDto changePassword(User currentUser, String currentPassword, String newPassword) {
+    public LoginUserDto changePassword(User currentUser, String currentPassword, String newPassword) {
         if (currentUser.getPassword() == null) {
             throw new InvalidLoginException("This account uses social login. Password cannot be changed.");
         }
@@ -209,7 +211,7 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResponse.UserDto updatePictureUrl(User user, String pictureUrl) {
+    public LoginUserDto updatePictureUrl(User user, String pictureUrl) {
         user.setPictureUrl(pictureUrl);
         User saved = userRepository.save(user);
         logger.info("Profile picture updated for user: {}", saved.getEmail());

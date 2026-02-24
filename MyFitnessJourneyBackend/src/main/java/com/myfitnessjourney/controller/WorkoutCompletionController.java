@@ -3,6 +3,7 @@ package com.myfitnessjourney.controller;
 import com.myfitnessjourney.dto.CompleteWorkoutRequest;
 import com.myfitnessjourney.dto.CompletedDaysDto;
 import com.myfitnessjourney.dto.CompletedWorkoutsCountDto;
+import com.myfitnessjourney.entity.DayOfWeek;
 import com.myfitnessjourney.service.CompletedWorkoutService;
 import com.myfitnessjourney.service.UserService;
 import lombok.AllArgsConstructor;
@@ -66,7 +67,7 @@ public class WorkoutCompletionController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Long userId = userService.getUserByEmail(userDetails.getUsername()).getId();
-        Set<com.myfitnessjourney.entity.DayOfWeek> days =
+        Set<DayOfWeek> days =
                 completedWorkoutService.getCompletedDaysForWeek(userId, programId, weekStart);
         return ResponseEntity.ok(new CompletedDaysDto(days));
     }

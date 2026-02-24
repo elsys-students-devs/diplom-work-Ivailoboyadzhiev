@@ -62,7 +62,7 @@ public class Exercise {
     public Optional<ExerciseTranslation> getTranslation(String locale) {
         if (translations == null || locale == null) return Optional.empty();
         return translations.stream()
-                .filter(t -> locale.equalsIgnoreCase(t.getLocale()))
+                .filter(translation -> locale.equalsIgnoreCase(translation.getLocale()))
                 .findFirst();
     }
 

@@ -1,5 +1,6 @@
 package com.myfitnessjourney.service;
 
+import com.myfitnessjourney.dto.ExerciseDto;
 import com.myfitnessjourney.dto.FitnessProgramDto;
 import com.myfitnessjourney.entity.FitnessProgram;
 import com.myfitnessjourney.exception.FitnessProgramNotFoundException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class FitnessProgramService {
     private final FitnessProgramRepository fitnessProgramRepository;
     private final FitnessProgramMapper fitnessProgramMapper;
+    private final ExerciseService exerciseService;
 
     public List<FitnessProgramDto> getAllFitnessProgramsWithExercises() {
         List<FitnessProgram> programs = fitnessProgramRepository.findAllWithExercises();
@@ -47,6 +49,13 @@ public class FitnessProgramService {
     
     public boolean existsById(Long id) {
         return fitnessProgramRepository.existsById(id);
+    }
+
+    public List<ExerciseDto> getExercisesByProgramId(Long programId) {
+        if (!fitnessProgramRepository.existsById(programId)) {
+            throw new FitnessProgramNotFoundException("Fitness program not found with id: " + programId);
+        }
+        return exerciseService.getExercisesByFitnessProgramId(programId);
     }
 
     public FitnessProgram saveFitnessProgram(FitnessProgram fitnessProgram) {

@@ -1,5 +1,6 @@
 package com.myfitnessjourney.service;
 
+import com.myfitnessjourney.dto.ExerciseDto;
 import com.myfitnessjourney.dto.FitnessProgramDto;
 import com.myfitnessjourney.entity.FitnessProgram;
 import com.myfitnessjourney.entity.FitnessProgramTranslation;
@@ -29,6 +30,9 @@ class FitnessProgramServiceTest {
 
     @Mock
     private FitnessProgramMapper fitnessProgramMapper;
+
+    @Mock
+    private ExerciseService exerciseService;
 
     @InjectMocks
     private FitnessProgramService fitnessProgramService;
@@ -115,5 +119,25 @@ class FitnessProgramServiceTest {
         boolean result = fitnessProgramService.existsById(999L);
 
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void getExercisesByProgramId_whenProgramExists_returnsExercisesFromExerciseService() {
+        when(fitnessProgramRepository.existsById(1L)).thenReturn(true);
+        when(exerciseService.getExercisesByFitnessProgramId(1L)).thenReturn(Collections.emptyList());
+
+        List<ExerciseDto> result = fitnessProgramService.getExercisesByProgramId(1L);
+
+        assertThat(result).isEmpty();
+        verify(exerciseService).getExercisesByFitnessProgramId(1L);
+    }
+
+    @Test
+    void getExercisesByProgramId_whenProgramNotExists_throws() {
+        when(fitnessProgramRepository.existsById(999L)).thenReturn(false);
+
+        assertThatThrownBy(() -> fitnessProgramService.getExercisesByProgramId(999L))
+                .isInstanceOf(FitnessProgramNotFoundException.class)
+                .hasMessageContaining("999");
     }
 }
