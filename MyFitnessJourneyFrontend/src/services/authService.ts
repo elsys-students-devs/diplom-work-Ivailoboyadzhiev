@@ -96,6 +96,11 @@ export const getCurrentUser = async (): Promise<UserDto | null> => {
 };
 
 export const logout = async () => {
+  try {
+    await api.post('/auth/logout');
+  } catch {
+    // Session may already be invalid or network error – still clear client state
+  }
   localStorage.removeItem('access_token');
 };
 

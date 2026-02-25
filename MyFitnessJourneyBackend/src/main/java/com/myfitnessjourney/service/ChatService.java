@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -179,13 +181,21 @@ public class ChatService {
         
         List<User> partners = new ArrayList<>(partnersSet);
 
+        Long userId = user.getId();
+        Map<Long, java.time.LocalDateTime> lastMessageAtByPartner = new HashMap<>();
+        for (var row : chatMessageRepository.findLastMessageTimeByPartners(userId)) {
+            lastMessageAtByPartner.put(row.getPartnerId(), row.getLastMessageAt());
+        }
+        Map<Long, Long> unreadCountByPartner = new HashMap<>();
+        for (var row : chatMessageRepository.findUnreadCountByPartners(userId)) {
+            unreadCountByPartner.put(row.getPartnerId(), row.getUnreadCount());
+        }
+
         List<ChatUserDto> partnerDtos = partners.stream()
                 .map(partner -> {
                     ChatUserDto dto = chatUserMapper.toDto(partner);
-                    java.time.LocalDateTime lastMessageAt = chatMessageRepository.findLastMessageTime(user, partner);
-                    long unreadCount = chatMessageRepository.countUnreadMessages(user, partner);
-                    dto.setLastMessageAt(lastMessageAt);
-                    dto.setUnreadCount(unreadCount);
+                    dto.setLastMessageAt(lastMessageAtByPartner.get(partner.getId()));
+                    dto.setUnreadCount(unreadCountByPartner.getOrDefault(partner.getId(), 0L));
                     return dto;
                 })
                 .sorted((dto1, dto2) -> {
