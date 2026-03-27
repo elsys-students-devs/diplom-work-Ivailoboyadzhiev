@@ -1,0 +1,61 @@
+.dashboard-header {
+  background: linear-gradient(135deg, rgba(195, 82, 20, 0.7) 0%, rgba(160, 69, 16, 0.7) 100%);
+  color: white;
+  padding: 1.5rem 1.5rem 2rem;
+}
+
+.dashboard-header .header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.dashboard-header-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.dashboard-header-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard-header .header-text {
+  min-width: 0;
+}
+
+.dashboard-header .welcome-text {
+  font-size: 0.9rem;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header .user-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-transform: capitalize;
+}
+
+.dashboard-header .motivational-text {
+  font-size: 1rem;
+  opacity: 1;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-header .user-name {
+    font-size: 2rem;
+  }
+}

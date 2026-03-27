@@ -1,0 +1,52 @@
+.chat-header {
+  position: relative;
+  padding: 6rem 2rem 2rem;
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.chat-header .back-button {
+  position: fixed;
+  top: 20px;
+  left: 80px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  z-index: 999;
+}
+
+.chat-header .back-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.chat-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chat-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 5rem 1rem 1.5rem;
+  }
+
+  .chat-title {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,83 @@
+.diets-container {
+  min-height: 100vh;
+  background-image: url('/background3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.meal-macros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.macro-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: rgba(255, 87, 34, 0.05);
+  border-radius: 8px;
+}
+
+.macro-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.macro-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FF5722;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.no-results p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .diets-header {
+    padding: 5rem 1rem 1.5rem;
+  }
+
+  .diets-title {
+    font-size: 2rem;
+  }
+
+  .diets-subtitle {
+    margin-bottom: 1rem;
+  }
+  
+  .diets-content {
+    padding: 1rem;
+  }
+
+  .diets-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .meals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-macros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

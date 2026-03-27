@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "Моето Фитнес Пътуване",
+    "subtitle": "Добре дошли! Влезте в акаунта си.",
+    "email": "Имейл адрес",
+    "emailPlaceholder": "Въведете имейл",
+    "password": "Парола",
+    "passwordPlaceholder": "Въведете парола",
+    "signIn": "Вход",
+    "signingIn": "Влизане...",
+    "or": "или",
+    "continueGoogle": "Продължи с Google",
+    "continueFacebook": "Продължи с Facebook",
+    "noAccount": "Нямате акаунт?",
+    "signUp": "Регистрация",
+    "showPassword": "Покажи парола",
+    "hidePassword": "Скрий парола"
+  },
+  "loginValidation": {
+    "emailRequired": "Имейлът е задължителен",
+    "emailInvalid": "Имейлът трябва да съдържа @",
+    "emailValid": "Моля въведете валиден имейл (напр. user@example.com)",
+    "passwordRequired": "Паролата е задължителна",
+    "passwordMin": "Паролата трябва да е поне 6 символа"
+  }
+}

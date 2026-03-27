@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="007a-diets-add-en-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="diets" columnName="name_en"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="diets">
+            <column name="name_en" type="VARCHAR(100)"/>
+            <column name="description_en" type="VARCHAR(1000)"/>
+            <column name="benefits_en" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="007a-meals-add-en-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="meals" columnName="name_en"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="meals">
+            <column name="name_en" type="VARCHAR(100)"/>
+            <column name="description_en" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="007a-diets-en-data" author="ivo">
+        <update tableName="diets">
+            <column name="name_en" value="Mediterranean Diet"/>
+            <column name="description_en" value="The Mediterranean diet is based on the traditional food of countries around the Mediterranean Sea. It includes plenty of vegetables, fruits, grains, fish and olive oil, and limited amounts of red meat and sugar."/>
+            <column name="benefits_en" value="Reduces risk of cardiovascular disease, improves brain function and supports healthy weight loss."/>
+            <where>name='Средиземноморска диета'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="Keto Diet"/>
+            <column name="description_en" value="The keto diet is a high-fat, very low-carb diet that forces the body to use fat for energy instead of carbs. It includes meat, fish, eggs, low-carb vegetables and healthy fats."/>
+            <column name="benefits_en" value="Fast weight loss, improved mental clarity, reduced appetite and stabilized blood sugar."/>
+            <where>name='Кето диета'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="Vegan Diet"/>
+            <column name="description_en" value="The vegan diet excludes all animal products including meat, fish, eggs, dairy and honey. Focus is on fruits, vegetables, grains, legumes, nuts and seeds."/>
+            <column name="benefits_en" value="Reduces risk of chronic disease, improves heart health, supports weight loss and is more environmentally sustainable."/>
+            <where>name='Веганска диета'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="Paleo Diet"/>
+            <column name="description_en" value="The Paleo diet mimics the food of our stone-age ancestors. It includes meat, fish, eggs, fruits, vegetables, nuts and seeds, but excludes grains, legumes, dairy and processed food."/>
+            <column name="benefits_en" value="Improves energy, reduces inflammation, supports weight loss and improves digestion."/>
+            <where>name='Палео диета'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="Intermittent Fasting (IF)"/>
+            <column name="description_en" value="Intermittent fasting is not a diet in the traditional sense, but an eating pattern that alternates periods of eating and fasting. Popular forms include 16:8 (16 hours fasting, 8-hour eating window) and 5:2 (5 days normal eating, 2 days restricted calories)."/>
+            <column name="benefits_en" value="Supports weight loss, improves metabolism, reduces inflammation and may improve longevity."/>
+            <where>name='Интермитентно гладуване (IF)'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="DASH Diet"/>
+            <column name="description_en" value="DASH (Dietary Approaches to Stop Hypertension) is specifically designed to lower blood pressure. It includes plenty of fruits, vegetables, low-fat dairy, grains, fish, poultry and nuts, and limits sodium, sugar and red meat."/>
+            <column name="benefits_en" value="Effectively lowers blood pressure, improves heart health and supports healthy weight loss."/>
+            <where>name='DASH диета'</where>
+        </update>
+        <update tableName="diets">
+            <column name="name_en" value="User Favorites"/>
+            <column name="description_en" value="Your favorite meals that you have created. Add custom meals with your own macros."/>
+            <column name="benefits_en" value="Personalized diet with meals that match your tastes and goals."/>
+            <where>name='User Favorites'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="007a-meals-en-data" author="ivo">
+        <update tableName="meals">
+            <column name="name_en" value="Greek salad with feta"/>
+            <column name="description_en" value="Fresh tomatoes, cucumbers, olives, onion and feta cheese with olive oil"/>
+            <where>name='Гръцка салата с фета'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Baked salmon with lemon"/>
+            <column name="description_en" value="Salmon with lemon juice, thyme and olive oil"/>
+            <where>name='Печена сьомга с лимони'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Quinoa with vegetables"/>
+            <column name="description_en" value="Quinoa with roasted peppers, eggplant and tomatoes"/>
+            <where>name='Киноа с зеленчуци'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Hummus with whole grain crackers"/>
+            <column name="description_en" value="Tomato hummus with whole grain crackers"/>
+            <where>name='Хумус с пълнозърнести крекери'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Greek yogurt with honey and nuts"/>
+            <column name="description_en" value="Full-fat Greek yogurt with honey and almonds"/>
+            <where>name='Гръцки йогурт с мед и ядки'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Eggs with bacon and avocado"/>
+            <column name="description_en" value="3 eggs, 2 strips bacon and half an avocado"/>
+            <where>name='Яйца с бекон и авокадо'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chicken with broccoli and cheese"/>
+            <column name="description_en" value="Chicken fillet with broccoli and cheddar cheese"/>
+            <where>name='Пилешко с броколи и сирене'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Salmon with spinach and butter"/>
+            <column name="description_en" value="Baked salmon with spinach and butter"/>
+            <where>name='Сьомга с спанак и масло'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Keto salad with mayonnaise"/>
+            <column name="description_en" value="Green salad with chicken, avocado and homemade mayonnaise"/>
+            <where>name='Кето салата с майонеза'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Keto cheesecake"/>
+            <column name="description_en" value="Sugar-free cheesecake with nuts"/>
+            <where>name='Кето чизкейк'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Vegan oatmeal"/>
+            <column name="description_en" value="Oats with banana, nuts and plant milk"/>
+            <where>name='Веганска овсяна каша'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Red lentil with rice"/>
+            <column name="description_en" value="Lentils with rice and vegetables"/>
+            <where>name='Червена леща с ориз'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Tofu with broccoli"/>
+            <column name="description_en" value="Baked tofu with broccoli and soy sauce"/>
+            <where>name='Тофу с броколи'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Vegan quinoa salad"/>
+            <column name="description_en" value="Quinoa with chickpeas, tomatoes, cucumbers and vegan dressing"/>
+            <where>name='Веганска салата с киноа'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Vegan smoothie bowl"/>
+            <column name="description_en" value="Smoothie bowl with banana, strawberries, chia seeds and coconut milk"/>
+            <where>name='Вегански смути боул'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chicken with sweet potato"/>
+            <column name="description_en" value="Baked chicken with roasted sweet potato and vegetables"/>
+            <where>name='Пилешко с батати'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Salmon with avocado salad"/>
+            <column name="description_en" value="Baked salmon with avocado, arugula and nuts"/>
+            <where>name='Сьомга с авокадо салата'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Eggs with avocado and bacon"/>
+            <column name="description_en" value="Sunny-side eggs with avocado and paleo bacon"/>
+            <where>name='Яйца с авокадо и сланина'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Beef with roasted vegetables"/>
+            <column name="description_en" value="Beef fillet with roasted peppers and eggplant"/>
+            <where>name='Телешко с печени зеленчуци'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Paleo salad with nuts"/>
+            <column name="description_en" value="Paleo salad with walnuts, almonds and oil"/>
+            <where>name='Палмова салата с ядки'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Big breakfast with eggs"/>
+            <column name="description_en" value="3 eggs, bacon, avocado and whole-grain bread"/>
+            <where>name='Голяма закуска с яйца'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chicken with rice and vegetables"/>
+            <column name="description_en" value="Chicken fillet with brown rice and vegetable mix"/>
+            <where>name='Пилешко с ориз и зеленчуци'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Salmon with quinoa"/>
+            <column name="description_en" value="Baked salmon with quinoa and roasted vegetables"/>
+            <where>name='Сьомга с киноа'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Protein smoothie"/>
+            <column name="description_en" value="Protein powder, banana, nuts and milk"/>
+            <where>name='Протеинов смути'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chicken salad"/>
+            <column name="description_en" value="Large salad with chicken, avocado and dressing"/>
+            <where>name='Салата с пилешко'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Oatmeal with strawberries"/>
+            <column name="description_en" value="Whole grain oatmeal with strawberries and nuts"/>
+            <where>name='Овсяна каша с ягоди'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chicken with sweet potato and broccoli"/>
+            <column name="description_en" value="Baked chicken with sweet potato and broccoli"/>
+            <where>name='Пилешко с батати и броколи'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Fish with rice and vegetables"/>
+            <column name="description_en" value="Baked fish with brown rice and vegetable mix"/>
+            <where>name='Риба с ориз и зеленчуци'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Yogurt with fruit"/>
+            <column name="description_en" value="Low-fat yogurt with banana and strawberries"/>
+            <where>name='Йогурт с плодове'</where>
+        </update>
+        <update tableName="meals">
+            <column name="name_en" value="Chickpea salad"/>
+            <column name="description_en" value="Salad with chickpeas, tomatoes, cucumbers and low-fat dressing"/>
+            <where>name='Салата с нут'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

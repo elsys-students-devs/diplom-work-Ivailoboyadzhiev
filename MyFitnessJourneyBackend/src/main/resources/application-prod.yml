@@ -1,0 +1,5 @@
+app:
+  cors:
+    allowed-origins:
+      - "https://myfitnessjourney.com"
+      - "https://www.myfitnessjourney.com"

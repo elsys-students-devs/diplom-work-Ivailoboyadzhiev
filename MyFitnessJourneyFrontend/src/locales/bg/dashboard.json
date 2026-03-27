@@ -1,0 +1,40 @@
+{
+  "dashboard": {
+    "welcomeBack": "Добре дошли отново",
+    "motivational": "Да постигнем целите ви днес!",
+    "loading": "Зареждане...",
+    "dietPlans": "Диети",
+    "dietPlansSub": "Хранителни планове",
+    "fitnessPrograms": "Фитнес програми",
+    "fitnessProgramsSub": "Тренировки",
+    "messages": "Съобщения",
+    "messagesSub": "Чат с треньор",
+    "todayNutrition": "Днешна храна",
+    "logMeal": "Логни ястие",
+    "calories": "КАЛОРИИ",
+    "protein": "ПРОТЕИН",
+    "carbs": "ВЪГЛЕХИДРАТИ",
+    "fat": "МАЗНИНИ",
+    "workouts": "ТРЕНИРОВКИ",
+    "workoutsCompleted": "завършени",
+    "messagesUnread": "непрочетени",
+    "streak": "СЕРИЯ",
+    "streakDays": "дни",
+    "mealCreated": "Ястието е създадено и логнато успешно!",
+    "mealCreateError": "Грешка при създаване на ястието. Моля опитайте отново."
+  },
+  "createMeal": {
+    "title": "Създай ново ястие",
+    "mealName": "Име на ястието *",
+    "description": "Описание",
+    "calories": "Калории *",
+    "protein": "Протеин (g) *",
+    "carbs": "Въглехидрати (g) *",
+    "fat": "Мазнини (g) *",
+    "fiber": "Фибри (g)",
+    "sugar": "Захар (g)",
+    "cancel": "Отказ",
+    "submit": "Създай и логни",
+    "submitting": "Създаване..."
+  }
+}

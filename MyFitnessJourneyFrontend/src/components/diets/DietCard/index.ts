@@ -1,0 +1,2 @@
+export { DietCard } from './DietCard';
+

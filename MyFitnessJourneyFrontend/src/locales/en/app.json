@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "My Fitness Journey"
+  },
+  "language": {
+    "en": "EN",
+    "bg": "БГ",
+    "switchTo": "Switch language"
+  }
+}

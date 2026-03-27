@@ -1,0 +1,2 @@
+export { NutritionCircle } from './NutritionCircle';
+

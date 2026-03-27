@@ -1,0 +1,80 @@
+.diet-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.diet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.diet-card-header {
+  margin-bottom: 1rem;
+}
+
+.diet-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.diet-card-body {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.diet-card-description {
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+}
+
+.diet-card-benefits {
+  background: rgba(255, 87, 34, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.diet-card-benefits strong {
+  color: #FF5722;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.diet-card-benefits p {
+  color: #555;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.diet-card-meals-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #FF5722;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.diet-card-footer {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  margin-top: auto;
+}
+
+.view-details {
+  color: #FF5722;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+

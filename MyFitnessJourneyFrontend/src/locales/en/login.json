@@ -1,0 +1,26 @@
+{
+  "login": {
+    "title": "My Fitness Journey",
+    "subtitle": "Welcome back! Please sign in to your account.",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "or": "or",
+    "continueGoogle": "Continue with Google",
+    "continueFacebook": "Continue with Facebook",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "loginValidation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Email must contain @ symbol",
+    "emailValid": "Please enter a valid email address (e.g., user@example.com)",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 6 characters long"
+  }
+}

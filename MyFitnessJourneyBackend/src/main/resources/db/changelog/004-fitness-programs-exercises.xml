@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="004-create-fitness-programs-table" author="ivo">
+        <createTable tableName="fitness_programs">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="benefits" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="005-create-exercises-table" author="ivo">
+        <createTable tableName="exercises">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="day_of_week" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sets" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="reps" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="weight" type="NUMERIC(10,2)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="weight_unit" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="muscle_group" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="fitness_program_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_exercise_fitness_program" references="fitness_programs(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Load Fitness Programs from CSV -->
+    <changeSet id="006-load-fitness-programs" author="ivo">
+        <loadData
+            file="db/data/fitness-programs.csv"
+            tableName="fitness_programs"
+            separator=","
+            encoding="UTF-8"/>
+    </changeSet>
+
+    <!-- Load Exercises from CSV -->
+    <changeSet id="007-load-exercises" author="ivo">
+        <loadData
+            file="db/data/exercises.csv"
+            tableName="exercises"
+            separator=","
+            encoding="UTF-8"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="007b-fitness-programs-add-en-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="fitness_programs" columnName="name_en"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="fitness_programs">
+            <column name="name_en" type="VARCHAR(100)"/>
+            <column name="description_en" type="VARCHAR(1000)"/>
+            <column name="benefits_en" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="007b-exercises-add-en-columns" author="ivo">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="exercises" columnName="name_en"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="exercises">
+            <column name="name_en" type="VARCHAR(100)"/>
+            <column name="description_en" type="VARCHAR(500)"/>
+            <column name="muscle_group_en" type="VARCHAR(100)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="007b-fitness-en-data" author="ivo">
+        <update tableName="fitness_programs">
+            <column name="name_en" value="Push/Pull/Legs"/>
+            <column name="description_en" value="Push/Pull/Legs splits workouts into three days: Push (pushing movements - chest, shoulders, triceps), Pull (pulling movements - back, biceps), and Legs (legs and core). One of the most popular splits for building muscle."/>
+            <column name="benefits_en" value="Improves muscle mass, allows intense work on each muscle group, gives recovery time between workouts."/>
+            <where>name='Push/Pull/Legs'</where>
+        </update>
+        <update tableName="fitness_programs">
+            <column name="name_en" value="Upper/Lower Split"/>
+            <column name="description_en" value="Upper/Lower Split divides workouts into upper and lower body. This allows you to train each part twice per week with good recovery."/>
+            <column name="benefits_en" value="Improves strength and muscle mass, allows more frequent training of each part, suitable for beginners and advanced."/>
+            <where>name='Upper/Lower Split'</where>
+        </update>
+        <update tableName="fitness_programs">
+            <column name="name_en" value="Full Body"/>
+            <column name="description_en" value="Full Body workouts include exercises for the whole body in each session. Suitable for beginners or those with limited time."/>
+            <column name="benefits_en" value="Improves overall strength, effective for beginners, allows more frequent training of muscle groups."/>
+            <where>name='Full Body'</where>
+        </update>
+        <update tableName="fitness_programs">
+            <column name="name_en" value="Bro Split"/>
+            <column name="description_en" value="Bro Split divides workouts by muscle groups - one day per group (chest, back, shoulders, arms, legs). Allows maximum focus on each group."/>
+            <column name="benefits_en" value="Maximum focus on each muscle group, suitable for advanced, allows intense workouts."/>
+            <where>name='Bro Split'</where>
+        </update>
+        <update tableName="fitness_programs">
+            <column name="name_en" value="5-Day Split"/>
+            <column name="description_en" value="5-Day Split divides workouts into 5 days: Monday - Chest, Tuesday - Back, Wednesday - Shoulders, Thursday - Arms, Friday - Legs. Suitable for advanced trainees."/>
+            <column name="benefits_en" value="Maximum specialization per muscle group, suitable for advanced, allows intense workouts with good recovery."/>
+            <where>name='5-Day Split'</where>
+        </update>
+    </changeSet>
+
+
+    <changeSet id="007b-exercises-en-data" author="ivo">
+        <update tableName="exercises">
+            <column name="name_en" value="Bench Press"/>
+            <column name="description_en" value="Horizontal barbell press for chest muscles"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Хоризонтално натискане с лост за гръдни мускули'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Incline Dumbbell Press"/>
+            <column name="description_en" value="Incline dumbbell press for upper chest"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Наклонено натискане с дъмбели за горна част на гръдните'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Cable Flyes"/>
+            <column name="description_en" value="Cable flyes for chest isolation"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Разтваряния с кабел за изолация на гръдните'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Cable Flyes"/>
+            <column name="description_en" value="Cable flyes for isolation"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Разтваряния с кабел за изолация'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Overhead Press"/>
+            <column name="description_en" value="Overhead press for shoulders"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Натискане над главата за рамене'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Lateral Raises"/>
+            <column name="description_en" value="Lateral raises for lateral delts"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Странични повдигания за средни делти'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Tricep Dips"/>
+            <column name="description_en" value="Bench dips for triceps"/>
+            <column name="muscle_group_en" value="Triceps"/>
+            <where>description='Лицеви опори за трицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Tricep Pushdowns"/>
+            <column name="description_en" value="Pushdowns for triceps"/>
+            <column name="muscle_group_en" value="Triceps"/>
+            <where>description='Натискане надолу за трицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Deadlift"/>
+            <column name="description_en" value="Deadlift for back and hamstrings"/>
+            <column name="muscle_group_en" value="Back"/>
+            <where>description='Мъртва тяга за гръб и задни бедра'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Barbell Rows"/>
+            <column name="description_en" value="Barbell rows for back width"/>
+            <column name="muscle_group_en" value="Back"/>
+            <where>description='Хоризонтална дърпане с лост за ширина'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Pull-ups"/>
+            <column name="description_en" value="Pull-ups for back width"/>
+            <column name="muscle_group_en" value="Back"/>
+            <where>description='Дърпане на тежест за ширина'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Lat Pulldowns"/>
+            <column name="description_en" value="Lat pulldowns for back width"/>
+            <column name="muscle_group_en" value="Back"/>
+            <where>description='Дърпане надолу за ширина'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Barbell Curls"/>
+            <column name="description_en" value="Barbell curls for biceps"/>
+            <column name="muscle_group_en" value="Biceps"/>
+            <where>description='Сгъване с лост за бицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Hammer Curls"/>
+            <column name="description_en" value="Hammer curls for biceps and forearms"/>
+            <column name="muscle_group_en" value="Biceps"/>
+            <where>description='Молотово сгъване за бицепс и предмишници'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Hammer Curls"/>
+            <column name="description_en" value="Hammer curls for biceps"/>
+            <column name="muscle_group_en" value="Biceps"/>
+            <where>description='Молотово сгъване за бицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Squats"/>
+            <column name="description_en" value="Squats for quadriceps and hamstrings"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Клякания за квадрицепс и задни бедра'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Leg Press"/>
+            <column name="description_en" value="Leg press for quadriceps"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Натискане с крака за квадрицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Romanian Deadlift"/>
+            <column name="description_en" value="Romanian deadlift for hamstrings"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Румънска мъртва тяга за задни бедра'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Leg Curls"/>
+            <column name="description_en" value="Leg curls for hamstrings"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Сгъване на крака за задни бедра'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Calf Raises"/>
+            <column name="description_en" value="Calf raises for calves"/>
+            <column name="muscle_group_en" value="Calves"/>
+            <where>description='Повдигане на пръсти за прасеца'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Ab Crunches"/>
+            <column name="description_en" value="Crunches for abs"/>
+            <column name="muscle_group_en" value="Abs"/>
+            <where>description='Скупове за коремни мускули'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Incline Press"/>
+            <column name="description_en" value="Incline press for upper chest"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Наклонено натискане за горна част на гръдните'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="T-Bar Rows"/>
+            <column name="description_en" value="T-bar rows for back thickness"/>
+            <column name="muscle_group_en" value="Back"/>
+            <where>description='Т-образна дърпане за дебелина'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Face Pulls"/>
+            <column name="description_en" value="Face pulls for rear delts"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Дърпане към лицето за задни делти'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Dips"/>
+            <column name="description_en" value="Bench dips for triceps and lower chest"/>
+            <column name="muscle_group_en" value="Chest"/>
+            <where>description='Лицеви опори за трицепс и долна част на гръдните'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Front Raises"/>
+            <column name="description_en" value="Front raises for front delts"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Предни повдигания за предни делти'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Rear Delt Flyes"/>
+            <column name="description_en" value="Rear delt flyes for rear delts"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Разтваряния назад за задни делти'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Preacher Curls"/>
+            <column name="description_en" value="Preacher curls for biceps"/>
+            <column name="muscle_group_en" value="Biceps"/>
+            <where>description='Сгъване на скамейка за бицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Overhead Tricep Extension"/>
+            <column name="description_en" value="Overhead tricep extension"/>
+            <column name="muscle_group_en" value="Triceps"/>
+            <where>description='Разпъване над главата за трицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Leg Extensions"/>
+            <column name="description_en" value="Leg extensions for quadriceps"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Разпъване на крака за квадрицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Upright Rows"/>
+            <column name="description_en" value="Upright rows for lateral delts"/>
+            <column name="muscle_group_en" value="Shoulders"/>
+            <where>description='Вертикална дърпане за средни делти'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Concentration Curls"/>
+            <column name="description_en" value="Concentration curls for biceps"/>
+            <column name="muscle_group_en" value="Biceps"/>
+            <where>description='Концентрирано сгъване за бицепс'</where>
+        </update>
+        <update tableName="exercises">
+            <column name="name_en" value="Lunges"/>
+            <column name="description_en" value="Lunges for quadriceps and hamstrings"/>
+            <column name="muscle_group_en" value="Legs"/>
+            <where>description='Стъпки за квадрицепс и задни бедра'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,54 @@
+package com.myfitnessjourney.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = true, unique = true, length = 50)
+    private String username;
+
+    @Column(nullable = true)
+    private String password;
+
+    @Column(name = "oauth2_provider")
+    private String oauth2Provider;
+
+    @Column(name = "oauth2_provider_id")
+    private String oauth2ProviderId;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "picture_url")
+    private String pictureUrl;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @Column(name = "login_streak")
+    private Integer loginStreak;
+}
+

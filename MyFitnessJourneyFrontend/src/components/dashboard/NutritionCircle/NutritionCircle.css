@@ -1,0 +1,41 @@
+.nutrition-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.circle-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+}
+
+.circle-progress {
+  width: 100%;
+  height: 100%;
+}
+
+.circle-value {
+  position: absolute;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.circle-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 0;
+}
+

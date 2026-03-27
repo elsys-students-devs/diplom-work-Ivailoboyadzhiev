@@ -1,0 +1,8 @@
+{
+  "chat": {
+    "title": "Messages",
+    "subtitle": "Chat with other users",
+    "loading": "Loading...",
+    "userError": "Could not load user. Please log in again."
+  }
+}

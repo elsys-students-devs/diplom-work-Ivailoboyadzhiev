@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="db/changelog/001-users.xml"/>
+    <include file="db/changelog/002-diets-meals.xml"/>
+    <include file="db/changelog/003-user-logged-meals.xml"/>
+    <include file="db/changelog/004-fitness-programs-exercises.xml"/>
+    <include file="db/changelog/005-chat-messages.xml"/>
+    <include file="db/changelog/006-user-login-streak.xml"/>
+    <include file="db/changelog/007a-diets-meals-translations.xml"/>
+    <include file="db/changelog/007b-fitness-exercises-translations.xml"/>
+    <include file="db/changelog/008-exercise-translations-table.xml"/>
+    <include file="db/changelog/009-diet-translations.xml"/>
+    <include file="db/changelog/010-meal-translations.xml"/>
+    <include file="db/changelog/011-fitness-program-translations.xml"/>
+    <include file="db/changelog/012-completed-workouts.xml"/>
+
+</databaseChangeLog>
+
